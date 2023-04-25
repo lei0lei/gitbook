@@ -44,7 +44,7 @@ wechaty
 
 {% embed url="https://github.com/fuergaosi233/wechat-chatgpt/tree/main" %}
 
-
+{% embed url="https://dbdiagram.io/d/6445e8c06b3194705110ba70" %}
 
 
 
