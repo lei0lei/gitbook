@@ -33,4 +33,5 @@
 
 ## 附录
 
-* [Page 1](fu-lu/page-1.md)
+* [排序算法](fu-lu/pai-xu-suan-fa.md)
+* [DP算法](fu-lu/dp-suan-fa.md)
