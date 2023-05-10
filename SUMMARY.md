@@ -58,7 +58,7 @@
 * [创建宏](shi-li/chuang-jian-hong.md)
 * [错误处理](shi-li/cuo-wu-chu-li.md)
 * [标准库类型](shi-li/biao-zhun-ku-lei-xing.md)
-* [标准库](shi-li/biao-zhun-ku.md)
+* [标准库more](shi-li/biao-zhun-ku-more.md)
 * [测试](shi-li/ce-shi.md)
 * [不安全操作](shi-li/bu-an-quan-cao-zuo.md)
 * [文档](shi-li/wen-dang.md)
