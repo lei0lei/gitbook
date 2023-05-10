@@ -35,9 +35,10 @@ library.rlib
 
 默认情况下，库会使用 crate 文件的名字，前面加上 “lib” 前缀，但这个默认名称可以使用 [`crate_name` 属性](https://rustwiki.org/zh-CN/rust-by-example/attribute/crate.html) 覆盖。
 
-[使用库](https://rustwiki.org/zh-CN/rust-by-example/crates/using\_lib.html#%E4%BD%BF%E7%94%A8%E5%BA%93)\
+## [使用库](https://rustwiki.org/zh-CN/rust-by-example/crates/using\_lib.html#%E4%BD%BF%E7%94%A8%E5%BA%93)
+
+\
 要将一个 crate 链接到上节新建的库，可以使用 `rustc` 的 `--extern` 选项。然后将所有的物件导入到与库名相同的模块下。此模块的操作通常与任何其他模块相同。
------------------------------------------------------------------------------------------
 
 ```rust
 // extern crate rary; // 在 Rust 2015 版或更早版本需要这个导入语句
