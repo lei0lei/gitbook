@@ -679,7 +679,7 @@ fn main(){
 
 ```
 
-[散列集 HashSet](https://rustwiki.org/zh-CN/rust-by-example/std/hash/hashset.html#%E6%95%A3%E5%88%97%E9%9B%86-hashset)
+### [散列集 HashSet](https://rustwiki.org/zh-CN/rust-by-example/std/hash/hashset.html#%E6%95%A3%E5%88%97%E9%9B%86-hashset)
 
 请把 `HashSet` 当成这样一个 `HashMap`：我们只关心其中的键而非值（`HashSet<T>` 实际上只是对 `HashMap<T, ()>` 的封装）。
 
