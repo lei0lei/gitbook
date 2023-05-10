@@ -573,7 +573,9 @@ fn main() {
 
 #### [参见：](https://rustwiki.org/zh-CN/rust-by-example/scope/lifetime/fn.html#%E5%8F%82%E8%A7%81) <a href="#can-jian" id="can-jian"></a>
 
-### [函数](https://rustwiki.org/zh-CN/rust-by-example/scope/lifetime/fn.html) [方法](https://rustwiki.org/zh-CN/rust-by-example/scope/lifetime/methods.html#%E6%96%B9%E6%B3%95)
+[函数](https://rustwiki.org/zh-CN/rust-by-example/scope/lifetime/fn.html)
+
+### &#x20;[方法](https://rustwiki.org/zh-CN/rust-by-example/scope/lifetime/methods.html#%E6%96%B9%E6%B3%95)
 
 方法的标注和函数类似：
 
