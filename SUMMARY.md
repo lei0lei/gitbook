@@ -67,7 +67,7 @@
 ## courses
 
 * [生命周期](courses/sheng-ming-zhou-qi.md)
-* [Page 14](courses/page-14.md)
+* [函数式编程](courses/han-shu-shi-bian-cheng.md)
 * [Page 13](courses/page-13.md)
 * [Page 12](courses/page-12.md)
 * [Page 11](courses/page-11.md)
