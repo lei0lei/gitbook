@@ -70,8 +70,8 @@
 * [函数式编程](courses/han-shu-shi-bian-cheng.md)
 * [类型](courses/lei-xing.md)
 * [智能指针](courses/zhi-neng-zhi-zhen.md)
-* [Page 11](courses/page-11.md)
-* [Page 10](courses/page-10.md)
+* [循环引用与自引用](courses/xun-huan-yin-yong-yu-zi-yin-yong.md)
+* [多线程并发编程](courses/duo-xian-cheng-bing-fa-bian-cheng.md)
 * [Page 9](courses/page-9.md)
 * [Page 8](courses/page-8.md)
 * [Page 7](courses/page-7.md)
@@ -79,3 +79,7 @@
 * [Page 5](courses/page-5.md)
 * [Page 4](courses/page-4.md)
 * [Page 3](courses/page-3.md)
+
+## unofficial
+
+* [Page 1](unofficial/page-1.md)
