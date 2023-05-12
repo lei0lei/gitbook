@@ -28,6 +28,12 @@
 
 {% embed url="https://doc.rust-lang.org/reference/introduction.html" %}
 
+{% embed url="https://rusty.course.rs/" %}
+
+
+
+{% embed url="https://github.com/sunface/rust-by-practice" %}
+
 
 
 ## 练手项目
