@@ -6,7 +6,7 @@ Rust 语言有一组保留的 **关键字**（_keywords_），就像大部分语
 
 ## 变量和可变性 <a href="#bian-liang-he-ke-bian-xing" id="bian-liang-he-ke-bian-xing"></a>
 
-变量默认是不可改变的（immutable）。这是 Rust 提供给你的众多优势之一，让你得以充分利用 Rust 提供的安全性和简单并发性来编写代码。不过，你仍然可以使用可变变量。让我们探讨一下 Rust 为何及如何鼓励你利用不可变性，以及何时你会选择不使用不可变性。
+<mark style="color:red;">变量默认是不可改变的（immutable）</mark>。这是 Rust 提供给你的众多优势之一，让你得以充分利用 Rust 提供的安全性和简单并发性来编写代码。不过，你仍然可以使用可变变量。让我们探讨一下 Rust 为何及如何鼓励你利用不可变性，以及何时你会选择不使用不可变性。
 
 当变量不可变时，一旦值被绑定一个名称上，你就不能改变这个值。为了对此进行说明，使用 `cargo new variables` 命令在 _projects_ 目录生成一个叫做 _variables_ 的新项目。
 
@@ -29,7 +29,7 @@ fn main() {
 
 Rust 编译器保证，如果声明一个值不会变，它就真的不会变，所以你不必自己跟踪它。这意味着你的代码更易于推导。
 
-不过可变性也是非常有用的，可以用来更方便地编写代码。尽管变量默认是不可变的，你仍然可以在变量名前添加 `mut` 来使其可变。`mut` 也向读者表明了其他代码将会改变这个变量值的意图。
+不过可变性也是非常有用的，可以用来更方便地编写代码。尽管变量默认是不可变的，你仍然可以<mark style="color:red;">在变量名前添加</mark> <mark style="color:red;"></mark><mark style="color:red;">`mut`</mark> <mark style="color:red;"></mark><mark style="color:red;">来使其可变</mark>。`mut` 也向读者表明了其他代码将会改变这个变量值的意图。
 
 ```rust
 // Some code
@@ -45,11 +45,11 @@ fn main() {
 
 类似于不可变变量，_常量 (constants)_ 是绑定到一个名称的不允许改变的值，不过常量与变量还是有一些区别。
 
-首先，不允许对常量使用 `mut`。常量不光默认不可变，它总是不可变。声明常量使用 `const` 关键字而不是 `let`，并且 _必须_ 注明值的类型。在下一部分，[“数据类型”](https://kaisery.github.io/trpl-zh-cn/ch03-02-data-types.html#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B) 中会介绍类型和类型注解，现在无需关心这些细节，记住总是标注类型即可。
+首先，<mark style="color:red;">不允许对常量使用</mark> <mark style="color:red;"></mark><mark style="color:red;">`mut`</mark>。常量不光默认不可变，它总是不可变。<mark style="color:red;">声明常量使用</mark> <mark style="color:red;"></mark><mark style="color:red;">`const`</mark> <mark style="color:red;"></mark><mark style="color:red;">关键字</mark>而不是 `let`，并且 _必须_ 注明<mark style="color:red;">值的类型</mark>。在下一部分，[“数据类型”](https://kaisery.github.io/trpl-zh-cn/ch03-02-data-types.html#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B) 中会介绍类型和类型注解，现在无需关心这些细节，记住总是标注类型即可。
 
 常量可以在任何作用域中声明，包括全局作用域，这在一个值需要被很多部分的代码用到时很有用。
 
-最后一个区别是，常量只能被设置为常量表达式，而不可以是其他任何只能在运行时计算出的值。
+最后一个区别是，<mark style="color:red;">常量只能被设置为常量表达式</mark>，而不可以是其他任何只能在运行时计算出的值。
 
 下面是一个声明常量的例子：
 
@@ -58,9 +58,9 @@ fn main() {
 const THREE_HOURS_IN_SECONDS: u32 = 60 * 60 * 3;
 ```
 
-常量的名称是 `THREE_HOURS_IN_SECONDS`，它的值被设置为 60（一分钟内的秒数）乘以 60（一小时内的分钟数）再乘以 3（我们在这个程序中要计算的小时数）的结果。Rust 对常量的命名约定是在单词之间使用全大写加下划线。编译器能够在编译时计算一组有限的操作，这使我们可以选择以更容易理解和验证的方式写出此值，而不是将此常量设置为值 10,800。有关声明常量时可以使用哪些操作的详细信息，请参阅 [Rust Reference 的常量求值部分](https://doc.rust-lang.org/reference/const\_eval.html)。
+常量的名称是 `THREE_HOURS_IN_SECONDS`，它的值被设置为 60（一分钟内的秒数）乘以 60（一小时内的分钟数）再乘以 3（我们在这个程序中要计算的小时数）的结果。<mark style="color:red;">Rust 对常量的命名约定是在单词之间使用全大写加下划线</mark>。编译器能够在编译时计算一组有限的操作，这使我们可以选择以更容易理解和验证的方式写出此值，而不是将此常量设置为值 10,800。有关声明常量时可以使用哪些操作的详细信息，请参阅 [Rust Reference 的常量求值部分](https://doc.rust-lang.org/reference/const\_eval.html)。
 
-在声明它的作用域之中，常量在整个程序生命周期中都有效，此属性使得常量可以作为多处代码使用的全局范围的值，例如一个游戏中所有玩家可以获取的最高分或者光速。
+<mark style="color:red;">在声明它的作用域之中，常量在整个程序生命周期中都有效</mark>，此属性使得常量可以作为多处代码使用的全局范围的值，例如一个游戏中所有玩家可以获取的最高分或者光速。
 
 将遍布于应用程序中的硬编码值声明为常量，能帮助后来的代码维护人员了解值的意图。如果将来需要修改硬编码值，也只需修改汇聚于一处的硬编码值。
 
@@ -98,9 +98,9 @@ fn main() {
 
 ## 数据类型 <a href="#shu-ju-lei-xing" id="shu-ju-lei-xing"></a>
 
-在 Rust 中，每一个值都属于某一个 **数据类型**（_data type_），这告诉 Rust 它被指定为何种数据，以便明确数据处理方式。我们将看到两类数据类型子集：标量（scalar）和复合（compound）。
+在 Rust 中，每一个值都属于某一个 <mark style="color:red;">**数据类型**</mark>（_data type_），这告诉 Rust 它被指定为何种数据，以便明确数据处理方式。我们将看到两类数据类型子集：标量（scalar）和复合（compound）。
 
-记住，Rust 是 **静态类型**（_statically typed_）语言，也就是说在编译时就必须知道所有变量的类型。根据值及其使用方式，编译器通常可以推断出我们想要用的类型。当多种类型均有可能时，比如第二章的 [“比较猜测的数字和秘密数字”](https://kaisery.github.io/trpl-zh-cn/ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number) 使用 `parse` 将 `String` 转换为数字时，必须增加类型注解，像这样：
+记住，Rust 是 <mark style="color:red;">**静态类型**</mark>（_statically typed_）语言，也就是说在编译时就必须知道所有变量的类型。根据值及其使用方式，编译器通常可以推断出我们想要用的类型。当多种类型均有可能时，比如第二章的 [“比较猜测的数字和秘密数字”](https://kaisery.github.io/trpl-zh-cn/ch02-00-guessing-game-tutorial.html#comparing-the-guess-to-the-secret-number) 使用 `parse` 将 `String` 转换为数字时，<mark style="color:red;">必须增加类型注解</mark>，像这样：
 
 ```rust
 // Some code
@@ -109,7 +109,7 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 ### 标量类型 <a href="#biao-liang-lei-xing" id="biao-liang-lei-xing"></a>
 
-**标量**（_scalar_）类型代表一个单独的值。Rust 有四种基本的标量类型：整型、浮点型、布尔类型和字符类型。
+**标量**（_scalar_）类型代表一个单独的值。Rust 有<mark style="color:blue;">四种基本的标量类型</mark>：整型、浮点型、布尔类型和字符类型。
 
 #### **整型**
 
@@ -128,7 +128,7 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 `isize` 和 `usize` 类型依赖运行程序的计算机架构：64 位架构上它们是 64 位的，32 位架构上它们是 32 位的。
 
-可以使用表格 3-2 中的任何一种形式编写数字字面值。请注意可以是多种数字类型的数字字面值允许使用类型后缀，例如 `57u8` 来指定类型，同时也允许使用 `_` 做为分隔符以方便读数，例如`1_000`，它的值与你指定的 `1000` 相同。
+可以使用表格 3-2 中的任何一种形式编写数字字面值。请注意可以是多种数字类型的数字字面值允许使用类型后缀，例如 `57u8` 来指定类型，同时也<mark style="color:blue;">允许使用</mark> <mark style="color:blue;"></mark><mark style="color:blue;">`_`</mark> <mark style="color:blue;"></mark><mark style="color:blue;">做为分隔符以方便读数</mark>，例如`1_000`，它的值与你指定的 `1000` 相同。
 
 | 数字字面值 | 示例           |   |
 | ----- | ------------ | - |
@@ -147,7 +147,7 @@ let guess: u32 = "42".parse().expect("Not a number!");
 
 使用 `--release` flag 在 release 模式中构建时，Rust **不会**检测会导致 panic 的整型溢出。相反发生整型溢出时，Rust 会进行一种被称为二进制补码 wrapping（_two’s complement wrapping_）的操作。简而言之，比此类型能容纳最大值还大的值会回绕到最小值，值 `256` 变成 `0`，值 `257` 变成 `1`，依此类推。程序不会 panic，不过变量可能也不会是你所期望的值。依赖整型溢出 wrapping 的行为被认为是一种错误。
 
-为了显式地处理溢出的可能性，可以使用这几类标准库提供的原始数字类型方法：
+<mark style="color:red;">为了显式地处理溢出的可能性，可以使用这几类标准库提供的原始数字类型方法</mark>：
 
 * 所有模式下都可以使用 `wrapping_*` 方法进行 wrapping，如 `wrapping_add`
 * 如果 `checked_*` 方法出现溢出，则返回 `None`值
@@ -174,7 +174,7 @@ fn main() {
 
 #### **数值运算**
 
-Rust 中的所有数字类型都支持基本数学运算：加法、减法、乘法、除法和取余。整数除法会向下舍入到最接近的整数。下面的代码展示了如何在 `let` 语句中使用它们：
+Rust 中的所有数字类型都支持基本数学运算：<mark style="color:red;">加法、减法、乘法、除法和取余</mark>。整数除法会向下舍入到最接近的整数。下面的代码展示了如何在 `let` 语句中使用它们：
 
 ```rust
 // Some code
@@ -225,15 +225,15 @@ fn main() {
 }
 ```
 
-注意，我们用单引号声明 `char` 字面量，而与之相反的是，使用双引号声明字符串字面量。Rust 的 `char` 类型的大小为四个字节 (four bytes)，并代表了一个 Unicode 标量值（Unicode Scalar Value），这意味着它可以比 ASCII 表示更多内容。在 Rust 中，带变音符号的字母（Accented letters），中文、日文、韩文等字符，emoji（绘文字）以及零长度的空白字符都是有效的 `char` 值。Unicode 标量值包含从 `U+0000` 到 `U+D7FF` 和 `U+E000` 到 `U+10FFFF` 在内的值。不过，“字符” 并不是一个 Unicode 中的概念，所以人直觉上的 “字符” 可能与 Rust 中的 `char` 并不符合。
+注意，我们用<mark style="color:red;">单引号声明</mark> <mark style="color:red;"></mark><mark style="color:red;">`char`</mark> <mark style="color:red;"></mark><mark style="color:red;">字面量</mark>，而与之相反的是，使用<mark style="color:red;">双引号声明字符串字面量</mark>。Rust 的 `char` 类型的大小为四个字节 (four bytes)，并代表了一个 Unicode 标量值（Unicode Scalar Value），这意味着它可以比 ASCII 表示更多内容。在 Rust 中，带变音符号的字母（Accented letters），中文、日文、韩文等字符，emoji（绘文字）以及零长度的空白字符都是有效的 `char` 值。Unicode 标量值包含从 `U+0000` 到 `U+D7FF` 和 `U+E000` 到 `U+10FFFF` 在内的值。不过，“字符” 并不是一个 Unicode 中的概念，所以人直觉上的 “字符” 可能与 Rust 中的 `char` 并不符合。
 
 ### 复合类型 <a href="#fu-he-lei-xing" id="fu-he-lei-xing"></a>
 
-**复合类型**（_Compound types_）可以将多个值组合成一个类型。Rust 有两个原生的复合类型：元组（tuple）和数组（array）。
+**复合类型**（_Compound types_）可以将多个值组合成一个类型。Rust 有两个原生的复合类型：<mark style="color:red;">元组</mark>（tuple）和<mark style="color:red;">数组</mark>（array）。
 
 #### **元组类型**
 
-元组是一个将多个其他类型的值组合进一个复合类型的主要方式。元组长度固定：一旦声明，其长度不会增大或缩小。
+元组是一个将多个其他类型的值组合进一个复合类型的主要方式。<mark style="color:red;">元组长度固定：一旦声明，其长度不会增大或缩小。</mark>
 
 我们使用包含在圆括号中的逗号分隔的值列表来创建一个元组。元组中的每一个位置都有一个类型，而且这些不同值的类型也不必是相同的。这个例子中使用了可选的类型注解：
 
@@ -257,9 +257,9 @@ fn main() {
 }
 ```
 
-程序首先创建了一个元组并绑定到 `tup` 变量上。接着使用了 `let` 和一个模式将 `tup` 分成了三个不同的变量，`x`、`y` 和 `z`。这叫做 **解构**（_destructuring_），因为它将一个元组拆成了三个部分。最后，程序打印出了 `y` 的值，也就是 `6.4`。
+程序首先创建了一个元组并绑定到 `tup` 变量上。接着使用了 `let` 和一个模式将 `tup` 分成了三个不同的变量，`x`、`y` 和 `z`。这叫做 <mark style="color:red;">**解构**</mark>（_destructuring_），因为它将一个元组拆成了三个部分。最后，程序打印出了 `y` 的值，也就是 `6.4`。
 
-我们也可以使用点号（`.`）后跟值的索引来直接访问它们。例如：
+我们也可以使用点号（`.`）后跟<mark style="color:red;">值的索引</mark>来直接访问它们。例如：
 
 ```rust
 // Some code
@@ -276,11 +276,11 @@ fn main() {
 
 这个程序创建了一个元组，`x`，然后使用其各自的索引访问元组中的每个元素。跟大多数编程语言一样，元组的第一个索引值是 0。
 
-不带任何值的元组有个特殊的名称，叫做 **单元（unit）** 元组。这种值以及对应的类型都写作 `()`，表示空值或空的返回类型。如果表达式不返回任何其他值，则会隐式返回单元值。
+<mark style="color:blue;">不带任何值的元组有个特殊的名称，叫做</mark> <mark style="color:blue;"></mark><mark style="color:blue;">**单元（unit）**</mark> <mark style="color:blue;"></mark><mark style="color:blue;">元组</mark>。这种值以及对应的类型都写作 `()`，表示空值或空的返回类型。如果<mark style="color:blue;">表达式不返回任何其他值，则会隐式返回单元值</mark>。
 
 #### **数组类型**
 
-另一个包含多个值的方式是 **数组**（_array_）。与元组不同，数组中的每个元素的类型必须相同。Rust 中的数组与一些其他语言中的数组不同，Rust 中的数组长度是固定的。
+另一个包含多个值的方式是 **数组**（_array_）。与元组不同，数组中的每个元素的类型必须相同。Rust 中的数组与一些其他语言中的数组不同，Rust 中的<mark style="color:red;">数组长度是固定的</mark>。
 
 我们将数组的值写成在方括号内，用逗号分隔：
 
@@ -291,11 +291,11 @@ fn main() {
 }
 ```
 
-当你想要在栈（stack）而不是在堆（heap）上为数据分配空间（，或者是想要确保总是有固定数量的元素时，数组非常有用。但是数组并不如 vector 类型灵活。vector 类型是标准库提供的一个 **允许** 增长和缩小长度的类似数组的集合类型。当不确定是应该使用数组还是 vector 的时候，那么很可能应该使用 vector。
+当你想要<mark style="color:red;">在栈（stack）而不是在堆（heap）上为数据分配空间</mark>（，或者是想要确保总是有固定数量的元素时，数组非常有用。但是数组并不如 vector 类型灵活。vector 类型是标准库提供的一个 **允许** 增长和缩小长度的类似数组的集合类型。当不确定是应该使用数组还是 vector 的时候，那么很可能应该使用 vector。
 
 然而，当你确定元素个数不会改变时，数组会更有用。例如，当你在一个程序中使用月份名字时，你更应趋向于使用数组而不是 vector，因为你确定只会有 12 个元素。
 
-```
+```rust
 // Some code
 let months = ["January", "February", "March", "April", "May", "June", "July",
               "August", "September", "October", "November", "December"];
@@ -303,7 +303,7 @@ let months = ["January", "February", "March", "April", "May", "June", "July",
 
 可以像这样编写数组的类型：在方括号中包含每个元素的类型，后跟分号，再后跟数组元素的数量。
 
-```
+```rust
 // Some code
 let a: [i32; 5] = [1, 2, 3, 4, 5];
 ```
@@ -312,7 +312,7 @@ let a: [i32; 5] = [1, 2, 3, 4, 5];
 
 你还可以通过在方括号中指定初始值加分号再加元素个数的方式来创建一个每个元素都为相同值的数组：
 
-```
+```rust
 // Some code
 let a = [3; 5];
 ```
@@ -323,7 +323,7 @@ let a = [3; 5];
 
 数组是可以在栈 (stack) 上分配的已知固定大小的单个内存块。可以使用索引来访问数组的元素，像这样：
 
-```
+```rust
 // Some code
 fn main() {
     let a = [1, 2, 3, 4, 5];
@@ -337,7 +337,7 @@ fn main() {
 
 #### **无效的数组元素访问**
 
-```
+```rust
 // Some code
 use std::io;
 
@@ -409,7 +409,7 @@ fn another_function(x: i32) {
 
 `another_function` 的声明中有一个命名为 `x` 的参数。`x` 的类型被指定为 `i32`。当我们将 `5` 传给 `another_function` 时，`println!` 宏会把 `5` 放在格式字符串中包含 `x` 的那对花括号的位置。
 
-在函数签名中，**必须** 声明每个参数的类型。这是 Rust 设计中一个经过慎重考虑的决定：要求在函数定义中提供类型注解，意味着编译器再也不需要你在代码的其他地方注明类型来指出你的意图。而且，在知道函数需要什么类型后，编译器就能够给出更有用的错误消息。
+在函数签名中，<mark style="color:red;">**必须**</mark> <mark style="color:red;"></mark><mark style="color:red;">声明每个参数的类型</mark>。这是 Rust 设计中一个经过慎重考虑的决定：要求在函数定义中提供类型注解，意味着编译器再也不需要你在代码的其他地方注明类型来指出你的意图。而且，在知道函数需要什么类型后，编译器就能够给出更有用的错误消息。
 
 当定义多个参数时，使用逗号分隔，像这样：
 
@@ -430,7 +430,7 @@ fn print_labeled_measurement(value: i32, unit_label: char) {
 
 函数体由一系列的语句和一个可选的结尾表达式构成。目前为止，我们提到的函数还不包含结尾表达式，不过你已经见过作为语句一部分的表达式。因为 Rust 是一门基于表达式（expression-based）的语言，这是一个需要理解的（不同于其他语言）重要区别。其他语言并没有这样的区别，所以让我们看看语句与表达式有什么区别以及这些区别是如何影响函数体的。
 
-**语句**（_Statements_）是执行一些操作但不返回值的指令。 **表达式**（_Expressions_）计算并产生一个值。让我们看一些例子。
+**语句**（_Statements_）是<mark style="color:red;">执行一些操作但不返回值的指令</mark>。 **表达式**（_Expressions_）<mark style="color:red;">计算并产生一个值</mark>。让我们看一些例子。
 
 函数定义也是语句，上面整个例子本身就是一个语句。
 
@@ -469,11 +469,11 @@ fn main() {
 }
 ```
 
-是一个代码块，它的值是 `4`。这个值作为 `let` 语句的一部分被绑定到 `y` 上。注意 `x+1` 这一行在结尾没有分号，与你见过的大部分代码行不同。表达式的结尾没有分号。如果在表达式的结尾加上分号，它就变成了语句，而语句不会返回值。在接下来探索具有返回值的函数和表达式时要谨记这一点。
+是一个代码块，它的值是 `4`。这个值作为 `let` 语句的一部分被绑定到 `y` 上。注意 `x+1` 这一行在结尾没有分号，与你见过的大部分代码行不同。<mark style="color:red;">表达式的结尾没有分号。如果在表达式的结尾加上分号，它就变成了语句，而语句不会返回值</mark>。在接下来探索具有返回值的函数和表达式时要谨记这一点。
 
 ### 具有返回值的函数 <a href="#ju-you-fan-hui-zhi-de-han-shu" id="ju-you-fan-hui-zhi-de-han-shu"></a>
 
-函数可以向调用它的代码返回值。我们并不对返回值命名，但要在箭头（`->`）后声明它的类型。在 Rust 中，函数的返回值等同于函数体最后一个表达式的值。使用 `return` 关键字和指定值，可从函数中提前返回；但大部分函数隐式的返回最后的表达式。这是一个有返回值的函数的例子：
+函数可以向调用它的代码返回值。<mark style="color:red;">我们并不对返回值命名，但要在箭头（</mark><mark style="color:red;">`->`</mark><mark style="color:red;">）后声明它的类型</mark>。在 Rust 中，函数的返回值等同于函数体最后一个表达式的值。使用 `return` 关键字和指定值，可从函数中提前返回；但大部分函数隐式的返回最后的表达式。这是一个有返回值的函数的例子：
 
 ```
 // Some code
@@ -496,7 +496,7 @@ fn main() {
 
 让我们看看另一个例子：
 
-```
+```rust
 // Some code
 fn main() {
     let x = plus_one(5);
@@ -515,7 +515,7 @@ fn plus_one(x: i32) -> i32 {
 
 所有程序员都力求使其代码易于理解，不过有时还需要提供额外的解释。在这种情况下，程序员在源码中留下 **注释**（_comments_），编译器会忽略它们，不过阅读代码的人可能觉得有用。
 
-在 Rust 中，惯用的注释样式是以两个斜杠开始注释，并持续到本行的结尾。对于超过一行的注释，需要在每一行前都加上 `//.`
+在 Rust 中，惯用的注释样式是以两个斜杠开始注释，并持续到本行的结尾。<mark style="color:red;">对于超过一行的注释，需要在每一行前都加上</mark> <mark style="color:red;"></mark><mark style="color:red;">`//.`</mark>
 
 ## 控制流 <a href="#kong-zhi-liu" id="kong-zhi-liu"></a>
 
@@ -536,7 +536,7 @@ fn main() {
 }
 ```
 
-所有的 `if` 表达式都以 `if` 关键字开头，其后跟一个条件。在这个例子中，条件检查变量 `number` 的值是否小于 5。在条件为 `true` 时希望执行的代码块位于紧跟条件之后的大括号中。`if` 表达式中与条件关联的代码块有时被叫做 _arms_，就像第二章 [“比较猜测的数字和秘密数字”](https://kaisery.github.io/trpl-zh-cn/ch02-00-guessing-game-tutorial.html#%E6%AF%94%E8%BE%83%E7%8C%9C%E6%B5%8B%E7%9A%84%E6%95%B0%E5%AD%97%E5%92%8C%E7%A7%98%E5%AF%86%E6%95%B0%E5%AD%97) 部分中讨论到的 `match` 表达式中的分支一样。
+所有的 <mark style="color:red;">`if`</mark> <mark style="color:red;"></mark><mark style="color:red;">表达式</mark>都以 `if` 关键字开头，其后跟一个条件。在这个例子中，条件检查变量 `number` 的值是否小于 5。在条件为 `true` 时希望执行的代码块位于紧跟条件之后的大括号中。`if` 表达式中与条件关联的代码块有时被叫做 _arms_，就像第二章 [“比较猜测的数字和秘密数字”](https://kaisery.github.io/trpl-zh-cn/ch02-00-guessing-game-tutorial.html#%E6%AF%94%E8%BE%83%E7%8C%9C%E6%B5%8B%E7%9A%84%E6%95%B0%E5%AD%97%E5%92%8C%E7%A7%98%E5%AF%86%E6%95%B0%E5%AD%97) 部分中讨论到的 `match` 表达式中的分支一样。
 
 也可以包含一个可选的 `else` 表达式来提供一个在条件为 `false` 时应当执行的代码块，这里我们就这么做了。如果不提供 `else` 表达式并且条件为 `false` 时，程序会直接忽略 `if` 代码块并继续执行下面的代码。
 
@@ -546,7 +546,7 @@ fn main() {
 
 可以将 `else if` 表达式与 `if` 和 `else` 组合来实现多重条件。例如：
 
-```
+```rust
 // Some code
 fn main() {
     let number = 6;
@@ -571,7 +571,7 @@ fn main() {
 
 因为 `if` 是一个表达式，我们可以在 `let` 语句的右侧使用它，
 
-```
+```rust
 // Some code
 fn main() {
     let condition = true;
@@ -583,7 +583,7 @@ fn main() {
 
 `number` 变量将会绑定到表示 `if` 表达式结果的值上.
 
-记住，代码块的值是其最后一个表达式的值，而数字本身就是一个表达式。在这个例子中，整个 `if` 表达式的值取决于哪个代码块被执行。这意味着 `if` 的每个分支的可能的返回值都必须是相同类型；在示例 3-2 中，`if` 分支和 `else` 分支的结果都是 `i32` 整型。如果它们的类型不匹配，如下面这个例子，则会出现一个错误：
+记住，<mark style="color:red;">代码块的值是其最后一个表达式的值，而数字本身就是一个表达式</mark>。在这个例子中，整个 `if` 表达式的值取决于哪个代码块被执行。这意味着 `if` 的每个分支的可能的返回值都必须是相同类型；在示例 3-2 中，`if` 分支和 `else` 分支的结果都是 `i32` 整型。如果它们的类型不匹配，如下面这个例子，则会出现一个错误：
 
 ```
 // Some code
@@ -608,7 +608,7 @@ Rust 有三种循环：`loop`、`while` 和 `for`。我们每一个都试试。
 
 `loop` 关键字告诉 Rust 一遍又一遍地执行一段代码直到你明确要求停止。
 
-```
+```rust
 // Some code
 fn main() {
     loop {
@@ -625,7 +625,7 @@ Rust 提供了一种从代码中跳出循环的方法。可以使用 `break` 关
 
 `loop` 的一个用例是重试可能会失败的操作，比如检查线程是否完成了任务。然而你可能会需要将操作的结果传递给其它的代码。如果将返回值加入你用来停止循环的 `break` 表达式，它会被停止的循环返回：
 
-```
+```rust
 // Some code
 fn main() {
     let mut counter = 0;
@@ -648,7 +648,7 @@ fn main() {
 
 如果存在嵌套循环，`break` 和 `continue` 应用于此时最内层的循环。你可以选择在一个循环上指定一个 **循环标签**（_loop label_），然后将标签与 `break` 或 `continue` 一起使用，使这些关键字应用于已标记的循环而不是最内层的循环。下面是一个包含两个嵌套循环的示例
 
-```
+```rust
 // Some code
 fn main() {
     let mut count = 0;
@@ -681,7 +681,7 @@ fn main() {
 
 然而，这个模式太常用了，Rust 为此内置了一个语言结构，它被称为 `while` 循环。示例 3-3 使用了 `while`：程序循环三次，每次数字都减一。接着，在循环结束后，打印出另一个信息并退出。
 
-```
+```rust
 // Some code
 fn main() {
     let mut number = 3;
@@ -702,7 +702,7 @@ fn main() {
 
 可以使用 `while` 结构来遍历集合中的元素，比如数组
 
-```
+```rust
 // Some code
 fn main() {
     let a = [10, 20, 30, 40, 50];
@@ -724,7 +724,7 @@ fn main() {
 
 作为更简洁的替代方案，可以使用 `for` 循环来对一个集合的每个元素执行一些代码。
 
-```
+```rust
 // Some code
 fn main() {
     let a = [10, 20, 30, 40, 50];
@@ -743,7 +743,7 @@ fn main() {
 
 下面是一个使用 `for` 循环来倒计时的例子，它还使用了一个我们还未讲到的方法，`rev`，用来反转 range：
 
-```
+```rust
 // Some code
 fn main() {
     for number in (1..4).rev() {
