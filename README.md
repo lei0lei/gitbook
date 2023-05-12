@@ -74,3 +74,4 @@
 
 {% embed url="https://github.com/tw93/Pake" %}
 
+{% embed url="https://play.rust-lang.org/?version=stable&mode=debug&edition=2021" %}
