@@ -1,7 +1,3 @@
----
-layout: editorial
----
-
 # 常见概念
 
 {% hint style="info" %}
