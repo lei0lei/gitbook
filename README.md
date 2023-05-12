@@ -26,7 +26,7 @@
 
 {% embed url="https://github.com/sunface/rust-course/blob/main/assets/writing-material/books.md" %}
 
-
+{% embed url="https://doc.rust-lang.org/reference/introduction.html" %}
 
 
 
