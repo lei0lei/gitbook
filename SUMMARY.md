@@ -72,7 +72,7 @@
 * [智能指针](courses/zhi-neng-zhi-zhen.md)
 * [循环引用与自引用](courses/xun-huan-yin-yong-yu-zi-yin-yong.md)
 * [多线程并发编程](courses/duo-xian-cheng-bing-fa-bian-cheng.md)
-* [Page 9](courses/page-9.md)
+* [全局变量](courses/quan-ju-bian-liang.md)
 * [Page 8](courses/page-8.md)
 * [Page 7](courses/page-7.md)
 * [Page 6](courses/page-6.md)
