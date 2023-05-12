@@ -73,7 +73,7 @@
 * [循环引用与自引用](courses/xun-huan-yin-yong-yu-zi-yin-yong.md)
 * [多线程并发编程](courses/duo-xian-cheng-bing-fa-bian-cheng.md)
 * [全局变量](courses/quan-ju-bian-liang.md)
-* [Page 8](courses/page-8.md)
+* [错误处理](courses/cuo-wu-chu-li.md)
 * [Page 7](courses/page-7.md)
 * [Page 6](courses/page-6.md)
 * [Page 5](courses/page-5.md)
