@@ -40,7 +40,7 @@ fn main() {
 use std::io;
 ```
 
-默认情况下，Rust 设定了若干个会自动导入到每个程序作用域中的标准库内容，这组内容被称为 _预导入（preclude）_ 内容。你可以在[标准库文档](https://doc.rust-lang.org/std/prelude/index.html)中查看预导入的所有内容。
+默认情况下，Rust 设定了若干个会自动导入到每个程序作用域中的标准库内容，这组内容被称为 _预导入（<mark style="color:red;">**preclude**</mark>）_ 内容。你可以在[标准库文档](https://doc.rust-lang.org/std/prelude/index.html)中查看预导入的所有内容。
 
 如果你需要的类型不在预导入内容中，就必须使用 `use` 语句显式地将其引入作用域。`std::io` 库提供很多有用的功能，包括接收用户输入的功能。
 
@@ -53,7 +53,7 @@ use std::io;
 let mut guess = String::new();
 ```
 
-在 Rust 中，变量默认是不可变的，这意味着一旦我们给变量赋值，这个值就不再可以修改了。
+在 Rust 中，<mark style="color:red;">变量默认是不可变的</mark>，这意味着一旦我们给变量赋值，这个值就不再可以修改了。
 
 下面的例子展示了如何在变量名前使用 `mut` 来使一个变量可变：
 
@@ -69,7 +69,7 @@ let mut bananas = 5; // 可变
 
 回到猜猜看程序中。现在我们知道了 `let mut guess` 会引入一个叫做 `guess` 的可变变量。等号（`=`）告诉 Rust 我们现在想将某个值绑定在变量上。等号的右边是 `guess` 所绑定的值，它是 `String::new` 的结果，这个函数会返回一个 `String` 的新实例。[`String`](https://doc.rust-lang.org/std/string/struct.String.html) 是一个标准库提供的字符串类型，它是 UTF-8 编码的可增长文本块。
 
-`::new` 那一行的 `::` 语法表明 `new` 是 `String` 类型的一个 **关联函数**（_associated function_）。关联函数是针对类型实现的，在这个例子中是 `String`，而不是 `String` 的某个特定实例。一些语言中把它称为 **静态方法**（_static method_）。
+`::new` 那一行的 `::` 语法表明 `new` 是 `String` 类型的一个 <mark style="color:red;">**关联函数**</mark>（_associated function_）。关联函数是针对类型实现的，在这个例子中是 `String`，而不是 `String` 的某个特定实例。一些语言中把它称为 **静态方法**（_static method_）。
 
 `new` 函数创建了一个新的空字符串，你会发现很多类型上有 `new` 函数，因为它是创建类型实例的惯用函数名。
 
@@ -87,9 +87,9 @@ let mut bananas = 5; // 可变
 
 如果程序的开头没有使用 `use std::io;` 引入 `io` 库，我们仍可以通过把函数调用写成 `std::io::stdin` 来使用函数。`stdin` 函数返回一个 [`std::io::Stdin`](https://doc.rust-lang.org/std/io/struct.Stdin.html) 的实例，这代表终端标准输入句柄的类型。
 
-代码的下一部分，`.read_line(&mut guess)`，调用 [`read_line`](https://doc.rust-lang.org/std/io/struct.Stdin.html#method.read\_line) 方法从标准输入句柄获取用户输入。我们还将 `&mut guess` 作为参数传递给 `read_line()` 函数，让其将用户输入储存到这个字符串中。`read_line` 的工作是，无论用户在标准输入中键入什么内容，都将其追加（不会覆盖其原有内容）到一个字符串中，因此它需要字符串作为参数。这个字符串参数应该是可变的，以便 `read_line` 将用户输入附加上去。
+代码的下一部分，`.read_line(&mut guess)`，调用 [`read_line`](https://doc.rust-lang.org/std/io/struct.Stdin.html#method.read\_line) 方法从标准输入句柄获取用户输入。我们还将 `&mut guess` 作为参数传递给 `read_line()` 函数，让其将用户输入储存到这个字符串中。<mark style="color:blue;">`read_line`</mark> <mark style="color:blue;"></mark><mark style="color:blue;">的工作是，无论用户在标准输入中键入什么内容，都将其追加（不会覆盖其原有内容）到一个字符串中，因此它需要字符串作为参数。这个字符串参数应该是可变的，以便</mark> <mark style="color:blue;"></mark><mark style="color:blue;">`read_line`</mark> <mark style="color:blue;"></mark><mark style="color:blue;">将用户输入附加上去。</mark>
 
-`&` 表示这个参数是一个 **引用**（_reference_），它允许多处代码访问同一处数据，而无需在内存中多次拷贝。引用是一个复杂的特性，Rust 的一个主要优势就是安全而简单的操纵引用。完成当前程序并不需要了解如此多细节。现在，我们只需知道它像变量一样，默认是不可变的。因此，需要写成 `&mut guess` 来使其可变，而不是 `&guess`。（第四章会更全面的解释引用。）
+`&` 表示这个参数是一个 <mark style="color:red;">**引用**</mark>（_reference_），它允许多处代码访问同一处数据，而无需在内存中多次拷贝。引用是一个复杂的特性，Rust 的一个主要优势就是安全而简单的操纵引用。完成当前程序并不需要了解如此多细节。现在，我们只需知道它像变量一样，默认是不可变的。因此，需要写成 `&mut guess` 来使其可变，而不是 `&guess`。（第四章会更全面的解释引用。）
 
 #### 使用 `Result` 类型来处理潜在的错误 <a href="#shi-yong-result-lei-xing-lai-chu-li-qian-zai-de-cuo-wu" id="shi-yong-result-lei-xing-lai-chu-li-qian-zai-de-cuo-wu"></a>
 
@@ -107,7 +107,7 @@ let mut bananas = 5; // 可变
 io::stdin().read_line(&mut guess).expect("Failed to read line");
 ```
 
-不过，过长的代码行难以阅读，所以最好拆开来写。通常来说，当使用 `.method_name()` 语法调用方法时引入换行符和空格将长的代码行拆开是明智的。现在来看看这行代码干了什么。
+不过，过长的代码行难以阅读，所以最好拆开来写。通常来说，当使用 <mark style="color:red;">`.method_name()`</mark> <mark style="color:red;"></mark><mark style="color:red;">语法调用方法时引入换行符和空格将长的代码行拆开是明智的</mark>。现在来看看这行代码干了什么。
 
 之前提到了 `read_line` 会将用户输入附加到传递给它的字符串中，不过它也会返回一个类型为 `Result` 的值。 [`Result`](https://doc.rust-lang.org/std/result/enum.Result.html) 是一种[_枚举类型_](https://kaisery.github.io/trpl-zh-cn/ch06-00-enums.html)，通常也写作 _enum_。枚举类型变量的值可以是多种可能状态中的一个。我们把每种可能的状态称为一种 _枚举成员（variant）_。
 
@@ -115,7 +115,7 @@ io::stdin().read_line(&mut guess).expect("Failed to read line");
 
 `Result` 的成员是 `Ok` 和 `Err`，`Ok` 成员表示操作成功，内部包含成功时产生的值。`Err` 成员则意味着操作失败，并且包含失败的前因后果。
 
-这些 `Result` 类型的作用是编码错误处理信息。`Result` 类型的值，像其他类型一样，拥有定义于其上的方法。`Result` 的实例拥有 [`expect` 方法](https://doc.rust-lang.org/std/result/enum.Result.html#method.expect)。如果 `io::Result` 实例的值是 `Err`，`expect` 会导致程序崩溃，并显示当做参数传递给 `expect` 的信息。如果 `read_line` 方法返回 `Err`，则可能是来源于底层操作系统错误的结果。如果 `Result` 实例的值是 `Ok`，`expect` 会获取 `Ok` 中的值并原样返回。在本例中，这个值是用户输入到标准输入中的字节数。
+这些 `Result` 类型的作用是编码错误处理信息。`Result` 类型的值，像其他类型一样，拥有定义于其上的方法。<mark style="color:blue;">`Result`</mark> <mark style="color:blue;"></mark><mark style="color:blue;">的实例拥有</mark> [<mark style="color:blue;">`expect`</mark> <mark style="color:blue;"></mark><mark style="color:blue;">方法</mark>](https://doc.rust-lang.org/std/result/enum.Result.html#method.expect)。如果 `io::Result` 实例的值是 `Err`，`expect` 会导致程序崩溃，并显示当做参数传递给 `expect` 的信息。如果 `read_line` 方法返回 `Err`，则可能是来源于底层操作系统错误的结果。如果 `Result` 实例的值是 `Ok`，`expect` 会获取 `Ok` 中的值并原样返回。在本例中，这个值是用户输入到标准输入中的字节数。
 
 #### 使用 `println!` 占位符打印值 <a href="#shi-yong-println-zhan-wei-fu-da-yin-zhi" id="shi-yong-println-zhan-wei-fu-da-yin-zhi"></a>
 
