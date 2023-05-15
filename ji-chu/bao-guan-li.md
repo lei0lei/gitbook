@@ -4,11 +4,11 @@
 
 当你编写大型程序时，组织你的代码显得尤为重要。通过对相关功能进行分组和划分不同功能的代码，你可以清楚在哪里可以找到实现了特定功能的代码，以及在哪里可以改变一个功能的工作方式。
 
-到目前为止，我们编写的程序都在一个文件的一个模块中。伴随着项目的增长，你应该通过将代码分解为多个模块和多个文件来组织代码。一个包可以包含多个二进制 crate 项和一个可选的 crate 库。伴随着包的增长，你可以将包中的部分代码提取出来，做成独立的 crate，这些 crate 则作为外部依赖项。本章将会涵盖所有这些概念。对于一个由一系列相互关联的包组成的超大型项目，Cargo 提供了 “工作空间” 这一功能，我们将在第十四章的 [“Cargo Workspaces”](https://kaisery.github.io/trpl-zh-cn/ch14-03-cargo-workspaces.html) 对此进行讲解。
+到目前为止，我们编写的程序都在一个文件的一个模块中。伴随着项目的增长，你应该通过将代码分解为多个模块和多个文件来组织代码。<mark style="color:red;">一个包可以包含多个二进制 crate 项和一个可选的 crate 库</mark>。伴随着包的增长，你可以将包中的部分代码提取出来，做成独立的 crate，这些 crate 则作为外部依赖项。本章将会涵盖所有这些概念。对于一个由一系列相互关联的包组成的超大型项目，Cargo 提供了 “工作空间” 这一功能，我们将在第十四章的 [“Cargo Workspaces”](https://kaisery.github.io/trpl-zh-cn/ch14-03-cargo-workspaces.html) 对此进行讲解。
 
 我们也会讨论封装来实现细节，这可以使你更高级地重用代码：你实现了一个操作后，其他的代码可以通过该代码的公共接口来进行调用，而不需要知道它是如何实现的。你在编写代码时可以定义哪些部分是其他代码可以使用的公共部分，以及哪些部分是你有权更改实现细节的私有部分。这是另一种减少你在脑海中记住项目内容数量的方法。
 
-这里有一个需要说明的概念 “作用域（scope）”：代码所在的嵌套上下文有一组定义为 “in scope” 的名称。当阅读、编写和编译代码时，程序员和编译器需要知道特定位置的特定名称是否引用了变量、函数、结构体、枚举、模块、常量或者其他有意义的项。你可以创建作用域，以及改变哪些名称在作用域内还是作用域外。同一个作用域内不能拥有两个相同名称的项；可以使用一些工具来解决名称冲突。
+这里有一个需要说明的概念 “<mark style="color:red;">作用域（scope）</mark>”：代码所在的嵌套上下文有一组定义为 “in scope” 的名称。当阅读、编写和编译代码时，程序员和编译器需要知道特定位置的特定名称是否引用了变量、函数、结构体、枚举、模块、常量或者其他有意义的项。你可以创建作用域，以及改变哪些名称在作用域内还是作用域外。同一个作用域内不能拥有两个相同名称的项；可以使用一些工具来解决名称冲突。
 
 Rust 有许多功能可以让你管理代码的组织，包括哪些内容可以被公开，哪些内容作为私有部分，以及程序每个作用域中的名字。这些功能。这有时被称为 “模块系统（the module system）”，包括：
 
@@ -19,21 +19,21 @@ Rust 有许多功能可以让你管理代码的组织，包括哪些内容可以
 
 本章将会涵盖所有这些概念，讨论它们如何交互，并说明如何使用它们来管理作用域。到最后，你会对模块系统有深入的了解，并且能够像专业人士一样使用作用域！
 
-### [包和 Crate](https://kaisery.github.io/trpl-zh-cn/ch07-01-packages-and-crates.html#%E5%8C%85%E5%92%8C-crate) <a href="#bao-he-crate" id="bao-he-crate"></a>
+## [包和 Crate](https://kaisery.github.io/trpl-zh-cn/ch07-01-packages-and-crates.html#%E5%8C%85%E5%92%8C-crate) <a href="#bao-he-crate" id="bao-he-crate"></a>
 
 模块系统的第一部分，我们将介绍包和 crate。
 
-crate 是 Rust 在编译时最小的代码单位。如果你用 `rustc` 而不是 `cargo` 来编译一个文件（第一章我们这么做过），编译器还是会将那个文件认作一个 crate。crate 可以包含模块，模块可以定义在其他文件，然后和 crate 一起编译，我们会在接下来的章节中遇到。
+<mark style="color:red;">crate 是 Rust 在编译时最小的代码单位</mark>。如果你用 `rustc` 而不是 `cargo` 来编译一个文件（第一章我们这么做过），编译器还是会将那个文件认作一个 crate。crate 可以包含模块，模块可以定义在其他文件，然后和 crate 一起编译，我们会在接下来的章节中遇到。
 
-crate 有两种形式：二进制项和库。_二进制项_ 可以被编译为可执行程序，比如一个命令行程序或者一个服务器。它们必须有一个 `main` 函数来定义当程序被执行的时候所需要做的事情。目前我们所创建的 crate 都是二进制项。
+crate 有两种形式：<mark style="color:red;">二进制项和库</mark>。_二进制项_ 可以被编译为可执行程序，比如一个命令行程序或者一个服务器。它们必须有一个 `main` 函数来定义当程序被执行的时候所需要做的事情。目前我们所创建的 crate 都是二进制项。
 
 _库_ 并没有 `main` 函数，它们也不会编译为可执行程序，它们提供一些诸如函数之类的东西，使其他项目也能使用这些东西。比如 [第二章](https://kaisery.github.io/trpl-zh-cn/ch02-00-guessing-game-tutorial.html#%E7%94%9F%E6%88%90%E4%B8%80%E4%B8%AA%E9%9A%8F%E6%9C%BA%E6%95%B0) 的 `rand` crate 就提供了生成随机数的东西。大多数时间 `Rustaceans` 说的 crate 指的都是库，这与其他编程语言中 library 概念一致。
 
-_crate root_ 是一个源文件，Rust 编译器以它为起始点，并构成你的 crate 的根模块（我们将在 [“定义模块来控制作用域与私有性”](https://kaisery.github.io/trpl-zh-cn/ch07-02-defining-modules-to-control-scope-and-privacy.html) 一节深入解读）。
+_<mark style="color:red;">crate root</mark>_ <mark style="color:red;"></mark><mark style="color:red;">是一个源文件，Rust 编译器以它为起始点，并构成你的 crate 的根模块</mark>（我们将在 [“定义模块来控制作用域与私有性”](https://kaisery.github.io/trpl-zh-cn/ch07-02-defining-modules-to-control-scope-and-privacy.html) 一节深入解读）。
 
 _包_（_package_）是提供一系列功能的一个或者多个 crate。一个包会包含一个 _Cargo.toml_ 文件，阐述如何去构建这些 crate。Cargo 就是一个包含构建你代码的二进制项的包。Cargo 也包含这些二进制项所依赖的库。其他项目也能用 Cargo 库来实现与 Cargo 命令行程序一样的逻辑。
 
-包中可以包含至多一个库 crate(library crate)。包中可以包含任意多个二进制 crate(binary crate)，但是必须至少包含一个 crate（无论是库的还是二进制的）。
+<mark style="color:red;">包中可以包含至多一个库 crate(library crate)。包中可以包含任意多个二进制 crate(binary crate)，但是必须至少包含一个 crate（无论是库的还是二进制的）</mark>。
 
 让我们来看看创建包的时候会发生什么。首先，我们输入命令 `cargo new`：
 
@@ -47,13 +47,13 @@ $ ls my-project/src
 main.rs
 ```
 
-运行了这条命令后，我们先用 `ls` （译者注：此命令为 Linux 平台的指令，Windows 下可用 dir）来看看 Cargo 给我们创建了什么，Cargo 会给我们的包创建一个 _Cargo.toml_ 文件。查看 _Cargo.toml_ 的内容，会发现并没有提到 _src/main.rs_，因为 Cargo 遵循的一个约定：_src/main.rs_ 就是一个与包同名的二进制 crate 的 crate 根。同样的，Cargo 知道如果包目录中包含 _src/lib.rs_，则包带有与其同名的库 crate，且 _src/lib.rs_ 是 crate 根。crate 根文件将由 Cargo 传递给 `rustc` 来实际构建库或者二进制项目。
+运行了这条命令后，我们先用 `ls` （译者注：此命令为 Linux 平台的指令，Windows 下可用 dir）来看看 Cargo 给我们创建了什么，Cargo 会给我们的包创建一个 _Cargo.toml_ 文件。查看 _Cargo.toml_ 的内容，会发现并没有提到 _src/main.rs_，因为 Cargo 遵循的一个约定：_<mark style="color:red;">src/main.rs</mark>_ <mark style="color:red;"></mark><mark style="color:red;">就是一个与包同名的二进制 crate 的 crate 根</mark>。同样的<mark style="color:red;">，Cargo 知道如果包目录中包含</mark> <mark style="color:red;"></mark>_<mark style="color:red;">src/lib.rs</mark>_<mark style="color:red;">，则包带有与其同名的库 crate，且</mark> <mark style="color:red;"></mark>_<mark style="color:red;">src/lib.rs</mark>_ <mark style="color:red;"></mark><mark style="color:red;">是 crate 根</mark>。crate 根文件将由 Cargo 传递给 `rustc` 来实际构建库或者二进制项目。
 
-在此，我们有了一个只包含 _src/main.rs_ 的包，意味着它只含有一个名为 `my-project` 的二进制 crate。如果一个包同时含有 _src/main.rs_ 和 _src/lib.rs_，则它有两个 crate：一个二进制的和一个库的，且名字都与包相同。通过将文件放在 _src/bin_ 目录下，一个包可以拥有多个二进制 crate：每个 _src/bin_ 下的文件都会被编译成一个独立的二进制 crate。
+在此，我们有了一个只包含 _src/main.rs_ 的包，意味着它只含有一个名为 `my-project` 的二进制 crate。如果一个包同时含有 _src/main.rs_ 和 _src/lib.rs_，则它有两个 crate：一个二进制的和一个库的，且名字都与包相同。<mark style="color:red;">通过将文件放在</mark> <mark style="color:red;"></mark>_<mark style="color:red;">src/bin</mark>_ <mark style="color:red;"></mark><mark style="color:red;">目录下，一个包可以拥有多个二进制 crate：每个</mark> <mark style="color:red;"></mark>_<mark style="color:red;">src/bin</mark>_ <mark style="color:red;"></mark><mark style="color:red;">下的文件都会被编译成一个独立的二进制 crate</mark>。
 
-### [定义模块来控制作用域与私有性](https://kaisery.github.io/trpl-zh-cn/ch07-02-defining-modules-to-control-scope-and-privacy.html#%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9D%97%E6%9D%A5%E6%8E%A7%E5%88%B6%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8E%E7%A7%81%E6%9C%89%E6%80%A7) 
+## [定义模块来控制作用域与私有性](https://kaisery.github.io/trpl-zh-cn/ch07-02-defining-modules-to-control-scope-and-privacy.html#%E5%AE%9A%E4%B9%89%E6%A8%A1%E5%9D%97%E6%9D%A5%E6%8E%A7%E5%88%B6%E4%BD%9C%E7%94%A8%E5%9F%9F%E4%B8%8E%E7%A7%81%E6%9C%89%E6%80%A7)
 
-在本节，我们将讨论模块和其它一些关于模块系统的部分，如允许你命名项的 _路径_（_paths_）；用来将路径引入作用域的 `use` 关键字；以及使项变为公有的 `pub` 关键字。我们还将讨论 `as` 关键字、外部包和 glob 运算符。现在，让我们把注意力放在模块上！
+在本节，我们将讨论模块和其它一些关于模块系统的部分，如允许你命名项的 _<mark style="color:red;">路径</mark>_<mark style="color:red;">（</mark>_<mark style="color:red;">paths</mark>_<mark style="color:red;">）</mark>；用来将路径引入作用域的 <mark style="color:red;">`use`</mark> <mark style="color:red;"></mark><mark style="color:red;">关键字</mark>；以及使项变为公有的 <mark style="color:red;">`pub`</mark> <mark style="color:red;"></mark><mark style="color:red;">关键字</mark>。我们还将讨论 <mark style="color:red;">`as`</mark> <mark style="color:red;"></mark><mark style="color:red;">关键字、外部包</mark>和 <mark style="color:red;">glob 运算符</mark>。现在，让我们把注意力放在模块上！
 
 首先，我们将从一系列的规则开始，在你未来组织代码的时候，这些规则可被用作简单的参考。接下来我们将会详细的解释每条规则。
 
@@ -102,7 +102,7 @@ fn main() {
 }
 ```
 
-`pub mod garden;`行告诉编译器应该包含在_src/garden.rs_文件中发现的代码：
+<mark style="color:red;">`pub mod garden;`</mark><mark style="color:red;">行告诉编译器应该包含在</mark>_<mark style="color:red;">src/garden.rs</mark>_<mark style="color:red;">文件中发现的代码：</mark>
 
 文件名：src/garden.rs
 
@@ -119,7 +119,7 @@ pub struct Asparagus {}
 
 现在让我们深入了解这些规则的细节并在实际中演示它们！
 
-#### [在模块中对相关代码进行分组](https://kaisery.github.io/trpl-zh-cn/ch07-02-defining-modules-to-control-scope-and-privacy.html#%E5%9C%A8%E6%A8%A1%E5%9D%97%E4%B8%AD%E5%AF%B9%E7%9B%B8%E5%85%B3%E4%BB%A3%E7%A0%81%E8%BF%9B%E8%A1%8C%E5%88%86%E7%BB%84) <a href="#zai-mo-kuai-zhong-dui-xiang-guan-dai-ma-jin-hang-fen-zu" id="zai-mo-kuai-zhong-dui-xiang-guan-dai-ma-jin-hang-fen-zu"></a>
+### [在模块中对相关代码进行分组](https://kaisery.github.io/trpl-zh-cn/ch07-02-defining-modules-to-control-scope-and-privacy.html#%E5%9C%A8%E6%A8%A1%E5%9D%97%E4%B8%AD%E5%AF%B9%E7%9B%B8%E5%85%B3%E4%BB%A3%E7%A0%81%E8%BF%9B%E8%A1%8C%E5%88%86%E7%BB%84) <a href="#zai-mo-kuai-zhong-dui-xiang-guan-dai-ma-jin-hang-fen-zu" id="zai-mo-kuai-zhong-dui-xiang-guan-dai-ma-jin-hang-fen-zu"></a>
 
 _模块_ 让我们可以将一个 crate 中的代码进行分组，以提高可读性与重用性。因为一个模块中的代码默认是私有的，所以还可以利用模块控制项的 _私有性_。私有项是不可为外部使用的内在详细实现。我们也可以将模块和它其中的项标记为公开的，这样，外部代码就可以使用并依赖与它们。
 
@@ -175,7 +175,7 @@ crate
 
 这个模块树可能会令你想起电脑上文件系统的目录树；这是一个非常恰当的类比！就像文件系统的目录，你可以使用模块来组织你的代码。并且，就像目录中的文件，我们需要一种方法来找到模块。
 
-### [引用模块项目的路径](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#%E5%BC%95%E7%94%A8%E6%A8%A1%E5%9D%97%E9%A1%B9%E7%9B%AE%E7%9A%84%E8%B7%AF%E5%BE%84) 
+## [引用模块项目的路径](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#%E5%BC%95%E7%94%A8%E6%A8%A1%E5%9D%97%E9%A1%B9%E7%9B%AE%E7%9A%84%E8%B7%AF%E5%BE%84)
 
 来看一下 Rust 如何在模块树中找到一个项的位置，我们使用路径的方式，就像在文件系统使用路径一样。为了调用一个函数，我们需要知道它的路径。
 
@@ -259,7 +259,7 @@ error: could not compile `restaurant` due to 2 previous errors
 
 Rust 选择以这种方式来实现模块系统功能，因此默认隐藏内部实现细节。这样一来，你就知道可以更改内部代码的哪些部分而不会破坏外部代码。不过 Rust 也确实提供了通过使用 `pub` 关键字来创建公共项，使子模块的内部部分暴露给上级模块。
 
-#### [使用 `pub` 关键字暴露路径](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#%E4%BD%BF%E7%94%A8-pub-%E5%85%B3%E9%94%AE%E5%AD%97%E6%9A%B4%E9%9C%B2%E8%B7%AF%E5%BE%84) <a href="#shi-yong-pub-guan-jian-zi-bao-lu-lu-jing" id="shi-yong-pub-guan-jian-zi-bao-lu-lu-jing"></a>
+### [使用 `pub` 关键字暴露路径](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#%E4%BD%BF%E7%94%A8-pub-%E5%85%B3%E9%94%AE%E5%AD%97%E6%9A%B4%E9%9C%B2%E8%B7%AF%E5%BE%84) <a href="#shi-yong-pub-guan-jian-zi-bao-lu-lu-jing" id="shi-yong-pub-guan-jian-zi-bao-lu-lu-jing"></a>
 
 让我们回头看一下示例 7-4 的错误，它告诉我们 `hosting` 模块是私有的。我们想让父模块中的 `eat_at_restaurant` 函数可以访问子模块中的 `add_to_waitlist` 函数，因此我们使用 `pub` 关键字来标记 `hosting` 模块，如示例 7-5 所示。
 
@@ -358,7 +358,7 @@ pub fn eat_at_restaurant() {
 >
 > 模块树应该定义在 _src/lib.rs_ 中。这样通过以包名开头的路径，公有项就可以在二进制 crate 中使用。二进制 crate 就完全变成了同其它 外部 crate 一样的库 crate 的用户：它只能使用公有 API。这有助于你设计一个好的 API；你不仅仅是作者，也是用户！ 在[第十二章](https://kaisery.github.io/trpl-zh-cn/ch12-00-an-io-project.html)我们会通过一个同时包含二进制 crate 和库 crate 的命令行程序来展示这些包组织上的实践。
 
-#### [使用 `super` 起始的相对路径](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#%E4%BD%BF%E7%94%A8-super-%E8%B5%B7%E5%A7%8B%E7%9A%84%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84) <a href="#shi-yong-super-qi-shi-de-xiang-dui-lu-jing" id="shi-yong-super-qi-shi-de-xiang-dui-lu-jing"></a>
+### [使用 `super` 起始的相对路径](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#%E4%BD%BF%E7%94%A8-super-%E8%B5%B7%E5%A7%8B%E7%9A%84%E7%9B%B8%E5%AF%B9%E8%B7%AF%E5%BE%84) <a href="#shi-yong-super-qi-shi-de-xiang-dui-lu-jing" id="shi-yong-super-qi-shi-de-xiang-dui-lu-jing"></a>
 
 我们还可以使用 `super` 而不是当前模块或者 crate 根来开头来构建从父模块开始的相对路径。这么做类似于文件系统中以 `..` 开头的语法。使用 `super` 允许我们引用已知的父模块中的项，当模块与父模块关联的很紧密的时候，如果某天可能需要父模块要移动到模块树的其它位置，这使得重新组织模块树变得更容易。
 
@@ -383,9 +383,9 @@ mod back_of_house {
 
 `fix_incorrect_order` 函数在 `back_of_house` 模块中，所以我们可以使用 `super` 进入 `back_of_house` 父模块，也就是本例中的 `crate` 根。在这里，我们可以找到 `deliver_order`。成功！我们认为 `back_of_house` 模块和 `deliver_order` 函数之间可能具有某种关联关系，并且，如果我们要重新组织这个 crate 的模块树，需要一起移动它们。因此，我们使用 `super`，这样一来，如果这些代码被移动到了其他模块，我们只需要更新很少的代码。
 
-#### [创建公有的结构体和枚举](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#%E5%88%9B%E5%BB%BA%E5%85%AC%E6%9C%89%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93%E5%92%8C%E6%9E%9A%E4%B8%BE) <a href="#chuang-jian-gong-you-de-jie-gou-ti-he-mei-ju" id="chuang-jian-gong-you-de-jie-gou-ti-he-mei-ju"></a>
+### [创建公有的结构体和枚举](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#%E5%88%9B%E5%BB%BA%E5%85%AC%E6%9C%89%E7%9A%84%E7%BB%93%E6%9E%84%E4%BD%93%E5%92%8C%E6%9E%9A%E4%B8%BE) <a href="#chuang-jian-gong-you-de-jie-gou-ti-he-mei-ju" id="chuang-jian-gong-you-de-jie-gou-ti-he-mei-ju"></a>
 
-我们还可以使用 `pub` 来设计公有的结构体和枚举，不过关于在结构体和枚举上使用 `pub` 还有一些额外的细节需要注意。如果我们在一个结构体定义的前面使用了 `pub` ，这个结构体会变成公有的，但是这个结构体的字段仍然是私有的。我们可以根据情况决定每个字段是否公有。在示例 7-9 中，我们定义了一个公有结构体 `back_of_house:Breakfast`，其中有一个公有字段 `toast` 和私有字段 `seasonal_fruit`。这个例子模拟的情况是，在一家餐馆中，顾客可以选择随餐附赠的面包类型，但是厨师会根据季节和库存情况来决定随餐搭配的水果。餐馆可用的水果变化是很快的，所以顾客不能选择水果，甚至无法看到他们将会得到什么水果。
+我们还可以使用 `pub` 来设计公有的结构体和枚举，不过关于在结构体和枚举上使用 `pub` 还有一些额外的细节需要注意。<mark style="color:red;">如果我们在一个结构体定义的前面使用了</mark> <mark style="color:red;"></mark><mark style="color:red;">`pub`</mark> <mark style="color:red;"></mark><mark style="color:red;">，这个结构体会变成公有的，但是这个结构体的字段仍然是私有的</mark>。我们可以根据情况决定每个字段是否公有。在示例 7-9 中，我们定义了一个公有结构体 `back_of_house:Breakfast`，其中有一个公有字段 `toast` 和私有字段 `seasonal_fruit`。这个例子模拟的情况是，在一家餐馆中，顾客可以选择随餐附赠的面包类型，但是厨师会根据季节和库存情况来决定随餐搭配的水果。餐馆可用的水果变化是很快的，所以顾客不能选择水果，甚至无法看到他们将会得到什么水果。
 
 文件名：src/lib.rs
 
@@ -451,7 +451,7 @@ pub fn eat_at_restaurant() {
 
 还有一种使用 `pub` 的场景我们还没有涉及到，那就是我们最后要讲的模块功能：`use` 关键字。我们将先单独介绍 `use`，然后展示如何结合使用 `pub` 和 `use`。
 
-### [使用 `use` 关键字将路径引入作用域](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E4%BD%BF%E7%94%A8-use-%E5%85%B3%E9%94%AE%E5%AD%97%E5%B0%86%E8%B7%AF%E5%BE%84%E5%BC%95%E5%85%A5%E4%BD%9C%E7%94%A8%E5%9F%9F) 
+## [使用 `use` 关键字将路径引入作用域](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E4%BD%BF%E7%94%A8-use-%E5%85%B3%E9%94%AE%E5%AD%97%E5%B0%86%E8%B7%AF%E5%BE%84%E5%BC%95%E5%85%A5%E4%BD%9C%E7%94%A8%E5%9F%9F)
 
 不得不编写路径来调用函数显得不便且重复。在示例 7-7 中，无论我们选择 `add_to_waitlist` 函数的绝对路径还是相对路径，每次我们想要调用 `add_to_waitlist` 时，都必须指定`front_of_house` 和 `hosting`。幸运的是，有一种方法可以简化这个过程。我们可以使用 `use` 关键字创建一个短路径，然后就可以在作用域中的任何地方使用这个更短的名字。
 
@@ -497,7 +497,7 @@ mod customer {
 }
 ```
 
-示例 7-12: `use` 语句只适用于其所在的作用域
+示例 7-12: <mark style="color:red;">`use`</mark> <mark style="color:red;"></mark><mark style="color:red;">语句只适用于其所在的作用域</mark>
 
 编译器错误显示短路径不在适用于 `customer` 模块中：
 
@@ -525,7 +525,7 @@ error: could not compile `restaurant` due to previous error; 1 warning emitted
 
 注意这里还有一个警告说 `use` 在其作用域内不再被使用！为了修复这个问题，可以将 `use` 移动到 `customer` 模块内，或者在子模块 `customer` 内通过 `super::hosting` 引用父模块中的这个短路径。
 
-#### [创建惯用的 `use` 路径](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E5%88%9B%E5%BB%BA%E6%83%AF%E7%94%A8%E7%9A%84-use-%E8%B7%AF%E5%BE%84) <a href="#chuang-jian-guan-yong-de-use-lu-jing" id="chuang-jian-guan-yong-de-use-lu-jing"></a>
+### [创建惯用的 `use` 路径](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E5%88%9B%E5%BB%BA%E6%83%AF%E7%94%A8%E7%9A%84-use-%E8%B7%AF%E5%BE%84) <a href="#chuang-jian-guan-yong-de-use-lu-jing" id="chuang-jian-guan-yong-de-use-lu-jing"></a>
 
 在示例 7-11 中，你可能会比较疑惑，为什么我们是指定 `use crate::front_of_house::hosting` ，然后在 `eat_at_restaurant` 中调用 `hosting::add_to_waitlist` ，而不是通过指定一直到 `add_to_waitlist` 函数的 `use` 路径来得到相同的结果，如示例 7-13 所示。
 
@@ -549,19 +549,25 @@ pub fn eat_at_restaurant() {
 
 虽然示例 7-11 和 7-13 都完成了相同的任务，但示例 7-11 是使用 `use` 将函数引入作用域的习惯用法。要想使用 `use` 将函数的父模块引入作用域，我们必须在调用函数时指定父模块，这样可以清晰地表明函数不是在本地定义的，同时使完整路径的重复度最小化。示例 7-13 中的代码不清楚 `add_to_waitlist` 是在哪里被定义的。
 
-另一方面，使用 `use` 引入结构体、枚举和其他项时，习惯是指定它们的完整路径。示例 7-14 展示了将 `HashMap` 结构体引入二进制 crate 作用域的习惯用法。
+另一方面，<mark style="color:red;">使用</mark> <mark style="color:red;"></mark><mark style="color:red;">`use`</mark> <mark style="color:red;"></mark><mark style="color:red;">引入结构体、枚举和其他项时，习惯是指定它们的完整路径</mark>。示例 7-14 展示了将 `HashMap` 结构体引入二进制 crate 作用域的习惯用法。
 
 文件名：src/main.rs
 
 ```rust
-use std::collections::HashMap;fn main() {    let mut map = HashMap::new();    map.insert(1, 2);}
+use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert(1, 2);
+}
+
 ```
 
 示例 7-14: 将 `HashMap` 引入作用域的习惯用法
 
 这种习惯用法背后没有什么硬性要求：它只是一种惯例，人们已经习惯了以这种方式阅读和编写 Rust 代码。
 
-这个习惯用法有一个例外，那就是我们想使用 `use` 语句将两个具有相同名称的项带入作用域，因为 Rust 不允许这样做。示例 7-15 展示了如何将两个具有相同名称但不同父模块的 `Result` 类型引入作用域，以及如何引用它们。
+这个习惯用法有一个例外，那就是我们<mark style="color:red;">想使用</mark> <mark style="color:red;"></mark><mark style="color:red;">`use`</mark> <mark style="color:red;"></mark><mark style="color:red;">语句将两个具有相同名称的项带入作用域</mark>，因为 Rust 不允许这样做。示例 7-15 展示了如何将两个具有相同名称但不同父模块的 `Result` 类型引入作用域，以及如何引用它们。
 
 文件名：src/lib.rs
 
@@ -582,9 +588,9 @@ fn function2() -> io::Result<()> {
 
 如你所见，使用父模块可以区分这两个 `Result` 类型。如果我们是指定 `use std::fmt::Result` 和 `use std::io::Result`，我们将在同一作用域拥有了两个 `Result` 类型，当我们使用 `Result` 时，Rust 则不知道我们要用的是哪个。
 
-#### [使用 `as` 关键字提供新的名称](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E4%BD%BF%E7%94%A8-as-%E5%85%B3%E9%94%AE%E5%AD%97%E6%8F%90%E4%BE%9B%E6%96%B0%E7%9A%84%E5%90%8D%E7%A7%B0) <a href="#shi-yong-as-guan-jian-zi-ti-gong-xin-de-ming-cheng" id="shi-yong-as-guan-jian-zi-ti-gong-xin-de-ming-cheng"></a>
+### [使用 `as` 关键字提供新的名称](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E4%BD%BF%E7%94%A8-as-%E5%85%B3%E9%94%AE%E5%AD%97%E6%8F%90%E4%BE%9B%E6%96%B0%E7%9A%84%E5%90%8D%E7%A7%B0) <a href="#shi-yong-as-guan-jian-zi-ti-gong-xin-de-ming-cheng" id="shi-yong-as-guan-jian-zi-ti-gong-xin-de-ming-cheng"></a>
 
-使用 `use` 将两个同名类型引入同一作用域这个问题还有另一个解决办法：在这个类型的路径后面，我们使用 `as` 指定一个新的本地名称或者别名。示例 7-16 展示了另一个编写示例 7-15 中代码的方法，通过 `as` 重命名其中一个 `Result` 类型。
+使用 `use` 将两个同名类型引入同一作用域这个问题还有另一个解决办法：在这个类型的路径后面，我们使用 `as` 指定一个新的本地名称或者别名。示例 7-16 展示了另一个编写示例 7-15 中代码的方法，<mark style="color:red;">通过</mark> <mark style="color:red;"></mark><mark style="color:red;">`as`</mark> <mark style="color:red;"></mark><mark style="color:red;">重命名其中一个</mark> <mark style="color:red;"></mark><mark style="color:red;">`Result`</mark> <mark style="color:red;"></mark><mark style="color:red;">类型</mark>。
 
 文件名：src/lib.rs
 
@@ -607,7 +613,7 @@ fn function2() -> IoResult<()> {
 
 #### [使用 `pub use` 重导出名称](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E4%BD%BF%E7%94%A8-pub-use-%E9%87%8D%E5%AF%BC%E5%87%BA%E5%90%8D%E7%A7%B0) <a href="#shi-yong-pubuse-zhong-dao-chu-ming-cheng" id="shi-yong-pubuse-zhong-dao-chu-ming-cheng"></a>
 
-使用 `use` 关键字，将某个名称导入当前作用域后，这个名称在此作用域中就可以使用了，但它对此作用域之外还是私有的。如果想让其他人调用我们的代码时，也能够正常使用这个名称，就好像它本来就在当前作用域一样，那我们可以将 `pub` 和 `use` 合起来使用。这种技术被称为 “_重导出_（_re-exporting_）”：我们不仅将一个名称导入了当前作用域，还允许别人把它导入他们自己的作用域。
+使用 `use` 关键字，将某个名称导入当前作用域后，这个名称在此作用域中就可以使用了，但它对此作用域之外还是私有的。如果想让其他人调用我们的代码时，也能够正常使用这个名称，就好像它本来就在当前作用域一样，那我们可以<mark style="color:red;">将</mark> <mark style="color:red;"></mark><mark style="color:red;">`pub`</mark> <mark style="color:red;"></mark><mark style="color:red;">和</mark> <mark style="color:red;"></mark><mark style="color:red;">`use`</mark> <mark style="color:red;"></mark><mark style="color:red;">合起来使用</mark>。这种技术被称为 “_重导出_（_re-exporting_）”：我们不仅将一个名称导入了当前作用域，还允许别人把它导入他们自己的作用域。
 
 示例 7-17 将示例 7-11 根模块中的 `use` 改为 `pub use` 。
 
@@ -633,7 +639,7 @@ pub fn eat_at_restaurant() {
 
 当你代码的内部结构与调用你代码的程序员所想象的结构不同时，重导出会很有用。例如，在这个餐馆的比喻中，经营餐馆的人会想到“前台”和“后台”。但顾客在光顾一家餐馆时，可能不会以这些术语来考虑餐馆的各个部分。使用 `pub use`，我们可以使用一种结构编写代码，却将不同的结构形式暴露出来。这样做使我们的库井井有条，也使开发这个库的程序员和调用这个库的程序员都更加方便。在[“使用 `pub use` 导出合适的公有 API”](https://kaisery.github.io/trpl-zh-cn/ch14-02-publishing-to-crates-io.html#exporting-a-convenient-public-api-with-pub-use)部分让我们再看另一个 `pub use` 的例子来了解这如何影响 crate 的文档。
 
-#### [使用外部包](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E4%BD%BF%E7%94%A8%E5%A4%96%E9%83%A8%E5%8C%85) <a href="#shi-yong-wai-bu-bao" id="shi-yong-wai-bu-bao"></a>
+### [使用外部包](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E4%BD%BF%E7%94%A8%E5%A4%96%E9%83%A8%E5%8C%85) <a href="#shi-yong-wai-bu-bao" id="shi-yong-wai-bu-bao"></a>
 
 在第二章中我们编写了一个猜猜看游戏。那个项目使用了一个外部包，`rand`，来生成随机数。为了在项目中使用 `rand`，在 _Cargo.toml_ 中加入了如下行：
 
@@ -655,9 +661,9 @@ fn main() {
 }
 ```
 
-[crates.io](https://crates.io/) 上有很多 Rust 社区成员发布的包，将其引入你自己的项目都需要一道相同的步骤：在 _Cargo.toml_ 列出它们并通过 `use` 将其中定义的项引入项目包的作用域中。
+[crates.io](https://crates.io/) 上有很多 Rust 社区成员发布的包，将其引入你自己的项目都需要一道相同的步骤：<mark style="color:red;">在</mark> <mark style="color:red;"></mark>_<mark style="color:red;">Cargo.toml</mark>_ <mark style="color:red;"></mark><mark style="color:red;">列出它们并通过</mark> <mark style="color:red;"></mark><mark style="color:red;">`use`</mark> <mark style="color:red;"></mark><mark style="color:red;">将其中定义的项引入项目包的作用域中。</mark>
 
-注意 `std` 标准库对于你的包来说也是外部 crate。因为标准库随 Rust 语言一同分发，无需修改 _Cargo.toml_ 来引入 `std`，不过需要通过 `use` 将标准库中定义的项引入项目包的作用域中来引用它们，比如我们使用的 `HashMap`：
+注意 `std` 标准库对于你的包来说也是外部 crate。因为标准库随 Rust 语言一同分发，无需修改 _Cargo.toml_ 来引入 `std`，不过<mark style="color:red;">需要通过</mark> <mark style="color:red;"></mark><mark style="color:red;">`use`</mark> <mark style="color:red;"></mark><mark style="color:red;">将标准库中定义的项引入项目包的作用域中来引用它们</mark>，比如我们使用的 `HashMap`：
 
 ```rust
 use std::collections::HashMap;
@@ -665,7 +671,7 @@ use std::collections::HashMap;
 
 这是一个以标准库 crate 名 `std` 开头的绝对路径。
 
-#### [嵌套路径来消除大量的 `use` 行](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E5%B5%8C%E5%A5%97%E8%B7%AF%E5%BE%84%E6%9D%A5%E6%B6%88%E9%99%A4%E5%A4%A7%E9%87%8F%E7%9A%84-use-%E8%A1%8C) <a href="#qian-tao-lu-jing-lai-xiao-chu-da-liang-de-use-hang" id="qian-tao-lu-jing-lai-xiao-chu-da-liang-de-use-hang"></a>
+### [嵌套路径来消除大量的 `use` 行](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E5%B5%8C%E5%A5%97%E8%B7%AF%E5%BE%84%E6%9D%A5%E6%B6%88%E9%99%A4%E5%A4%A7%E9%87%8F%E7%9A%84-use-%E8%A1%8C) <a href="#qian-tao-lu-jing-lai-xiao-chu-da-liang-de-use-hang" id="qian-tao-lu-jing-lai-xiao-chu-da-liang-de-use-hang"></a>
 
 当需要引入很多定义于相同包或相同模块的项时，为每一项单独列出一行会占用源码很大的空间。例如猜猜看章节示例 2-4 中有两行 `use` 语句都从 `std` 引入项到作用域：
 
@@ -688,7 +694,7 @@ use std::{cmp::Ordering, io};
 // --snip--
 ```
 
-示例 7-18: 指定嵌套的路径在一行中将多个带有相同前缀的项引入作用域
+示例 7-18: <mark style="color:red;">指定嵌套的路径在一行中将多个带有相同前缀的项引入作用域</mark>
 
 在较大的程序中，使用嵌套路径从相同包或模块中引入很多项，可以显著减少所需的独立 `use` 语句的数量！
 
@@ -715,9 +721,9 @@ use std::io::{self, Write};
 
 这一行便将 `std::io` 和 `std::io::Write` 同时引入作用域。
 
-#### [通过 glob 运算符将所有的公有定义引入作用域](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E9%80%9A%E8%BF%87-glob-%E8%BF%90%E7%AE%97%E7%AC%A6%E5%B0%86%E6%89%80%E6%9C%89%E7%9A%84%E5%85%AC%E6%9C%89%E5%AE%9A%E4%B9%89%E5%BC%95%E5%85%A5%E4%BD%9C%E7%94%A8%E5%9F%9F) <a href="#tong-guo-glob-yun-suan-fu-jiang-suo-you-de-gong-you-ding-yi-yin-ru-zuo-yong-yu" id="tong-guo-glob-yun-suan-fu-jiang-suo-you-de-gong-you-ding-yi-yin-ru-zuo-yong-yu"></a>
+### [通过 glob 运算符将所有的公有定义引入作用域](https://kaisery.github.io/trpl-zh-cn/ch07-04-bringing-paths-into-scope-with-the-use-keyword.html#%E9%80%9A%E8%BF%87-glob-%E8%BF%90%E7%AE%97%E7%AC%A6%E5%B0%86%E6%89%80%E6%9C%89%E7%9A%84%E5%85%AC%E6%9C%89%E5%AE%9A%E4%B9%89%E5%BC%95%E5%85%A5%E4%BD%9C%E7%94%A8%E5%9F%9F) <a href="#tong-guo-glob-yun-suan-fu-jiang-suo-you-de-gong-you-ding-yi-yin-ru-zuo-yong-yu" id="tong-guo-glob-yun-suan-fu-jiang-suo-you-de-gong-you-ding-yi-yin-ru-zuo-yong-yu"></a>
 
-如果希望将一个路径下 **所有** 公有项引入作用域，可以指定路径后跟 `*`，glob 运算符：
+如果希望<mark style="color:red;">将一个路径下</mark> <mark style="color:red;"></mark><mark style="color:red;">**所有**</mark> <mark style="color:red;"></mark><mark style="color:red;">公有项引入作用域，可以指定路径后跟</mark> <mark style="color:red;"></mark><mark style="color:red;">`*`</mark><mark style="color:red;">，glob 运算符</mark>：
 
 ```rust
 use std::collections::*;
@@ -727,7 +733,7 @@ use std::collections::*;
 
 glob 运算符经常用于测试模块 `tests` 中，这时会将所有内容引入作用域；我们将在第十一章 “如何编写测试” 部分讲解。glob 运算符有时也用于 prelude 模式；查看 [标准库中的文档](https://doc.rust-lang.org/std/prelude/index.html#other-preludes) 了解这个模式的更多细节。
 
-### [将模块拆分成多个文件](https://kaisery.github.io/trpl-zh-cn/ch07-05-separating-modules-into-different-files.html#%E5%B0%86%E6%A8%A1%E5%9D%97%E6%8B%86%E5%88%86%E6%88%90%E5%A4%9A%E4%B8%AA%E6%96%87%E4%BB%B6) <a href="#jiang-mo-kuai-chai-fen-cheng-duo-ge-wen-jian" id="jiang-mo-kuai-chai-fen-cheng-duo-ge-wen-jian"></a>
+## [将模块拆分成多个文件](https://kaisery.github.io/trpl-zh-cn/ch07-05-separating-modules-into-different-files.html#%E5%B0%86%E6%A8%A1%E5%9D%97%E6%8B%86%E5%88%86%E6%88%90%E5%A4%9A%E4%B8%AA%E6%96%87%E4%BB%B6) <a href="#jiang-mo-kuai-chai-fen-cheng-duo-ge-wen-jian" id="jiang-mo-kuai-chai-fen-cheng-duo-ge-wen-jian"></a>
 
 到目前为止，本章所有的例子都在一个文件中定义多个模块。当模块变得更大时，你可能想要将它们的定义移动到单独的文件中，从而使代码更容易阅读。
 
@@ -802,7 +808,7 @@ pub fn add_to_waitlist() {}
 
 注意，_src/lib.rs_ 中的 `pub use crate::front_of_house::hosting` 语句是没有改变的，在文件作为 crate 的一部分而编译时，`use` 不会有任何影响。`mod` 关键字声明了模块，Rust 会在与模块同名的文件中查找模块的代码。
 
-### [总结](https://kaisery.github.io/trpl-zh-cn/ch07-05-separating-modules-into-different-files.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
+## [总结](https://kaisery.github.io/trpl-zh-cn/ch07-05-separating-modules-into-different-files.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
 
 Rust 提供了将包分成多个 crate，将 crate 分成模块，以及通过指定绝对或相对路径从一个模块引用另一个模块中定义的项的方式。你可以通过使用 `use` 语句将路径引入作用域，这样在多次使用时可以使用更短的路径。模块定义的代码默认是私有的，不过可以选择增加 `pub` 关键字使其定义变为公有。
 
