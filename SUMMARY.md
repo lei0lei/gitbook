@@ -80,6 +80,10 @@
 * [Page 4](courses/page-4.md)
 * [Page 3](courses/page-3.md)
 
-## unofficial
+## 深入理解RUST
 
-* [Page 1](unofficial/page-1.md)
+* [Page 1](shen-ru-li-jie-rust/page-1.md)
+
+## Reference
+
+* [Page 6](reference/page-6.md)
