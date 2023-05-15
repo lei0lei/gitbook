@@ -568,9 +568,9 @@ impl Rectangle {
 
 ### 关联函数 <a href="#guan-lian-han-shu" id="guan-lian-han-shu"></a>
 
-所有在 `impl` 块中定义的函数被称为 **关联函数**（_associated functions_），因为它们与 `impl` 后面命名的类型相关。我们可以定义不以 `self` 为第一参数的关联函数（因此不是方法），因为它们并不作用于一个结构体的实例。我们已经使用了一个这样的函数：在 `String` 类型上定义的 `String::from` 函数。
+所有在 `impl` 块中定义的函数被称为 **关联函数**（_associated functions_），因为它们与 `impl` 后面命名的类型相关。我们<mark style="color:red;">可以定义不以</mark> <mark style="color:red;"></mark><mark style="color:red;">`self`</mark> <mark style="color:red;"></mark><mark style="color:red;">为第一参数的关联函数（因此不是方法）</mark>，因为它们并不作用于一个结构体的实例。我们已经使用了一个这样的函数：<mark style="color:red;">在</mark> <mark style="color:red;"></mark><mark style="color:red;">`String`</mark> <mark style="color:red;"></mark><mark style="color:red;">类型上定义的</mark> <mark style="color:red;"></mark><mark style="color:red;">`String::from`</mark> <mark style="color:red;"></mark><mark style="color:red;">函数</mark>。
 
-不是方法的关联函数经常被用作返回一个结构体新实例的构造函数。这些函数的名称通常为 `new` ，但 `new` 并不是一个关键字。例如我们可以提供一个叫做 `square` 关联函数，它接受一个维度参数并且同时作为宽和高，这样可以更轻松的创建一个正方形 `Rectangle` 而不必指定两次同样的值：
+不是方法的关联函数经常被用作<mark style="color:red;">返回一个结构体新实例的构造函数</mark>。这些函数的名称通常为 `new` ，但 `new` 并不是一个关键字。例如我们可以提供一个叫做 `square` 关联函数，它接受一个维度参数并且同时作为宽和高，这样可以更轻松的创建一个正方形 `Rectangle` 而不必指定两次同样的值：
 
 ```rust
 // Some code
@@ -584,7 +584,7 @@ impl Rectangle {
 }
 ```
 
-关键字 `Self` 在函数的返回类型中代指在 `impl` 关键字后出现的类型，在这里是 `Rectangle`
+<mark style="color:red;">关键字</mark> <mark style="color:red;"></mark><mark style="color:red;">`Self`</mark> <mark style="color:red;"></mark><mark style="color:red;">在函数的返回类型中代指在</mark> <mark style="color:red;"></mark><mark style="color:red;">`impl`</mark> <mark style="color:red;"></mark><mark style="color:red;">关键字后出现的类型，在这里是</mark> <mark style="color:red;"></mark><mark style="color:red;">`Rectangle`</mark>
 
 使用结构体名和 `::` 语法来调用这个关联函数：比如 `let sq = Rectangle::square(3);`。这个函数位于结构体的命名空间中：`::` 语法用于关联函数和模块创建的命名空间。[第七章](https://kaisery.github.io/trpl-zh-cn/ch07-02-defining-modules-to-control-scope-and-privacy.html)会讲到模块。
 
