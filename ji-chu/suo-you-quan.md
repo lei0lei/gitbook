@@ -517,7 +517,7 @@ fn dangle() -> &String { // dangle 返回一个字符串的引用
 
 因为 `s` 是在 `dangle` 函数内创建的，当 `dangle` 的代码执行完毕后，`s` 将被释放。不过我们尝试返回它的引用。这意味着这个引用会指向一个无效的 `String`，这可不对！Rust 不会允许我们这么做。
 
-这里的解决方法是直接返回 `String`：
+<mark style="color:red;">这里的解决方法是直接返回</mark> <mark style="color:red;"></mark><mark style="color:red;">`String`</mark>：
 
 ```rust
 // Some code
@@ -541,10 +541,7 @@ fn no_dangle() -> String {
 
 ## [Slice 类型](https://kaisery.github.io/trpl-zh-cn/ch04-03-slices.html#slice-%E7%B1%BB%E5%9E%8B) <a href="#slice-lei-xing" id="slice-lei-xing"></a>
 
-> [ch04-03-slices.md](https://github.com/rust-lang/book/blob/main/src/ch04-03-slices.md)\
-> commit 3d51f70c78162faaebcab0da0de2ddd333e7a8ed
-
-_slice_ 允许你引用集合中一段连续的元素序列，而不用引用整个集合。slice 是一类引用，所以它没有所有权。
+_slice_ 允许你引用集合中一段连续的元素序列，而不用引用整个集合。<mark style="color:red;">slice 是一类引用，所以它没有所有权</mark>。
 
 这里有一个编程小习题：编写一个函数，该函数接收一个用空格分隔单词的字符串，并返回在该字符串中找到的第一个单词。如果函数在该字符串中并未找到空格，则整个字符串就是一个单词，所以应该返回整个字符串。
 
@@ -577,7 +574,7 @@ fn main() {}
 
 示例 4-7：`first_word` 函数返回 `String` 参数的一个字节索引值
 
-因为需要逐个元素的检查 `String` 中的值是否为空格，需要用 `as_bytes` 方法将 `String` 转化为字节数组。
+因为需要逐个元素的检查 `String` 中的值是否为空格，需要用 `as_bytes` 方法将 `String` 转化为<mark style="color:red;">字节数组</mark>。
 
 ```rust
     let bytes = s.as_bytes();
@@ -589,7 +586,7 @@ fn main() {}
     for (i, &item) in bytes.iter().enumerate() {
 ```
 
-我们将在[第十三章](https://kaisery.github.io/trpl-zh-cn/ch13-02-iterators.html)详细讨论迭代器。现在，只需知道 `iter` 方法返回集合中的每一个元素，而 `enumerate` 包装了 `iter` 的结果，将这些元素作为元组的一部分来返回。`enumerate` 返回的元组中，第一个元素是索引，第二个元素是集合中元素的引用。这比我们自己计算索引要方便一些。
+我们将在[第十三章](https://kaisery.github.io/trpl-zh-cn/ch13-02-iterators.html)详细讨论迭代器。现在，只需知道 `iter` 方法返回集合中的每一个元素，而 `enumerate` 包装了 `iter` 的结果，将这些元素作为元组的一部分来返回。`enumerate` 返回的元组中，第一个元素是索引，<mark style="color:red;">第二个元素是集合中元素的引用</mark>。这比我们自己计算索引要方便一些。
 
 因为 `enumerate` 方法返回一个元组，我们可以使用模式来解构，我们将在[第六章](https://kaisery.github.io/trpl-zh-cn/ch06-02-match.html#%E7%BB%91%E5%AE%9A%E5%80%BC%E7%9A%84%E6%A8%A1%E5%BC%8F)中进一步讨论有关模式的问题。所以在 `for` 循环中，我们指定了一个模式，其中元组中的 `i` 是索引而元组中的 `&item` 是单个字节。因为我们从 `.iter().enumerate()` 中获取了集合元素的引用，所以模式中使用了 `&`。
 
@@ -652,7 +649,7 @@ fn main() {
 fn second_word(s: &String) -> (usize, usize) {
 ```
 
-现在我们要跟踪一个开始索引 **和** 一个结尾索引，同时有了更多从数据的某个特定状态计算而来的值，但都完全没有与这个状态相关联。现在有三个飘忽不定的不相关变量需要保持同步。
+<mark style="color:red;">现在我们要跟踪一个开始索引</mark> <mark style="color:red;"></mark><mark style="color:red;">**和**</mark> <mark style="color:red;"></mark><mark style="color:red;">一个结尾索引，同时有了更多从数据的某个特定状态计算而来的值，但都完全没有与这个状态相关联。现在有三个飘忽不定的不相关变量需要保持同步。</mark>
 
 幸运的是，Rust 为这个问题提供了一个解决方法：字符串 slice。
 
