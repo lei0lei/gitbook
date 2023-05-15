@@ -8,9 +8,9 @@ _struct_，或者 _structure_，是一个自定义数据类型，允许你包装
 
 结构体和我们在[“元组类型”](https://kaisery.github.io/trpl-zh-cn/ch03-02-data-types.html#%E5%85%83%E7%BB%84%E7%B1%BB%E5%9E%8B)部分论过的元组类似，它们都包含多个相关的值。和元组一样，结构体的每一部分可以是不同类型。但不同于元组，结构体需要命名各部分数据以便能清楚的表明其值的意义。由于有了这些名字，结构体比元组更灵活：不需要依赖顺序来指定或访问实例中的值。
 
-定义结构体，需要使用 `struct` 关键字并为整个结构体提供一个名字。结构体的名字需要描述它所组合的数据的意义。接着，在大括号中，定义每一部分数据的名字和类型，我们称为 **字段**（_field_）。例如，示例 5-1 展示了一个存储用户账号信息的结构体：
+定义结构体，需要使用 <mark style="color:red;">`struct`</mark> 关键字并为整个结构体提供一个名字。结构体的名字需要描述它所组合的数据的意义。接着，在大括号中，定义每一部分数据的名字和类型，我们称为 **字段**（_field_）。例如，示例 5-1 展示了一个存储用户账号信息的结构体：
 
-```
+```rust
 // Some code
 struct User {
     active: bool,
@@ -22,7 +22,7 @@ struct User {
 
 一旦定义了结构体后，为了使用它，通过为每个字段指定具体值来创建这个结构体的 **实例**。创建一个实例需要以结构体的名字开头，接着在大括号中使用 `key: value` 键 - 值对的形式提供字段，其中 key 是字段的名字，value 是需要存储在字段中的数据值。实例中字段的顺序不需要和它们在结构体中声明的顺序一致。换句话说，结构体的定义就像一个类型的通用模板，而实例则会在这个模板中放入特定数据来创建这个类型的值。例如，可以像示例 5-2 这样来声明一个特定的用户：
 
-```
+```rust
 // Some code
 fn main() {
     let user1 = User {
@@ -34,9 +34,9 @@ fn main() {
 }
 ```
 
-为了从结构体中获取某个特定的值，可以使用点号。举个例子，想要用户的邮箱地址，可以用 `user1.email`。如果结构体的实例是可变的，我们可以使用点号并为对应的字段赋值。示例 5-3 展示了如何改变一个可变的 `User` 实例中 `email` 字段的值：
+为了从结构体中获取某个特定的值，可以<mark style="color:red;">使用点号</mark>。举个例子，想要用户的邮箱地址，可以用 `user1.email`。如果结构体的实例是可变的，我们可以使用点号并为对应的字段赋值。示例 5-3 展示了如何改变一个可变的 `User` 实例中 `email` 字段的值：
 
-```
+```rust
 // Some code
 fn main() {
     let mut user1 = User {
@@ -50,11 +50,11 @@ fn main() {
 }
 ```
 
-注意整个实例必须是可变的；Rust 并不允许只将某个字段标记为可变。另外需要注意同其他任何表达式一样，我们可以在函数体的最后一个表达式中构造一个结构体的新实例，来隐式地返回这个实例。
+<mark style="color:red;">注意整个实例必须是可变的；Rust 并不允许只将某个字段标记为可变</mark>。另外需要注意同其他任何表达式一样，我们可以在函数体的最后一个表达式中构造一个结构体的新实例，来隐式地返回这个实例。
 
 示例 5-4 显示了一个 `build_user` 函数，它返回一个带有给定的 email 和用户名的 `User` 结构体实例。`active` 字段的值为 `true`，并且 `sign_in_count` 的值为 `1`。
 
-```
+```rust
 // Some code
 fn build_user(email: String, username: String) -> User {
     User {
@@ -72,7 +72,7 @@ fn build_user(email: String, username: String) -> User {
 
 因为示例 5-4 中的参数名与字段名都完全相同，我们可以使用 **字段初始化简写语法**（_field init shorthand_）来重写 `build_user`，这样其行为与之前完全相同，不过无需重复 `username` 和 `email` 了，如示例 5-5 所示。
 
-```
+```rust
 // Some code
 fn build_user(email: String, username: String) -> User {
     User {
@@ -92,7 +92,7 @@ fn build_user(email: String, username: String) -> User {
 
 首先，示例 5-6 展示了不使用更新语法时，如何在 `user2` 中创建一个新 `User` 实例。我们为 `email` 设置了新的值，其他值则使用了实例 5-2 中创建的 `user1` 中的同名值：
 
-```
+```rust
 // Some code
 fn main() {
     // --snip--
@@ -108,7 +108,7 @@ fn main() {
 
 使用结构体更新语法，我们可以通过更少的代码来达到相同的效果，如示例 5-7 所示。`..` 语法指定了剩余未显式设置值的字段应有与给定实例对应字段相同的值。
 
-```
+```rust
 // Some code
 fn main() {
     // --snip--
@@ -122,7 +122,7 @@ fn main() {
 
 示例 5-7 中的代码也在 `user2` 中创建了一个新实例，但该实例中 `email` 字段的值与 `user1` 不同，而 `username`、 `active` 和 `sign_in_count` 字段的值与 `user1` 相同。`..user1` 必须放在最后，以指定其余的字段应从 `user1` 的相应字段中获取其值，但我们可以选择以任何顺序为任意字段指定值，而不用考虑结构体定义中字段的顺序。
 
-请注意，结构更新语法就像带有 `=` 的赋值，因为它移动了数据，就像我们在[“变量与数据交互的方式（一）：移动”](https://kaisery.github.io/trpl-zh-cn/ch04-01-what-is-ownership.html#%E5%8F%98%E9%87%8F%E4%B8%8E%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92%E7%9A%84%E6%96%B9%E5%BC%8F%E4%B8%80%E7%A7%BB%E5%8A%A8)部分讲到的一样。在这个例子中，总体上说我们在创建 `user2` 后不能就再使用 `user1` 了，因为 `user1` 的 `username` 字段中的 `String` 被移到 `user2` 中。如果我们给 `user2` 的 `email` 和 `username` 都赋予新的 `String` 值，从而只使用 `user1` 的 `active` 和 `sign_in_count` 值，那么 `user1` 在创建 `user2` 后仍然有效。`active` 和 `sign_in_count` 的类型是实现 `Copy` trait 的类型，所以我们在[“变量与数据交互的方式（二）：克隆”](https://kaisery.github.io/trpl-zh-cn/ch04-01-what-is-ownership.html#%E5%8F%98%E9%87%8F%E4%B8%8E%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92%E7%9A%84%E6%96%B9%E5%BC%8F%E4%BA%8C%E5%85%8B%E9%9A%86) 部分讨论的行为同样适用。
+请注意，结构更新语法就像带有 `=` 的赋值，因为它移动了数据，就像我们在[“变量与数据交互的方式（一）：移动”](https://kaisery.github.io/trpl-zh-cn/ch04-01-what-is-ownership.html#%E5%8F%98%E9%87%8F%E4%B8%8E%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92%E7%9A%84%E6%96%B9%E5%BC%8F%E4%B8%80%E7%A7%BB%E5%8A%A8)部分讲到的一样。在这个例子中，<mark style="color:red;">总体上说我们在创建</mark> <mark style="color:red;"></mark><mark style="color:red;">`user2`</mark> <mark style="color:red;"></mark><mark style="color:red;">后不能就再使用</mark> <mark style="color:red;"></mark><mark style="color:red;">`user1`</mark> <mark style="color:red;"></mark><mark style="color:red;">了，因为</mark> <mark style="color:red;"></mark><mark style="color:red;">`user1`</mark> <mark style="color:red;"></mark><mark style="color:red;">的</mark> <mark style="color:red;"></mark><mark style="color:red;">`username`</mark> <mark style="color:red;"></mark><mark style="color:red;">字段中的</mark> <mark style="color:red;"></mark><mark style="color:red;">`String`</mark> <mark style="color:red;"></mark><mark style="color:red;">被移到</mark> <mark style="color:red;"></mark><mark style="color:red;">`user2`</mark> <mark style="color:red;"></mark><mark style="color:red;">中。如果我们给</mark> <mark style="color:red;"></mark><mark style="color:red;">`user2`</mark> <mark style="color:red;"></mark><mark style="color:red;">的</mark> <mark style="color:red;"></mark><mark style="color:red;">`email`</mark> <mark style="color:red;"></mark><mark style="color:red;">和</mark> <mark style="color:red;"></mark><mark style="color:red;">`username`</mark> <mark style="color:red;"></mark><mark style="color:red;">都赋予新的</mark> <mark style="color:red;"></mark><mark style="color:red;">`String`</mark> <mark style="color:red;"></mark><mark style="color:red;">值，从而只使用</mark> <mark style="color:red;"></mark><mark style="color:red;">`user1`</mark> <mark style="color:red;"></mark><mark style="color:red;">的</mark> <mark style="color:red;"></mark><mark style="color:red;">`active`</mark> <mark style="color:red;"></mark><mark style="color:red;">和</mark> <mark style="color:red;"></mark><mark style="color:red;">`sign_in_count`</mark> <mark style="color:red;"></mark><mark style="color:red;">值，那么</mark> <mark style="color:red;"></mark><mark style="color:red;">`user1`</mark> <mark style="color:red;"></mark><mark style="color:red;">在创建</mark> <mark style="color:red;"></mark><mark style="color:red;">`user2`</mark> <mark style="color:red;"></mark><mark style="color:red;">后仍然有效</mark>。`active` 和 `sign_in_count` 的类型是实现 `Copy` trait 的类型，所以我们在[“变量与数据交互的方式（二）：克隆”](https://kaisery.github.io/trpl-zh-cn/ch04-01-what-is-ownership.html#%E5%8F%98%E9%87%8F%E4%B8%8E%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92%E7%9A%84%E6%96%B9%E5%BC%8F%E4%BA%8C%E5%85%8B%E9%9A%86) 部分讨论的行为同样适用。
 
 ### 使用没有命名字段的元组结构体来创建不同的类型 <a href="#shi-yong-mei-you-ming-ming-zi-duan-de-yuan-zu-jie-gou-ti-lai-chuang-jian-bu-tong-de-lei-xing" id="shi-yong-mei-you-ming-ming-zi-duan-de-yuan-zu-jie-gou-ti-lai-chuang-jian-bu-tong-de-lei-xing"></a>
 
@@ -130,7 +130,7 @@ fn main() {
 
 要定义元组结构体，以 `struct` 关键字和结构体名开头并后跟元组中的类型。例如，下面是两个分别叫做 `Color` 和 `Point` 元组结构体的定义和用法：
 
-```
+```rust
 // Some code
 struct Color(i32, i32, i32);
 struct Point(i32, i32, i32);
@@ -141,13 +141,13 @@ fn main() {
 }
 ```
 
-注意 `black` 和 `origin` 值的类型不同，因为它们是不同的元组结构体的实例。你定义的每一个结构体有其自己的类型，即使结构体中的字段可能有着相同的类型。例如，一个获取 `Color` 类型参数的函数不能接受 `Point` 作为参数，即便这两个类型都由三个 `i32` 值组成。在其他方面，元组结构体实例类似于元组，你可以将它们解构为单独的部分，也可以使用 `.` 后跟索引来访问单独的值，等等。
+<mark style="color:red;">注意</mark> <mark style="color:red;"></mark><mark style="color:red;">`black`</mark> <mark style="color:red;"></mark><mark style="color:red;">和</mark> <mark style="color:red;"></mark><mark style="color:red;">`origin`</mark> <mark style="color:red;"></mark><mark style="color:red;">值的类型不同，因为它们是不同的元组结构体的实例</mark>。你定义的每一个结构体有其自己的类型，即使结构体中的字段可能有着相同的类型。例如，一个获取 `Color` 类型参数的函数不能接受 `Point` 作为参数，即便这两个类型都由三个 `i32` 值组成。在其他方面，元组结构体实例类似于元组，你可以将它们解构为单独的部分，也可以使用 `.` 后跟索引来访问单独的值，等等。
 
 ### 没有任何字段的类单元结构体 <a href="#mei-you-ren-he-zi-duan-de-lei-dan-yuan-jie-gou-ti" id="mei-you-ren-he-zi-duan-de-lei-dan-yuan-jie-gou-ti"></a>
 
-我们也可以定义一个没有任何字段的结构体！它们被称为 **类单元结构体**（_unit-like structs_）因为它们类似于 `()`，即[“元组类型”](https://kaisery.github.io/trpl-zh-cn/ch03-02-data-types.html#%E5%85%83%E7%BB%84%E7%B1%BB%E5%9E%8B)一节中提到的 unit 类型。类单元结构体常常在你想要在某个类型上实现 trait 但不需要在类型中存储数据的时候发挥作用。我们将在第十章介绍 trait。下面是一个声明和实例化一个名为 `AlwaysEqual` 的 unit 结构的例子。
+我们也可以定义一个没有任何字段的结构体！它们被称为 **类单元结构体**（_unit-like structs_）因为它们类似于 `()`，即[“元组类型”](https://kaisery.github.io/trpl-zh-cn/ch03-02-data-types.html#%E5%85%83%E7%BB%84%E7%B1%BB%E5%9E%8B)一节中提到的 unit 类型。类单元结构体常常在你想要<mark style="color:red;">在某个类型上实现 trait 但不需要在类型中存储数据的时候发挥作用</mark>。我们将在第十章介绍 trait。下面是一个声明和实例化一个名为 `AlwaysEqual` 的 unit 结构的例子。
 
-```
+```rust
 // Some code
 struct AlwaysEqual;
 
@@ -163,7 +163,7 @@ fn main() {
 
 在示例 5-1 中的 `User` 结构体的定义中，我们使用了自身拥有所有权的 `String` 类型而不是 `&str` 字符串 slice 类型。这是一个有意而为之的选择，因为我们想要这个结构体拥有它所有的数据，为此只要整个结构体是有效的话其数据也是有效的。
 
-可以使结构体存储被其他对象拥有的数据的引用，不过这么做的话需要用上 **生命周期**（_lifetimes_），这是一个第十章会讨论的 Rust 功能。生命周期确保结构体引用的数据有效性跟结构体本身保持一致。如果你尝试在结构体中存储一个引用而不指定生命周期将是无效的，比如这样：
+<mark style="color:red;">可以使结构体存储被其他对象拥有的数据的引用，不过这么做的话需要用上</mark> <mark style="color:red;"></mark><mark style="color:red;">**生命周期**</mark>（_lifetimes_），这是一个第十章会讨论的 Rust 功能。<mark style="color:red;">生命周期确保结构体引用的数据有效性跟结构体本身保持一致。如果你尝试在结构体中存储一个引用而不指定生命周期将是无效的</mark>，比如这样：
 
 
 
@@ -197,7 +197,7 @@ fn main() {
 
 使用 Cargo 新建一个叫做 _rectangles_ 的二进制程序，它获取以像素为单位的长方形的宽度和高度，并计算出长方形的面积。示例 5-8 显示了位于项目的 _src/main.rs_ 中的小程序，它刚刚好实现此功能：
 
-```
+```rust
 // Some code
 fn main() {
     let width1 = 30;
@@ -220,7 +220,7 @@ fn area(width: u32, height: u32) -> u32 {
 
 这些代码的问题突显在 `area` 的签名上：
 
-```
+```rust
 // Some code
 fn area(width: u32, height: u32) -> u32 {
 ```
@@ -229,7 +229,7 @@ fn area(width: u32, height: u32) -> u32 {
 
 ### 使用元组重构 <a href="#shi-yong-yuan-zu-zhong-gou" id="shi-yong-yuan-zu-zhong-gou"></a>
 
-```
+```rust
 // Some code
 fn main() {
     let rect1 = (30, 50);
@@ -253,7 +253,7 @@ fn area(dimensions: (u32, u32)) -> u32 {
 
 我们使用结构体为数据命名来为其赋予意义。我们可以将我们正在使用的元组转换成一个有整体名称而且每个部分也有对应名字的结构体，如示例 5-10 所示：
 
-```
+```rust
 // Some code
 struct Rectangle {
     width: u32,
@@ -287,7 +287,7 @@ fn area(rectangle: &Rectangle) -> u32 {
 
 在调试程序时打印出 `Rectangle` 实例来查看其所有字段的值非常有用。示例 5-11 像前面章节那样尝试使用 [`println!` 宏](https://doc.rust-lang.org/std/macro.println.html)。但这并不行。
 
-```
+```rust
 // Some code
 struct Rectangle {
     width: u32,
@@ -311,7 +311,7 @@ fn main() {
 error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
 ```
 
-`println!` 宏能处理很多类型的格式，不过，`{}` 默认告诉 `println!` 使用被称为 `Display` 的格式：意在提供给直接终端用户查看的输出。目前为止见过的基本类型都默认实现了 `Display`，因为它就是向用户展示 `1` 或其他任何基本类型的唯一方式。不过对于结构体，`println!` 应该用来输出的格式是不明确的，因为这有更多显示的可能性：是否需要逗号？需要打印出大括号吗？所有字段都应该显示吗？由于这种不确定性，Rust 不会尝试猜测我们的意图，所以结构体并没有提供一个 `Display` 实现来使用 `println!` 与 `{}` 占位符。
+`println!` 宏能处理很多类型的格式，不过，<mark style="color:red;">`{}`</mark> <mark style="color:red;"></mark><mark style="color:red;">默认告诉</mark> <mark style="color:red;"></mark><mark style="color:red;">`println!`</mark> <mark style="color:red;"></mark><mark style="color:red;">使用被称为</mark> <mark style="color:red;"></mark><mark style="color:red;">`Display`</mark> <mark style="color:red;"></mark><mark style="color:red;">的格式</mark>：意在提供给直接终端用户查看的输出。目前为止见过的基本类型都默认实现了 `Display`，因为它就是向用户展示 `1` 或其他任何基本类型的唯一方式。不过对于结构体，`println!` 应该用来输出的格式是不明确的，因为这有更多显示的可能性：是否需要逗号？需要打印出大括号吗？所有字段都应该显示吗？由于这种不确定性，Rust 不会尝试猜测我们的意图，所以结构体并没有提供一个 `Display` 实现来使用 `println!` 与 `{}` 占位符。
 
 但是如果我们继续阅读错误，将会发现这个有帮助的信息：
 
@@ -321,7 +321,7 @@ error[E0277]: `Rectangle` doesn't implement `std::fmt::Display`
    = note: in format strings you may be able to use `{:?}` (or {:#?} for pretty-print) instead
 ```
 
-让我们来试试！现在 `println!` 宏调用看起来像 `println!("rect1 is {:?}", rect1);` 这样。在 `{}` 中加入 `:?` 指示符告诉 `println!` 我们想要使用叫做 `Debug` 的输出格式。`Debug` 是一个 trait，它允许我们以一种对开发者有帮助的方式打印结构体，以便当我们调试代码时能看到它的值。
+让我们来试试！现在 `println!` 宏调用看起来像 `println!("rect1 is {:?}", rect1);` 这样。在 `{}` 中加入 <mark style="color:red;">`:?`</mark> <mark style="color:red;"></mark><mark style="color:red;">指示符告诉</mark> <mark style="color:red;"></mark><mark style="color:red;">`println!`</mark> <mark style="color:red;"></mark><mark style="color:red;">我们想要使用叫做</mark> <mark style="color:red;"></mark><mark style="color:red;">`Debug`</mark> <mark style="color:red;"></mark><mark style="color:red;">的输出格式。</mark><mark style="color:red;">`Debug`</mark> <mark style="color:red;"></mark><mark style="color:red;">是一个 trait，它允许我们以一种对开发者有帮助的方式打印结构体，以便当我们调试代码时能看到它的值。</mark>
 
 这样调整后再次运行程序。见鬼了！仍然能看到一个错误：
 
@@ -340,7 +340,7 @@ error[E0277]: `Rectangle` doesn't implement `Debug`
 
 Rust **确实** 包含了打印出调试信息的功能，不过我们必须为结构体显式选择这个功能。为此，在结构体定义之前加上外部属性 `#[derive(Debug)]`，如示例 5-12 所示：
 
-```
+```rust
 // Some code
 #[derive(Debug)]
 struct Rectangle {
@@ -369,7 +369,7 @@ $ cargo run
 rect1 is Rectangle { width: 30, height: 50 }
 ```
 
-好极了！这并不是最漂亮的输出，不过它显示这个实例的所有字段，毫无疑问这对调试有帮助。当我们有一个更大的结构体时，能有更易读一点的输出就好了，为此可以使用 `{:#?}` 替换 `println!` 字符串中的 `{:?}`。在这个例子中使用 `{:#?}` 风格将会输出如下：
+好极了！这并不是最漂亮的输出，不过它显示这个实例的所有字段，毫无疑问这对调试有帮助。当我们有一个更大的结构体时，能有更易读一点的输出就好了，为此可以使用 <mark style="color:red;">`{:#?}`</mark> 替换 `println!` 字符串中的 `{:?}`。在这个例子中使用 `{:#?}` 风格将会输出如下：
 
 ```
 // Some code
@@ -392,7 +392,7 @@ rect1 is Rectangle {
 
 下面是一个例子，我们对分配给 `width` 字段的值以及 `rect1` 中整个结构的值感兴趣。
 
-```
+```rust
 // Some code
 #[derive(Debug)]
 struct Rectangle {
@@ -428,19 +428,19 @@ $ cargo run
 
 我们可以看到第一点输出来自 _src/main.rs_ 第 10 行，我们正在调试表达式 `30 * scale`，其结果值是 `60`（为整数实现的 `Debug` 格式化是只打印它们的值）。在 _src/main.rs_ 第 14 行 的 `dbg!` 调用输出 `&rect1` 的值，即 `Rectangle` 结构。这个输出使用了更为易读的 `Debug` 格式。当你试图弄清楚你的代码在做什么时，`dbg!` 宏可能真的很有帮助！
 
-除了 `Debug` trait，Rust 还为我们提供了很多可以通过 `derive` 属性来使用的 trait，他们可以为我们的自定义类型增加实用的行为。[附录 C](https://kaisery.github.io/trpl-zh-cn/appendix-03-derivable-traits.html) 中列出了这些 trait 和行为。第十章会介绍如何通过自定义行为来实现这些 trait，同时还有如何创建你自己的 trait。除了 `derive` 之外，还有很多属性；更多信息请参见 [Rust Reference](https://doc.rust-lang.org/stable/reference/attributes.html) 的 Attributes 部分。
+除了 `Debug` trait，<mark style="color:red;">Rust 还为我们提供了很多可以通过</mark> <mark style="color:red;"></mark><mark style="color:red;">`derive`</mark> <mark style="color:red;"></mark><mark style="color:red;">属性来使用的 trait</mark>，他们可以为我们的自定义类型增加实用的行为。[附录 C](https://kaisery.github.io/trpl-zh-cn/appendix-03-derivable-traits.html) 中列出了这些 trait 和行为。第十章会介绍如何通过自定义行为来实现这些 trait，同时还有如何创建你自己的 trait。除了 `derive` 之外，还有很多属性；更多信息请参见 [Rust Reference](https://doc.rust-lang.org/stable/reference/attributes.html) 的 Attributes 部分。
 
 我们的 `area` 函数是非常特殊的，它只计算长方形的面积。如果这个行为与 `Rectangle` 结构体再结合得更紧密一些就更好了，因为它不能用于其他类型。现在让我们看看如何继续重构这些代码，来将 `area` 函数协调进 `Rectangle` 类型定义的 `area` **方法** 中。
 
 ## 方法语法 <a href="#fang-fa-yu-fa" id="fang-fa-yu-fa"></a>
 
-**方法**（method）与函数类似：它们使用 `fn` 关键字和名称声明，可以拥有参数和返回值，同时包含在某处调用该方法时会执行的代码。不过方法与函数是不同的，因为它们在结构体的上下文中被定义（或者是枚举或 trait 对象的上下文，将分别在[第六章](https://kaisery.github.io/trpl-zh-cn/ch06-00-enums.html)和[第十七章](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html)讲解），并且它们第一个参数总是 `self`，它代表调用该方法的结构体实例。
+**方法**（method）与函数类似：它们使用 `fn` 关键字和名称声明，可以拥有参数和返回值，同时包含在某处调用该方法时会执行的代码。不过<mark style="color:red;">方法与函数是不同的，因为它们在结构体的上下文中被定义</mark>（或者是枚举或 trait 对象的上下文，将分别在[第六章](https://kaisery.github.io/trpl-zh-cn/ch06-00-enums.html)和[第十七章](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html)讲解），并且它们<mark style="color:red;">第一个参数总是</mark> <mark style="color:red;"></mark><mark style="color:red;">`self`</mark><mark style="color:red;">，它代表调用该方法的结构体实例</mark>。
 
 ### 定义方法 <a href="#ding-yi-fang-fa" id="ding-yi-fang-fa"></a>
 
 让我们把前面实现的获取一个 `Rectangle` 实例作为参数的 `area` 函数，改写成一个定义于 `Rectangle` 结构体上的 `area` 方法，如示例 5-13 所示：
 
-```
+```rust
 // Some code
 #[derive(Debug)]
 struct Rectangle {
@@ -467,9 +467,9 @@ fn main() {
 }
 ```
 
-为了使函数定义于 `Rectangle` 的上下文中，我们开始了一个 `impl` 块（`impl` 是 _implementation_ 的缩写），这个 `impl` 块中的所有内容都将与 `Rectangle` 类型相关联。接着将 `area` 函数移动到 `impl` 大括号中，并将签名中的第一个（在这里也是唯一一个）参数和函数体中其他地方的对应参数改成 `self`。然后在 `main` 中将我们先前调用 `area` 方法并传递 `rect1` 作为参数的地方，改成使用 **方法语法**（_method syntax_）在 `Rectangle` 实例上调用 `area` 方法。方法语法获取一个实例并加上一个点号，后跟方法名、圆括号以及任何参数。
+为了使函数定义于 `Rectangle` 的上下文中，我们开始了<mark style="color:red;">一个</mark> <mark style="color:red;"></mark><mark style="color:red;">`impl`</mark> <mark style="color:red;"></mark><mark style="color:red;">块</mark>（`impl` 是 _implementation_ 的缩写），这个 `impl` 块中的所有内容都将与 `Rectangle` 类型相关联。接着将 `area` 函数移动到 `impl` 大括号中，并将签名中的第一个（在这里也是唯一一个）参数和函数体中其他地方的对应参数改成 `self`。然后在 `main` 中将我们先前调用 `area` 方法并传递 `rect1` 作为参数的地方，改成使用 **方法语法**（_method syntax_）在 `Rectangle` 实例上调用 `area` 方法。方法语法获取一个实例并加上一个点号，后跟方法名、圆括号以及任何参数。
 
-在 `area` 的签名中，使用 `&self` 来替代 `rectangle: &Rectangle`，`&self` 实际上是 `self: &Self` 的缩写。在一个 `impl` 块中，`Self` 类型是 `impl` 块的类型的别名。方法的第一个参数必须有一个名为 `self` 的`Self` 类型的参数，所以 Rust 让你在第一个参数位置上只用 `self` 这个名字来缩写。注意，我们仍然需要在 `self` 前面使用 `&` 来表示这个方法借用了 `Self` 实例，就像我们在 `rectangle: &Rectangle` 中做的那样。方法可以选择获得 `self` 的所有权，或者像我们这里一样不可变地借用 `self`，或者可变地借用 `self`，就跟其他参数一样。
+在 `area` 的签名中，使用 `&self` 来替代 `rectangle: &Rectangle`，`&self` 实际上是 `self: &Self` 的缩写。在一个 `impl` 块中，`Self` 类型是 `impl` 块的类型的别名。<mark style="color:red;">方法的第一个参数必须有一个名为</mark> <mark style="color:red;"></mark><mark style="color:red;">`self`</mark> <mark style="color:red;"></mark><mark style="color:red;">的</mark><mark style="color:red;">`Self`</mark> <mark style="color:red;"></mark><mark style="color:red;">类型的参数，所以 Rust 让你在第一个参数位置上只用</mark> <mark style="color:red;"></mark><mark style="color:red;">`self`</mark> <mark style="color:red;"></mark><mark style="color:red;">这个名字来缩写。注意，我们仍然需要在</mark> <mark style="color:red;"></mark><mark style="color:red;">`self`</mark> <mark style="color:red;"></mark><mark style="color:red;">前面使用</mark> <mark style="color:red;"></mark><mark style="color:red;">`&`</mark> <mark style="color:red;"></mark><mark style="color:red;">来表示这个方法借用了</mark> <mark style="color:red;"></mark><mark style="color:red;">`Self`</mark> <mark style="color:red;"></mark><mark style="color:red;">实例</mark>，就像我们在 `rectangle: &Rectangle` 中做的那样。方法可以选择获得 `self` 的所有权，或者像我们这里一样不可变地借用 `self`，或者可变地借用 `self`，就跟其他参数一样。
 
 这里选择 `&self` 的理由跟在函数版本中使用 `&Rectangle` 是相同的：我们并不想获取所有权，只希望能够读取结构体中的数据，而不是写入。如果想要在方法中改变调用方法的实例，需要将第一个参数改为 `&mut self`。通过仅仅使用 `self` 作为第一个参数来使方法获取实例的所有权是很少见的；这种技术通常用在当方法将 `self` 转换成别的实例的时候，这时我们想要防止调用者在转换之后使用原始的实例。
 
@@ -477,7 +477,7 @@ fn main() {
 
 请注意，我们可以选择将方法的名称与结构中的一个字段相同。例如，我们可以在 `Rectangle` 上定义一个方法，并命名为 `width`：
 
-```
+```rust
 // Some code
 impl Rectangle {
     fn width(&self) -> bool {
@@ -499,16 +499,16 @@ fn main() {
 
 在这里，我们选择让 `width` 方法在实例的 `width` 字段的值大于 `0` 时返回 `true`，等于 `0` 时则返回 `false`：我们可以出于任何目的，在同名的方法中使用同名的字段。在 `main` 中，当我们在 `rect1.width` 后面加上括号时。Rust 知道我们指的是方法 `width`。当我们不使用圆括号时，Rust 知道我们指的是字段 `width`。
 
-通常，但并不总是如此，与字段同名的方法将被定义为只返回字段中的值，而不做其他事情。这样的方法被称为 _getters_，Rust 并不像其他一些语言那样为结构字段自动实现它们。Getters 很有用，因为你可以把字段变成私有的，但方法是公共的，这样就可以把对字段的只读访问作为该类型公共 API 的一部分。我们将在[第七章](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword)中讨论什么是公有和私有，以及如何将一个字段或方法指定为公有或私有。
+<mark style="color:red;">通常，但并不总是如此，与字段同名的方法将被定义为只返回字段中的值，而不做其他事情</mark>。这样的方法被称为[ _<mark style="color:red;">getters</mark>_](#user-content-fn-1)[^1]，Rust 并不像其他一些语言那样为结构字段自动实现它们。Getters 很有用，因为你可以把字段变成私有的，但方法是公共的，这样就可以把对字段的只读访问作为该类型公共 API 的一部分。我们将在[第七章](https://kaisery.github.io/trpl-zh-cn/ch07-03-paths-for-referring-to-an-item-in-the-module-tree.html#exposing-paths-with-the-pub-keyword)中讨论什么是公有和私有，以及如何将一个字段或方法指定为公有或私有。
 
 {% hint style="info" %}
 #### [`->` 运算符到哪去了？](https://kaisery.github.io/trpl-zh-cn/ch05-03-method-syntax.html#--%E8%BF%90%E7%AE%97%E7%AC%A6%E5%88%B0%E5%93%AA%E5%8E%BB%E4%BA%86) <a href="#yun-suan-fu-dao-na-qu-le" id="yun-suan-fu-dao-na-qu-le"></a>
 
 在 C/C++ 语言中，有两个不同的运算符来调用方法：`.` 直接在对象上调用方法，而 `->` 在一个对象的指针上调用方法，这时需要先解引用（dereference）指针。换句话说，如果 `object` 是一个指针，那么 `object->something()` 就像 `(*object).something()` 一样。
 
-Rust 并没有一个与 `->` 等效的运算符；相反，Rust 有一个叫 **自动引用和解引用**（_automatic referencing and dereferencing_）的功能。方法调用是 Rust 中少数几个拥有这种行为的地方。
+Rust 并没有一个与 `->` 等效的运算符；相反，Rust 有一个叫 <mark style="color:red;">**自动引用和解引用**</mark>（_automatic referencing and dereferencing_）的功能。方法调用是 Rust 中少数几个拥有这种行为的地方。
 
-它是这样工作的：当使用 `object.something()` 调用方法时，Rust 会自动为 `object` 添加 `&`、`&mut` 或 `*` 以便使 `object` 与方法签名匹配。也就是说，这些代码是等价的：
+它是这样工作的：当使用 `object.something()` 调用方法时，<mark style="color:red;">Rust 会自动为</mark> <mark style="color:red;"></mark><mark style="color:red;">`object`</mark> <mark style="color:red;"></mark><mark style="color:red;">添加</mark> <mark style="color:red;"></mark><mark style="color:red;">`&`</mark><mark style="color:red;">、</mark><mark style="color:red;">`&mut`</mark> <mark style="color:red;"></mark><mark style="color:red;">或</mark> <mark style="color:red;"></mark><mark style="color:red;">`*`</mark> <mark style="color:red;"></mark><mark style="color:red;">以便使</mark> <mark style="color:red;"></mark><mark style="color:red;">`object`</mark> <mark style="color:red;"></mark><mark style="color:red;">与方法签名匹配。也就是说，这些代码是等价的</mark>：
 
 ```rust
 p1.distance(&p2);(&p1).distance(&p2);
@@ -521,7 +521,7 @@ p1.distance(&p2);(&p1).distance(&p2);
 
 让我们通过实现 `Rectangle` 结构体上的另一方法来练习使用方法。这回，我们让一个 `Rectangle` 的实例获取另一个 `Rectangle` 实例，如果 `self` （第一个 `Rectangle`）能完全包含第二个长方形则返回 `true`；否则返回 `false`。一旦我们定义了 `can_hold` 方法，就可以编写示例 5-14 中的代码。
 
-```
+```rust
 // Some code
 fn main() {
     let rect1 = Rectangle {
@@ -551,7 +551,7 @@ Can rect1 hold rect3? false
 
 因为我们想定义一个方法，所以它应该位于 `impl Rectangle` 块中。方法名是 `can_hold`，并且它会获取另一个 `Rectangle` 的不可变借用作为参数。通过观察调用方法的代码可以看出参数是什么类型的：`rect1.can_hold(&rect2)` 传入了 `&rect2`，它是一个 `Rectangle` 的实例 `rect2` 的不可变借用。这是可以理解的，因为我们只需要读取 `rect2`（而不是写入，这意味着我们需要一个不可变借用），而且希望 `main` 保持 `rect2` 的所有权，这样就可以在调用这个方法后继续使用它。`can_hold` 的返回值是一个布尔值，其实现会分别检查 `self` 的宽高是否都大于另一个 `Rectangle`。让我们在示例 5-13 的 `impl` 块中增加这个新的 `can_hold` 方法，如示例 5-15 所示：
 
-```
+```rust
 // Some code
 impl Rectangle {
     fn area(&self) -> u32 {
@@ -572,7 +572,7 @@ impl Rectangle {
 
 不是方法的关联函数经常被用作返回一个结构体新实例的构造函数。这些函数的名称通常为 `new` ，但 `new` 并不是一个关键字。例如我们可以提供一个叫做 `square` 关联函数，它接受一个维度参数并且同时作为宽和高，这样可以更轻松的创建一个正方形 `Rectangle` 而不必指定两次同样的值：
 
-```
+```rust
 // Some code
 impl Rectangle {
     fn square(size: u32) -> Self {
@@ -592,7 +592,7 @@ impl Rectangle {
 
 每个结构体都允许拥有多个 `impl` 块。例如，示例 5-16 中的代码等同于示例 5-15，但每个方法有其自己的 `impl` 块。
 
-```
+```rust
 // Some code
 impl Rectangle {
     fn area(&self) -> u32 {
@@ -617,3 +617,6 @@ impl Rectangle {
 
 
 
+
+
+[^1]: 
