@@ -4,9 +4,7 @@
 
 本章介绍 **枚举**（_enumerations_），也被称作 _enums_。枚举允许你通过列举可能的 **成员**（_variants_）来定义一个类型。首先，我们会定义并使用一个枚举来展示它是如何连同数据一起编码信息的。接下来，我们会探索一个特别有用的枚举，叫做 `Option`，它代表一个值要么是某个值要么什么都不是。然后会讲到在 `match` 表达式中用模式匹配，针对不同的枚举值编写相应要执行的代码。最后会介绍 `if let`，另一个简洁方便处理代码中枚举的结构。
 
-[枚举的定义](https://kaisery.github.io/trpl-zh-cn/ch06-01-defining-an-enum.html#%E6%9E%9A%E4%B8%BE%E7%9A%84%E5%AE%9A%E4%B9%89)\
-
-
+## [枚举的定义](https://kaisery.github.io/trpl-zh-cn/ch06-01-defining-an-enum.html#%E6%9E%9A%E4%B8%BE%E7%9A%84%E5%AE%9A%E4%B9%89)
 
 结构体给予你将字段和数据聚合在一起的方法，像 `Rectangle` 结构体有 `width` 和 `height` 两个字段。而枚举给予你将一个值成为一个集合之一的方法。比如，我们想让 `Rectangle` 是一些形状的集合，包含 `Circle` 和 `Triangle` 。为了做到这个，Rust 提供了枚举类型。
 
@@ -17,7 +15,21 @@
 可以通过在代码中定义一个 `IpAddrKind` 枚举来表现这个概念并列出可能的 IP 地址类型，`V4` 和 `V6`。这被称为枚举的 **成员**（_variants_）：
 
 ```rust
-enum IpAddrKind {    V4,    V6,}
+enum IpAddrKind {
+    V4,
+    V6,
+}
+
+fn main() {
+    let four = IpAddrKind::V4;
+    let six = IpAddrKind::V6;
+
+    route(IpAddrKind::V4);
+    route(IpAddrKind::V6);
+}
+
+fn route(ip_kind: IpAddrKind) {}
+
 ```
 
 现在 `IpAddrKind` 就是一个可以在代码中使用的自定义数据类型了。
@@ -27,7 +39,21 @@ enum IpAddrKind {    V4,    V6,}
 可以像这样创建 `IpAddrKind` 两个不同成员的实例：
 
 ```rust
-    let four = IpAddrKind::V4;    let six = IpAddrKind::V6;
+enum IpAddrKind {
+    V4,
+    V6,
+}
+
+fn main() {
+    let four = IpAddrKind::V4;
+    let six = IpAddrKind::V6;
+
+    route(IpAddrKind::V4);
+    route(IpAddrKind::V6);
+}
+
+fn route(ip_kind: IpAddrKind) {}
+
 ```
 
 注意枚举的成员位于其标识符的命名空间中，并使用两个冒号分开。这么设计的益处是现在 `IpAddrKind::V4` 和 `IpAddrKind::V6` 都是 `IpAddrKind` 类型的。例如，接着可以定义一个函数来获取任何 `IpAddrKind`：
@@ -39,13 +65,48 @@ fn route(ip_kind: IpAddrKind) {}
 现在可以使用任一成员来调用这个函数：
 
 ```rust
-    route(IpAddrKind::V4);    route(IpAddrKind::V6);
+enum IpAddrKind {
+    V4,
+    V6,
+}
+
+fn main() {
+    let four = IpAddrKind::V4;
+    let six = IpAddrKind::V6;
+
+    route(IpAddrKind::V4);
+    route(IpAddrKind::V6);
+}
+
+fn route(ip_kind: IpAddrKind) {}
+
 ```
 
 使用枚举甚至还有更多优势。进一步考虑一下我们的 IP 地址类型，目前没有一个存储实际 IP 地址 **数据** 的方法；只知道它是什么 **类型** 的。考虑到已经在第五章学习过结构体了，你可能会像示例 6-1 那样处理这个问题：
 
 ```rust
-    enum IpAddrKind {        V4,        V6,    }    struct IpAddr {        kind: IpAddrKind,        address: String,    }    let home = IpAddr {        kind: IpAddrKind::V4,        address: String::from("127.0.0.1"),    };    let loopback = IpAddr {        kind: IpAddrKind::V6,        address: String::from("::1"),    };
+fn main() {
+    enum IpAddrKind {
+        V4,
+        V6,
+    }
+
+    struct IpAddr {
+        kind: IpAddrKind,
+        address: String,
+    }
+
+    let home = IpAddr {
+        kind: IpAddrKind::V4,
+        address: String::from("127.0.0.1"),
+    };
+
+    let loopback = IpAddr {
+        kind: IpAddrKind::V6,
+        address: String::from("::1"),
+    };
+}
+
 ```
 
 示例 6-1：将 IP 地址的数据和 `IpAddrKind` 成员存储在一个 `struct` 中
@@ -55,7 +116,17 @@ fn route(ip_kind: IpAddrKind) {}
 我们可以使用一种更简洁的方式来表达相同的概念，仅仅使用枚举并将数据直接放进每一个枚举成员而不是将枚举作为结构体的一部分。`IpAddr` 枚举的新定义表明了 `V4` 和 `V6` 成员都关联了 `String` 值：
 
 ```rust
-    enum IpAddr {        V4(String),        V6(String),    }    let home = IpAddr::V4(String::from("127.0.0.1"));    let loopback = IpAddr::V6(String::from("::1"));
+fn main() {
+    enum IpAddr {
+        V4(String),
+        V6(String),
+    }
+
+    let home = IpAddr::V4(String::from("127.0.0.1"));
+
+    let loopback = IpAddr::V6(String::from("::1"));
+}
+
 ```
 
 我们直接将数据附加到枚举的每个成员上，这样就不需要一个额外的结构体了。这里也很容易看出枚举工作的另一个细节：每一个我们定义的枚举成员的名字也变成了一个构建枚举的实例的函数。也就是说，`IpAddr::V4()` 是一个获取 `String` 参数并返回 `IpAddr` 类型实例的函数调用。作为定义枚举的结果，这些构造函数会自动被定义。
@@ -63,13 +134,38 @@ fn route(ip_kind: IpAddrKind) {}
 用枚举替代结构体还有另一个优势：每个成员可以处理不同类型和数量的数据。IPv4 版本的 IP 地址总是含有四个值在 0 和 255 之间的数字部分。如果我们想要将 `V4` 地址存储为四个 `u8` 值而 `V6` 地址仍然表现为一个 `String`，这就不能使用结构体了。枚举则可以轻易的处理这个情况：
 
 ```rust
-    enum IpAddr {        V4(u8, u8, u8, u8),        V6(String),    }    let home = IpAddr::V4(127, 0, 0, 1);    let loopback = IpAddr::V6(String::from("::1"));
+fn main() {
+    enum IpAddr {
+        V4(u8, u8, u8, u8),
+        V6(String),
+    }
+
+    let home = IpAddr::V4(127, 0, 0, 1);
+
+    let loopback = IpAddr::V6(String::from("::1"));
+}
+
 ```
 
 这些代码展示了使用枚举来存储两种不同 IP 地址的几种可能的选择。然而，事实证明存储和编码 IP 地址实在是太常见了[以致标准库提供了一个开箱即用的定义！](https://doc.rust-lang.org/std/net/enum.IpAddr.html)让我们看看标准库是如何定义 `IpAddr` 的：它正有着跟我们定义和使用的一样的枚举和成员，不过它将成员中的地址数据嵌入到了两个不同形式的结构体中，它们对不同的成员的定义是不同的：
 
 ```rust
-struct Ipv4Addr {    // --snip--}struct Ipv6Addr {    // --snip--}enum IpAddr {    V4(Ipv4Addr),    V6(Ipv6Addr),}
+#![allow(unused)]
+fn main() {
+struct Ipv4Addr {
+    // --snip--
+}
+
+struct Ipv6Addr {
+    // --snip--
+}
+
+enum IpAddr {
+    V4(Ipv4Addr),
+    V6(Ipv6Addr),
+}
+}
+
 ```
 
 这些代码展示了可以将任意类型的数据放入枚举成员中：例如字符串、数字类型或者结构体。甚至可以包含另一个枚举！另外，标准库中的类型通常并不比你设想出来的要复杂多少。
@@ -79,7 +175,15 @@ struct Ipv4Addr {    // --snip--}struct Ipv6Addr {    // --snip--}enum IpAddr { 
 来看看示例 6-2 中的另一个枚举的例子：它的成员中内嵌了多种多样的类型：
 
 ```rust
-enum Message {    Quit,    Move { x: i32, y: i32 },    Write(String),    ChangeColor(i32, i32, i32),}
+enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn main() {}
+
 ```
 
 示例 6-2：一个 `Message` 枚举，其每个成员都存储了不同数量和类型的值
@@ -94,7 +198,16 @@ enum Message {    Quit,    Move { x: i32, y: i32 },    Write(String),    ChangeC
 定义一个如示例 6-2 中所示那样的有关联值的枚举的方式和定义多个不同类型的结构体的方式很相像，除了枚举不使用 `struct` 关键字以及其所有成员都被组合在一起位于 `Message` 类型下。如下这些结构体可以包含与之前枚举成员中相同的数据：
 
 ```rust
-struct QuitMessage; // 类单元结构体struct MoveMessage {    x: i32,    y: i32,}struct WriteMessage(String); // 元组结构体struct ChangeColorMessage(i32, i32, i32); // 元组结构体
+struct QuitMessage; // 类单元结构体
+struct MoveMessage {
+    x: i32,
+    y: i32,
+}
+struct WriteMessage(String); // 元组结构体
+struct ChangeColorMessage(i32, i32, i32); // 元组结构体
+
+fn main() {}
+
 ```
 
 不过，如果我们使用不同的结构体，由于它们都有不同的类型，我们将不能像使用示例 6-2 中定义的 `Message` 枚举那样，轻易的定义一个能够处理这些不同类型的结构体的函数，因为枚举是单独一个类型。
@@ -102,7 +215,14 @@ struct QuitMessage; // 类单元结构体struct MoveMessage {    x: i32,    y: i
 结构体和枚举还有另一个相似点：就像可以使用 `impl` 来为结构体定义方法那样，也可以在枚举上定义方法。这是一个定义于我们 `Message` 枚举上的叫做 `call` 的方法：
 
 ```rust
-    impl Message {        fn call(&self) {            // 在这里定义方法体        }    }    let m = Message::Write(String::from("hello"));    m.call();
+#![allow(unused)]
+fn main() {
+enum Option<T> {
+    None,
+    Some(T),
+}
+}
+
 ```
 
 方法体使用了 `self` 来获取调用方法的值。这个例子中，创建了一个值为 `Message::Write(String::from("hello"))` 的变量 `m`，而且这就是当 `m.call()` 运行时 `call` 方法中的 `self` 的值。
@@ -138,7 +258,13 @@ enum Option<T> {    None,    Some(T),}
 `<T>` 语法是一个我们还未讲到的 Rust 功能。它是一个泛型类型参数，第十章会更详细的讲解泛型。目前，所有你需要知道的就是 `<T>` 意味着 `Option` 枚举的 `Some` 成员可以包含任意类型的数据，同时每一个用于 `T` 位置的具体类型使得 `Option<T>` 整体作为不同的类型。这里是一些包含数字类型和字符串类型 `Option` 值的例子：
 
 ```rust
-    let some_number = Some(5);    let some_char = Some('e');    let absent_number: Option<i32> = None;
+fn main() {
+    let some_number = Some(5);
+    let some_char = Some('e');
+
+    let absent_number: Option<i32> = None;
+}
+
 ```
 
 `some_number` 的类型是 `Option<i32>`。`some_char` 的类型是 `Option<char>`，这（与 `some_number`）是一个不同的类型。因为我们在 `Some` 成员中指定了值，Rust 可以推断其类型。对于 `absent_number`，Rust 需要我们指定 `Option` 整体的类型，因为编译器只通过 `None` 值无法推断出 `Some` 成员保存的值的类型。这里我们告诉 Rust 希望 `absent_number` 是 `Option<i32>` 类型的。
@@ -191,9 +317,7 @@ error: could not compile `enums` due to previous error
 
 总的来说，为了使用 `Option<T>` 值，需要编写处理每个成员的代码。你想要一些代码只当拥有 `Some(T)` 值时运行，允许这些代码使用其中的 `T`。也希望一些代码只在值为 `None` 时运行，这些代码并没有一个可用的 `T` 值。`match` 表达式就是这么一个处理枚举的控制流结构：它会根据枚举的成员运行不同的代码，这些代码可以使用匹配到的值中的数据。
 
-[`match` 控制流结构](https://kaisery.github.io/trpl-zh-cn/ch06-02-match.html#match-%E6%8E%A7%E5%88%B6%E6%B5%81%E7%BB%93%E6%9E%84)\
-
-
+## [`match` 控制流结构](https://kaisery.github.io/trpl-zh-cn/ch06-02-match.html#match-%E6%8E%A7%E5%88%B6%E6%B5%81%E7%BB%93%E6%9E%84)
 
 Rust 有一个叫做 `match` 的极为强大的控制流运算符，它允许我们将一个值与一系列的模式相比较，并根据相匹配的模式执行相应代码。模式可由字面值、变量、通配符和许多其他内容构成；[第十八章](https://kaisery.github.io/trpl-zh-cn/ch18-00-patterns.html)会涉及到所有不同种类的模式以及它们的作用。`match` 的力量来源于模式的表现力以及编译器检查，它确保了所有可能的情况都得到处理。
 
@@ -202,7 +326,24 @@ Rust 有一个叫做 `match` 的极为强大的控制流运算符，它允许我
 因为刚刚提到了硬币，让我们用它们来作为一个使用 `match` 的例子！我们可以编写一个函数来获取一个未知的硬币，并以一种类似验钞机的方式，确定它是何种硬币并返回它的美分值，如示例 6-3 中所示。
 
 ```rust
-enum Coin {    Penny,    Nickel,    Dime,    Quarter,}fn value_in_cents(coin: Coin) -> u8 {    match coin {        Coin::Penny => 1,        Coin::Nickel => 5,        Coin::Dime => 10,        Coin::Quarter => 25,    }}
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
+}
+
+fn main() {}
+
 ```
 
 示例 6-3：一个枚举和一个以枚举成员作为模式的 `match` 表达式
@@ -218,7 +359,27 @@ enum Coin {    Penny,    Nickel,    Dime,    Quarter,}fn value_in_cents(coin: Co
 如果分支代码较短的话通常不使用大括号，正如示例 6-3 中的每个分支都只是返回一个值。如果想要在分支中运行多行代码，可以使用大括号，而分支后的逗号是可选的。例如，如下代码在每次使用`Coin::Penny` 调用时都会打印出 “Lucky penny!”，同时仍然返回代码块最后的值，`1`：
 
 ```rust
-fn value_in_cents(coin: Coin) -> u8 {    match coin {        Coin::Penny => {            println!("Lucky penny!");            1        }        Coin::Nickel => 5,        Coin::Dime => 10,        Coin::Quarter => 25,    }}
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => {
+            println!("Lucky penny!");
+            1
+        }
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => 25,
+    }
+}
+
+fn main() {}
+
 ```
 
 #### [绑定值的模式](https://kaisery.github.io/trpl-zh-cn/ch06-02-match.html#%E7%BB%91%E5%AE%9A%E5%80%BC%E7%9A%84%E6%A8%A1%E5%BC%8F) <a href="#bang-ding-zhi-de-mo-shi" id="bang-ding-zhi-de-mo-shi"></a>
@@ -228,7 +389,22 @@ fn value_in_cents(coin: Coin) -> u8 {    match coin {        Coin::Penny => {   
 作为一个例子，让我们修改枚举的一个成员来存放数据。1999 年到 2008 年间，美国在 25 美分的硬币的一侧为 50 个州的每一个都印刷了不同的设计。其他的硬币都没有这种区分州的设计，所以只有这些 25 美分硬币有特殊的价值。可以将这些信息加入我们的 `enum`，通过改变 `Quarter` 成员来包含一个 `State` 值，示例 6-4 中完成了这些修改：
 
 ```rust
-#[derive(Debug)] // 这样可以立刻看到州的名称enum UsState {    Alabama,    Alaska,    // --snip--}enum Coin {    Penny,    Nickel,    Dime,    Quarter(UsState),}
+#[derive(Debug)] // 这样可以立刻看到州的名称
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+
+fn main() {}
+
 ```
 
 示例 6-4：`Quarter` 成员也存放了一个 `UsState` 值的 `Coin` 枚举
@@ -238,7 +414,36 @@ fn value_in_cents(coin: Coin) -> u8 {    match coin {        Coin::Penny => {   
 在这些代码的匹配表达式中，我们在匹配 `Coin::Quarter` 成员的分支的模式中增加了一个叫做 `state` 的变量。当匹配到 `Coin::Quarter` 时，变量 `state` 将会绑定 25 美分硬币所对应州的值。接着在那个分支的代码中使用 `state`，如下：
 
 ```rust
-fn value_in_cents(coin: Coin) -> u8 {    match coin {        Coin::Penny => 1,        Coin::Nickel => 5,        Coin::Dime => 10,        Coin::Quarter(state) => {            println!("State quarter from {:?}!", state);            25        }    }}
+#[derive(Debug)]
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter(state) => {
+            println!("State quarter from {:?}!", state);
+            25
+        }
+    }
+}
+
+fn main() {
+    value_in_cents(Coin::Quarter(UsState::Alaska));
+}
+
 ```
 
 如果调用 `value_in_cents(Coin::Quarter(UsState::Alaska))`，`coin` 将是 `Coin::Quarter(UsState::Alaska)`。当将值与每个分支相比较时，没有分支会匹配，直到遇到 `Coin::Quarter(state)`。这时，`state` 绑定的将会是值 `UsState::Alaska`。接着就可以在 `println!` 表达式中使用这个绑定了，像这样就可以获取 `Coin` 枚举的 `Quarter` 成员中内部的州的值。
@@ -252,7 +457,19 @@ fn value_in_cents(coin: Coin) -> u8 {    match coin {        Coin::Penny => 1,  
 得益于 `match`，编写这个函数非常简单，它将看起来像示例 6-5 中这样：
 
 ```rust
-    fn plus_one(x: Option<i32>) -> Option<i32> {        match x {            None => None,            Some(i) => Some(i + 1),        }    }    let five = Some(5);    let six = plus_one(five);    let none = plus_one(None);
+fn main() {
+    fn plus_one(x: Option<i32>) -> Option<i32> {
+        match x {
+            None => None,
+            Some(i) => Some(i + 1),
+        }
+    }
+
+    let five = Some(5);
+    let six = plus_one(five);
+    let none = plus_one(None);
+}
+
 ```
 
 示例 6-5：一个在 `Option<i32>` 上使用 `match` 表达式的函数
@@ -325,7 +542,19 @@ Rust 知道我们没有覆盖所有可能的情况甚至知道哪些模式被忘
 让我们看一个例子，我们希望对一些特定的值采取特殊操作，而对其他的值采取默认操作。想象我们正在玩一个游戏，如果你掷出骰子的值为 3，角色不会移动，而是会得到一顶新奇的帽子。如果你掷出了 7，你的角色将失去新奇的帽子。对于其他的数值，你的角色会在棋盘上移动相应的格子。这是一个实现了上述逻辑的 `match`，骰子的结果是硬编码而不是一个随机值，其他的逻辑部分使用了没有函数体的函数来表示，实现它们超出了本例的范围：
 
 ```rust
-    let dice_roll = 9;    match dice_roll {        3 => add_fancy_hat(),        7 => remove_fancy_hat(),        other => move_player(other),    }    fn add_fancy_hat() {}    fn remove_fancy_hat() {}    fn move_player(num_spaces: u8) {}
+fn main() {
+    let dice_roll = 9;
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        other => move_player(other),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn move_player(num_spaces: u8) {}
+}
+
 ```
 
 对于前两个分支，匹配模式是字面值 `3` 和 `7`，最后一个分支则涵盖了所有其他可能的值，模式是我们命名为 `other` 的一个变量。`other` 分支的代码通过将其传递给 `move_player` 函数来使用这个变量。
@@ -337,7 +566,19 @@ Rust 还提供了一个模式，当我们不想使用通配模式获取的值时
 让我们改变游戏规则：现在，当你掷出的值不是 3 或 7 的时候，你必须再次掷出。这种情况下我们不需要使用这个值，所以我们改动代码使用 `_` 来替代变量 `other` ：
 
 ```rust
-    let dice_roll = 9;    match dice_roll {        3 => add_fancy_hat(),        7 => remove_fancy_hat(),        _ => reroll(),    }    fn add_fancy_hat() {}    fn remove_fancy_hat() {}    fn reroll() {}
+fn main() {
+    let dice_roll = 9;
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        _ => reroll(),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+    fn reroll() {}
+}
+
 ```
 
 这个例子也满足穷举性要求，因为我们在最后一个分支中明确地忽略了其他的值。我们没有忘记处理任何东西。
@@ -345,7 +586,18 @@ Rust 还提供了一个模式，当我们不想使用通配模式获取的值时
 最后，让我们再次改变游戏规则，如果你掷出 3 或 7 以外的值，你的回合将无事发生。我们可以使用单元值（在[“元组类型”](https://kaisery.github.io/trpl-zh-cn/ch03-02-data-types.html#%E5%85%83%E7%BB%84%E7%B1%BB%E5%9E%8B)一节中提到的空元组）作为 `_` 分支的代码：
 
 ```rust
-    let dice_roll = 9;    match dice_roll {        3 => add_fancy_hat(),        7 => remove_fancy_hat(),        _ => (),    }    fn add_fancy_hat() {}    fn remove_fancy_hat() {}
+fn main() {
+    let dice_roll = 9;
+    match dice_roll {
+        3 => add_fancy_hat(),
+        7 => remove_fancy_hat(),
+        _ => (),
+    }
+
+    fn add_fancy_hat() {}
+    fn remove_fancy_hat() {}
+}
+
 ```
 
 在这里，我们明确告诉 Rust 我们不会使用与前面模式不匹配的值，并且这种情况下我们不想运行任何代码。
@@ -359,7 +611,14 @@ Rust 还提供了一个模式，当我们不想使用通配模式获取的值时
 `if let` 语法让我们以一种不那么冗长的方式结合 `if` 和 `let`，来处理只匹配一个模式的值而忽略其他模式的情况。考虑示例 6-6 中的程序，它匹配一个 `config_max` 变量中的 `Option<u8>` 值并只希望当值为 `Some` 成员时执行代码：
 
 ```rust
-    let config_max = Some(3u8);    match config_max {        Some(max) => println!("The maximum is configured to be {}", max),        _ => (),    }
+fn main() {
+    let config_max = Some(3u8);
+    match config_max {
+        Some(max) => println!("The maximum is configured to be {}", max),
+        _ => (),
+    }
+}
+
 ```
 
 示例 6-6：`match` 只关心当值为 `Some` 时执行代码
@@ -369,7 +628,13 @@ Rust 还提供了一个模式，当我们不想使用通配模式获取的值时
 不过我们可以使用 `if let` 这种更短的方式编写。如下代码与示例 6-6 中的 `match` 行为一致：
 
 ```rust
-    let config_max = Some(3u8);    if let Some(max) = config_max {        println!("The maximum is configured to be {}", max);    }
+fn main() {
+    let config_max = Some(3u8);
+    if let Some(max) = config_max {
+        println!("The maximum is configured to be {}", max);
+    }
+}
+
 ```
 
 `if let` 语法获取通过等号分隔的一个模式和一个表达式。它的工作方式与 `match` 相同，这里的表达式对应 `match` 而模式则对应第一个分支。在这个例子中，模式是 `Some(max)`，`max` 绑定为 `Some` 中的值。接着可以在 `if let` 代码块中使用 `max` 了，就跟在对应的 `match` 分支中一样。模式不匹配时 `if let` 块中的代码不会执行。
@@ -381,13 +646,58 @@ Rust 还提供了一个模式，当我们不想使用通配模式获取的值时
 可以在 `if let` 中包含一个 `else`。`else` 块中的代码与 `match` 表达式中的 `_` 分支块中的代码相同，这样的 `match` 表达式就等同于 `if let` 和 `else`。回忆一下示例 6-4 中 `Coin` 枚举的定义，其 `Quarter` 成员也包含一个 `UsState` 值。如果想要计数所有不是 25 美分的硬币的同时也报告 25 美分硬币所属的州，可以使用这样一个 `match` 表达式：
 
 ```rust
-    let mut count = 0;    match coin {        Coin::Quarter(state) => println!("State quarter from {:?}!", state),        _ => count += 1,    }
+#[derive(Debug)]
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+
+fn main() {
+    let coin = Coin::Penny;
+    let mut count = 0;
+    match coin {
+        Coin::Quarter(state) => println!("State quarter from {:?}!", state),
+        _ => count += 1,
+    }
+}
+
 ```
 
 或者可以使用这样的 `if let` 和 `else` 表达式：
 
 ```rust
-    let mut count = 0;    if let Coin::Quarter(state) = coin {        println!("State quarter from {:?}!", state);    } else {        count += 1;    }
+#[derive(Debug)]
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+
+fn main() {
+    let coin = Coin::Penny;
+    let mut count = 0;
+    if let Coin::Quarter(state) = coin {
+        println!("State quarter from {:?}!", state);
+    } else {
+        count += 1;
+    }
+}
+
 ```
 
 如果你的程序遇到一个使用 `match` 表达起来过于啰嗦的逻辑，记住 `if let` 也在你的 Rust 工具箱中。
