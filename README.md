@@ -6,6 +6,12 @@
 
 {% embed url="https://github.com/sger/RustBooks" %}
 
+##
+
+##
+
+{% file src=".gitbook/assets/Rust in Action.pdf" %}
+
 ## 常用网站
 
 {% embed url="https://doc.rust-lang.org/book/" %}
