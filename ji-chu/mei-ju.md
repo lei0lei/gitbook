@@ -129,7 +129,7 @@ fn main() {
 
 ```
 
-我们直接将数据附加到枚举的每个成员上，这样就不需要一个额外的结构体了。这里也很容易看出枚举工作的另一个细节：每一个我们定义的枚举成员的名字也变成了一个构建枚举的实例的函数。也就是说，`IpAddr::V4()` 是一个获取 `String` 参数并返回 `IpAddr` 类型实例的函数调用。作为定义枚举的结果，这些构造函数会自动被定义。
+我们直接将数据附加到枚举的每个成员上，这样就不需要一个额外的结构体了。这里也很容易看出枚举工作的另一个细节：<mark style="color:red;">每一个我们定义的枚举成员的名字也变成了一个构建枚举的实例的函数。也就是说，</mark><mark style="color:red;">`IpAddr::V4()`</mark> <mark style="color:red;"></mark><mark style="color:red;">是一个获取</mark> <mark style="color:red;"></mark><mark style="color:red;">`String`</mark> <mark style="color:red;"></mark><mark style="color:red;">参数并返回</mark> <mark style="color:red;"></mark><mark style="color:red;">`IpAddr`</mark> <mark style="color:red;"></mark><mark style="color:red;">类型实例的函数调用</mark>。作为定义枚举的结果，这些构造函数会自动被定义。
 
 用枚举替代结构体还有另一个优势：每个成员可以处理不同类型和数量的数据。IPv4 版本的 IP 地址总是含有四个值在 0 和 255 之间的数字部分。如果我们想要将 `V4` 地址存储为四个 `u8` 值而 `V6` 地址仍然表现为一个 `String`，这就不能使用结构体了。枚举则可以轻易的处理这个情况：
 
@@ -168,7 +168,7 @@ enum IpAddr {
 
 ```
 
-这些代码展示了可以将任意类型的数据放入枚举成员中：例如字符串、数字类型或者结构体。甚至可以包含另一个枚举！另外，标准库中的类型通常并不比你设想出来的要复杂多少。
+这些代码展示了<mark style="color:red;">可以将任意类型的数据放入枚举成员中</mark>：例如字符串、数字类型或者结构体。甚至可以包含另一个枚举！另外，标准库中的类型通常并不比你设想出来的要复杂多少。
 
 注意虽然标准库中包含一个 `IpAddr` 的定义，仍然可以创建和使用我们自己的定义而不会有冲突，因为我们并没有将标准库中的定义引入作用域。第七章会讲到如何导入类型。
 
@@ -215,12 +215,22 @@ fn main() {}
 结构体和枚举还有另一个相似点：就像可以使用 `impl` 来为结构体定义方法那样，也可以在枚举上定义方法。这是一个定义于我们 `Message` 枚举上的叫做 `call` 的方法：
 
 ```rust
-#![allow(unused)]
 fn main() {
-enum Option<T> {
-    None,
-    Some(T),
-}
+    enum Message {
+        Quit,
+        Move { x: i32, y: i32 },
+        Write(String),
+        ChangeColor(i32, i32, i32),
+    }
+
+    impl Message {
+        fn call(&self) {
+            // 在这里定义方法体
+        }
+    }
+
+    let m = Message::Write(String::from("hello"));
+    m.call();
 }
 
 ```
@@ -247,10 +257,17 @@ Tony Hoare，null 的发明者，在他 2009 年的演讲 “Null References: Th
 
 然而，空值尝试表达的概念仍然是有意义的：空值是一个因为某种原因目前无效或缺失的值。
 
-问题不在于概念而在于具体的实现。为此，Rust 并没有空值，不过它确实拥有一个可以编码存在或不存在概念的枚举。这个枚举是 `Option<T>`，而且它[定义于标准库中](https://doc.rust-lang.org/std/option/enum.Option.html)，如下:
+问题不在于概念而在于具体的实现。为此，Rust 并没有空值，不过<mark style="color:red;">它确实拥有一个可以编码存在或不存在概念的枚举。这个枚举是</mark> <mark style="color:red;"></mark><mark style="color:red;">`Option<T>`</mark>，而且它[定义于标准库中](https://doc.rust-lang.org/std/option/enum.Option.html)，如下:
 
 ```rust
-enum Option<T> {    None,    Some(T),}
+#![allow(unused)]
+fn main() {
+enum Option<T> {
+    None,
+    Some(T),
+}
+}
+
 ```
 
 `Option<T>` 枚举是如此有用以至于它甚至被包含在了 prelude 之中，你不需要将其显式引入作用域。另外，它的成员也是如此，可以不需要 `Option::` 前缀来直接使用 `Some` 和 `None`。即便如此 `Option<T>` 也仍是常规的枚举，`Some(T)` 和 `None` 仍是 `Option<T>` 的成员。
@@ -267,7 +284,7 @@ fn main() {
 
 ```
 
-`some_number` 的类型是 `Option<i32>`。`some_char` 的类型是 `Option<char>`，这（与 `some_number`）是一个不同的类型。因为我们在 `Some` 成员中指定了值，Rust 可以推断其类型。对于 `absent_number`，Rust 需要我们指定 `Option` 整体的类型，因为编译器只通过 `None` 值无法推断出 `Some` 成员保存的值的类型。这里我们告诉 Rust 希望 `absent_number` 是 `Option<i32>` 类型的。
+`some_number` 的类型是 `Option<i32>`。`some_char` 的类型是 `Option<char>`，这（与 `some_number`）是一个不同的类型。因为我们在 `Some` 成员中指定了值，Rust 可以推断其类型。<mark style="color:red;">对于</mark> <mark style="color:red;"></mark><mark style="color:red;">`absent_number`</mark><mark style="color:red;">，Rust 需要我们指定</mark> <mark style="color:red;"></mark><mark style="color:red;">`Option`</mark> <mark style="color:red;"></mark><mark style="color:red;">整体的类型</mark>，因为编译器只通过 `None` 值无法推断出 `Some` 成员保存的值的类型。这里我们告诉 Rust 希望 `absent_number` 是 `Option<i32>` 类型的。
 
 当有一个 `Some` 值时，我们就知道存在一个值，而这个值保存在 `Some` 中。当有个 `None` 值时，在某种意义上，它跟空值具有相同的意义：并没有一个有效的值。那么，`Option<T>` 为什么就比空值要好呢？
 
@@ -559,7 +576,7 @@ fn main() {
 
 对于前两个分支，匹配模式是字面值 `3` 和 `7`，最后一个分支则涵盖了所有其他可能的值，模式是我们命名为 `other` 的一个变量。`other` 分支的代码通过将其传递给 `move_player` 函数来使用这个变量。
 
-即使我们没有列出 `u8` 所有可能的值，这段代码依然能够编译，因为最后一个模式将匹配所有未被特殊列出的值。这种通配模式满足了 `match` 必须被穷尽的要求。请注意，我们必须将通配分支放在最后，因为模式是按顺序匹配的。如果我们在通配分支后添加其他分支，Rust 将会警告我们，因为此后的分支永远不会被匹配到。
+即使我们没有列出 `u8` 所有可能的值，这段代码依然能够编译，因为最后一个模式将匹配所有未被特殊列出的值。这种通配模式满足了 `match` 必须被穷尽的要求。请注意，我<mark style="color:red;">们必须将通配分支放在最后，因为模式是按顺序匹配的。如果我们在通配分支后添加其他分支</mark>，Rust 将会警告我们，因为此后的分支永远不会被匹配到。
 
 Rust 还提供了一个模式，当我们不想使用通配模式获取的值时，请使用 `_` ，这是一个特殊的模式，可以匹配任意值而不绑定到该值。这告诉 Rust 我们不会使用这个值，所以 Rust 也不会警告我们存在未使用的变量。
 
@@ -604,9 +621,7 @@ fn main() {
 
 我们将在[第 18 章](https://kaisery.github.io/trpl-zh-cn/ch18-00-patterns.html)中介绍更多关于模式和匹配的内容。现在，让我们继续讨论 `if let` 语法，这在 `match` 表达式有点啰嗦的情况下很有用。
 
-[`if let` 简洁控制流](https://kaisery.github.io/trpl-zh-cn/ch06-03-if-let.html#if-let-%E7%AE%80%E6%B4%81%E6%8E%A7%E5%88%B6%E6%B5%81)\
-
-
+## [`if let` 简洁控制流](https://kaisery.github.io/trpl-zh-cn/ch06-03-if-let.html#if-let-%E7%AE%80%E6%B4%81%E6%8E%A7%E5%88%B6%E6%B5%81)
 
 `if let` 语法让我们以一种不那么冗长的方式结合 `if` 和 `let`，来处理只匹配一个模式的值而忽略其他模式的情况。考虑示例 6-6 中的程序，它匹配一个 `config_max` 变量中的 `Option<u8>` 值并只希望当值为 `Some` 成员时执行代码：
 
@@ -639,7 +654,7 @@ fn main() {
 
 `if let` 语法获取通过等号分隔的一个模式和一个表达式。它的工作方式与 `match` 相同，这里的表达式对应 `match` 而模式则对应第一个分支。在这个例子中，模式是 `Some(max)`，`max` 绑定为 `Some` 中的值。接着可以在 `if let` 代码块中使用 `max` 了，就跟在对应的 `match` 分支中一样。模式不匹配时 `if let` 块中的代码不会执行。
 
-使用 `if let` 意味着编写更少代码，更少的缩进和更少的样板代码。然而，这样会失去 `match` 强制要求的穷尽性检查。`match` 和 `if let` 之间的选择依赖特定的环境以及增加简洁度和失去穷尽性检查的权衡取舍。
+使用 `if let` 意味着编写更少代码，更少的缩进和更少的样板代码。然而，这样<mark style="color:red;">会失去</mark> <mark style="color:red;"></mark><mark style="color:red;">`match`</mark> <mark style="color:red;"></mark><mark style="color:red;">强制要求的穷尽性检查。</mark>`match` 和 `if let` 之间的选择依赖特定的环境以及增加简洁度和失去穷尽性检查的权衡取舍。
 
 换句话说，可以认为 `if let` 是 `match` 的一个语法糖，它当值匹配某一模式时执行代码而忽略所有其他值。
 
