@@ -1296,7 +1296,7 @@ fn it_adds_two() {
 
 这就是许多 Rust 二进制项目使用一个简单的 _src/main.rs_ 调用 _src/lib.rs_ 中的逻辑的原因之一。因为通过这种结构，集成测试 **就可以** 通过 `extern crate` 测试库 crate 中的主要功能了，而如果这些重要的功能没有问题的话，_src/main.rs_ 中的少量代码也就会正常工作且不需要测试。
 
-### [总结](https://kaisery.github.io/trpl-zh-cn/ch11-03-test-organization.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
+## [总结](https://kaisery.github.io/trpl-zh-cn/ch11-03-test-organization.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
 
 Rust 的测试功能提供了一个确保即使你改变了函数的实现方式，也能继续以期望的方式运行的途径。单元测试独立地验证库的不同部分，也能够测试私有函数实现细节。集成测试则检查多个部分是否能结合起来正确地工作，并像其他外部代码那样测试库的公有 API。即使 Rust 的类型系统和所有权规则可以帮助避免一些 bug，不过测试对于减少代码中不符合期望行为的逻辑 bug 仍然是很重要的。
 
