@@ -17,9 +17,7 @@
 * **共享状态**（_Shared state_）并发，其中多个线程可以访问同一片数据。
 * `Sync` 和 `Send` trait，将 Rust 的并发保证扩展到用户定义的以及标准库提供的类型中。
 
-[使用线程同时运行代码](https://kaisery.github.io/trpl-zh-cn/ch16-01-threads.html#%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%97%B6%E8%BF%90%E8%A1%8C%E4%BB%A3%E7%A0%81)\
-
-
+## [使用线程同时运行代码](https://kaisery.github.io/trpl-zh-cn/ch16-01-threads.html#%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%97%B6%E8%BF%90%E8%A1%8C%E4%BB%A3%E7%A0%81)
 
 在大部分现代操作系统中，已执行程序的代码在一个 **进程**（_process_）中运行，操作系统则会负责管理多个进程。在程序内部，也可以拥有多个同时运行的独立部分。这些运行这些独立部分的功能被称为 **线程**（_threads_）。例如，web 服务器可以有多个线程以便可以同时响应多于一个请求。
 
@@ -33,14 +31,30 @@ Rust 尝试减轻使用线程的负面影响。不过在多线程上下文中编
 
 编程语言有一些不同的方法来实现线程，而且很多操作系统提供了创建新线程的 API。Rust 标准库使用 _1:1_ 线程实现，这代表程序的每一个语言级线程使用一个系统线程。有一些 crate 实现了其他有着不同于 1:1 模型取舍的线程模型。
 
-#### [使用 `spawn` 创建新线程](https://kaisery.github.io/trpl-zh-cn/ch16-01-threads.html#%E4%BD%BF%E7%94%A8-spawn-%E5%88%9B%E5%BB%BA%E6%96%B0%E7%BA%BF%E7%A8%8B) <a href="#shi-yong-spawn-chuang-jian-xin-xian-cheng" id="shi-yong-spawn-chuang-jian-xin-xian-cheng"></a>
+### [使用 `spawn` 创建新线程](https://kaisery.github.io/trpl-zh-cn/ch16-01-threads.html#%E4%BD%BF%E7%94%A8-spawn-%E5%88%9B%E5%BB%BA%E6%96%B0%E7%BA%BF%E7%A8%8B) <a href="#shi-yong-spawn-chuang-jian-xin-xian-cheng" id="shi-yong-spawn-chuang-jian-xin-xian-cheng"></a>
 
 为了创建一个新线程，需要调用 `thread::spawn` 函数并传递一个闭包（第十三章学习了闭包），并在其中包含希望在新线程运行的代码。示例 16-1 中的例子在主线程打印了一些文本而另一些文本则由新线程打印：
 
 文件名：src/main.rs
 
 ```rust
-use std::thread;use std::time::Duration;fn main() {    thread::spawn(|| {        for i in 1..10 {            println!("hi number {} from the spawned thread!", i);            thread::sleep(Duration::from_millis(1));        }    });    for i in 1..5 {        println!("hi number {} from the main thread!", i);        thread::sleep(Duration::from_millis(1));    }}
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {} from the spawned thread!", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {} from the main thread!", i);
+        thread::sleep(Duration::from_millis(1));
+    }
+}
+
 ```
 
 示例 16-1: 创建一个打印某些内容的新线程，但是主线程打印其它内容
@@ -63,7 +77,7 @@ hi number 5 from the spawned thread!
 
 如果运行代码只看到了主线程的输出，或没有出现重叠打印的现象，尝试增大区间 (变量 `i` 的范围) 来增加操作系统切换线程的机会。
 
-[**使用 `join` 等待所有线程结束**](https://kaisery.github.io/trpl-zh-cn/ch16-01-threads.html#%E4%BD%BF%E7%94%A8-join-%E7%AD%89%E5%BE%85%E6%89%80%E6%9C%89%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9D%9F)
+#### [**使用 `join` 等待所有线程结束**](https://kaisery.github.io/trpl-zh-cn/ch16-01-threads.html#%E4%BD%BF%E7%94%A8-join-%E7%AD%89%E5%BE%85%E6%89%80%E6%9C%89%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9D%9F)
 
 由于主线程结束，示例 16-1 中的代码大部分时候不光会提早结束新建线程，因为无法保证线程运行的顺序，我们甚至不能实际保证新建线程会被执行！
 
@@ -72,7 +86,25 @@ hi number 5 from the spawned thread!
 文件名：src/main.rs
 
 ```rust
-use std::thread;use std::time::Duration;fn main() {    let handle = thread::spawn(|| {        for i in 1..10 {            println!("hi number {} from the spawned thread!", i);            thread::sleep(Duration::from_millis(1));        }    });    for i in 1..5 {        println!("hi number {} from the main thread!", i);        thread::sleep(Duration::from_millis(1));    }    handle.join().unwrap();}
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {} from the spawned thread!", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("hi number {} from the main thread!", i);
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    handle.join().unwrap();
+}
+
 ```
 
 示例 16-2: 从 `thread::spawn` 保存一个 `JoinHandle` 以确保该线程能够运行至结束
@@ -102,7 +134,25 @@ hi number 9 from the spawned thread!
 文件名：src/main.rs
 
 ```rust
-use std::thread;use std::time::Duration;fn main() {    let handle = thread::spawn(|| {        for i in 1..10 {            println!("hi number {} from the spawned thread!", i);            thread::sleep(Duration::from_millis(1));        }    });    handle.join().unwrap();    for i in 1..5 {        println!("hi number {} from the main thread!", i);        thread::sleep(Duration::from_millis(1));    }}
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("hi number {} from the spawned thread!", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    handle.join().unwrap();
+
+    for i in 1..5 {
+        println!("hi number {} from the main thread!", i);
+        thread::sleep(Duration::from_millis(1));
+    }
+}
+
 ```
 
 主线程会等待直到新建线程执行完毕之后才开始执行 `for` 循环，所以输出将不会交替出现，如下所示：
@@ -125,7 +175,7 @@ hi number 4 from the main thread!
 
 诸如将 `join` 放置于何处这样的小细节，会影响线程是否同时运行。
 
-#### [线程与 `move` 闭包](https://kaisery.github.io/trpl-zh-cn/ch16-01-threads.html#%E7%BA%BF%E7%A8%8B%E4%B8%8E-move-%E9%97%AD%E5%8C%85) <a href="#xian-cheng-yu-move-bi-bao" id="xian-cheng-yu-move-bi-bao"></a>
+### [线程与 `move` 闭包](https://kaisery.github.io/trpl-zh-cn/ch16-01-threads.html#%E7%BA%BF%E7%A8%8B%E4%B8%8E-move-%E9%97%AD%E5%8C%85) <a href="#xian-cheng-yu-move-bi-bao" id="xian-cheng-yu-move-bi-bao"></a>
 
 `move` 关键字经常用于传递给 `thread::spawn` 的闭包，因为闭包会获取从环境中取得的值的所有权，因此会将这些值的所有权从一个线程传送到另一个线程。在第十三章 [“闭包会捕获其环境”](https://kaisery.github.io/trpl-zh-cn/ch13-01-closures.html#%E9%97%AD%E5%8C%85%E4%BC%9A%E6%8D%95%E8%8E%B7%E5%85%B6%E7%8E%AF%E5%A2%83) 部分讨论了闭包上下文中的 `move`。现在我们会更专注于 `move` 和 `thread::spawn` 之间的交互。
 
@@ -253,9 +303,7 @@ Rust 的所有权规则又一次帮助了我们！示例 16-3 中的错误是因
 
 现在我们对线程和线程 API 有了基本的了解，让我们讨论一下使用线程实际可以 **做** 什么吧。
 
-[使用消息传递在线程间传送数据](https://kaisery.github.io/trpl-zh-cn/ch16-02-message-passing.html#%E4%BD%BF%E7%94%A8%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E5%9C%A8%E7%BA%BF%E7%A8%8B%E9%97%B4%E4%BC%A0%E9%80%81%E6%95%B0%E6%8D%AE)\
-
-
+## [使用消息传递在线程间传送数据](https://kaisery.github.io/trpl-zh-cn/ch16-02-message-passing.html#%E4%BD%BF%E7%94%A8%E6%B6%88%E6%81%AF%E4%BC%A0%E9%80%92%E5%9C%A8%E7%BA%BF%E7%A8%8B%E9%97%B4%E4%BC%A0%E9%80%81%E6%95%B0%E6%8D%AE)
 
 一个日益流行的确保安全并发的方式是 **消息传递**（_message passing_），这里线程或 actor 通过发送包含数据的消息来相互沟通。这个思想来源于 [Go 编程语言文档中](https://golang.org/doc/effective\_go.html#concurrency) 的口号：“不要通过共享内存来通讯；而是通过通讯来共享内存。”（“Do not communicate by sharing memory; instead, share memory by communicating.”）
 
@@ -290,7 +338,18 @@ fn main() {
 文件名：src/main.rs
 
 ```rust
-use std::sync::mpsc;use std::thread;fn main() {    let (tx, rx) = mpsc::channel();    thread::spawn(move || {        let val = String::from("hi");        tx.send(val).unwrap();    });}
+use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+}
+
 ```
 
 示例 16-7: 将 `tx` 移动到一个新建的线程中并发送 “hi”
@@ -302,7 +361,21 @@ use std::sync::mpsc;use std::thread;fn main() {    let (tx, rx) = mpsc::channel(
 文件名：src/main.rs
 
 ```rust
-use std::sync::mpsc;use std::thread;fn main() {    let (tx, rx) = mpsc::channel();    thread::spawn(move || {        let val = String::from("hi");        tx.send(val).unwrap();    });    let received = rx.recv().unwrap();    println!("Got: {}", received);}
+use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {}", received);
+}
+
 ```
 
 示例 16-8: 在主线程中接收并打印内容 “hi”
@@ -499,7 +572,7 @@ Got: you
 
 在某种程度上，任何编程语言中的信道都类似于单所有权，因为一旦将一个值传送到信道中，将无法再使用这个值。共享内存类似于多所有权：多个线程可以同时访问相同的内存位置。第十五章介绍了智能指针如何使得多所有权成为可能，然而这会增加额外的复杂性，因为需要以某种方式管理这些不同的所有者。Rust 的类型系统和所有权规则极大的协助了正确地管理这些所有权。作为一个例子，让我们看看互斥器，一个更为常见的共享内存并发原语。
 
-#### [互斥器一次只允许一个线程访问数据](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#%E4%BA%92%E6%96%A5%E5%99%A8%E4%B8%80%E6%AC%A1%E5%8F%AA%E5%85%81%E8%AE%B8%E4%B8%80%E4%B8%AA%E7%BA%BF%E7%A8%8B%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE) <a href="#hu-chi-qi-yi-ci-zhi-yun-xu-yi-ge-xian-cheng-fang-wen-shu-ju" id="hu-chi-qi-yi-ci-zhi-yun-xu-yi-ge-xian-cheng-fang-wen-shu-ju"></a>
+### [互斥器一次只允许一个线程访问数据](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#%E4%BA%92%E6%96%A5%E5%99%A8%E4%B8%80%E6%AC%A1%E5%8F%AA%E5%85%81%E8%AE%B8%E4%B8%80%E4%B8%AA%E7%BA%BF%E7%A8%8B%E8%AE%BF%E9%97%AE%E6%95%B0%E6%8D%AE) <a href="#hu-chi-qi-yi-ci-zhi-yun-xu-yi-ge-xian-cheng-fang-wen-shu-ju" id="hu-chi-qi-yi-ci-zhi-yun-xu-yi-ge-xian-cheng-fang-wen-shu-ju"></a>
 
 **互斥器**（_mutex_）是 _mutual exclusion_ 的缩写，也就是说，任意时刻，其只允许一个线程访问某些数据。为了访问互斥器中的数据，线程首先需要通过获取互斥器的 **锁**（_lock_）来表明其希望访问数据。锁是一个作为互斥器一部分的数据结构，它记录谁有数据的排他访问权。因此，我们描述互斥器为通过锁系统 **保护**（_guarding_）其数据。
 
@@ -519,7 +592,19 @@ Got: you
 文件名：src/main.rs
 
 ```rust
-use std::sync::Mutex;fn main() {    let m = Mutex::new(5);    {        let mut num = m.lock().unwrap();        *num = 6;    }    println!("m = {:?}", m);}
+use std::sync::Mutex;
+
+fn main() {
+    let m = Mutex::new(5);
+
+    {
+        let mut num = m.lock().unwrap();
+        *num = 6;
+    }
+
+    println!("m = {:?}", m);
+}
+
 ```
 
 示例 16-12: 出于简单的考虑，在一个单线程上下文中探索 `Mutex<T>` 的 API
@@ -534,7 +619,7 @@ use std::sync::Mutex;fn main() {    let m = Mutex::new(5);    {        let mut n
 
 丢弃了锁之后，可以打印出互斥器的值，并发现能够将其内部的 `i32` 改为 6。
 
-[**在线程间共享 `Mutex<T>`**](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#%E5%9C%A8%E7%BA%BF%E7%A8%8B%E9%97%B4%E5%85%B1%E4%BA%AB-mutext)
+#### [**在线程间共享 `Mutex<T>`**](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#%E5%9C%A8%E7%BA%BF%E7%A8%8B%E9%97%B4%E5%85%B1%E4%BA%AB-mutext)
 
 现在让我们尝试使用 `Mutex<T>` 在多个线程间共享值。我们将启动十个线程，并在各个线程中对同一个计数器值加一，这样计数器将从 0 变为 10。示例 16-13 中的例子会出现编译错误，而我们将通过这些错误来学习如何使用 `Mutex<T>`，以及 Rust 又是如何帮助我们正确使用的。
 
@@ -593,7 +678,7 @@ error: could not compile `shared-state` due to previous error
 
 错误信息表明 `counter` 值在上一次循环中被移动了。所以 Rust 告诉我们不能将 `counter` 锁的所有权移动到多个线程中。让我们通过一个第十五章讨论过的多所有权手段来修复这个编译错误。
 
-[**多线程和多所有权**](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%92%8C%E5%A4%9A%E6%89%80%E6%9C%89%E6%9D%83)
+#### [**多线程和多所有权**](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%92%8C%E5%A4%9A%E6%89%80%E6%9C%89%E6%9D%83)
 
 在第十五章中，通过使用智能指针 `Rc<T>` 来创建引用计数的值，以便拥有多所有者。让我们在这也这么做看看会发生什么。将示例 16-14 中的 `Mutex<T>` 封装进 `Rc<T>` 中并在将所有权移入线程之前克隆了 `Rc<T>`。
 
@@ -664,7 +749,7 @@ error: could not compile `shared-state` due to previous error
 
 不幸的是，`Rc<T>` 并不能安全的在线程间共享。当 `Rc<T>` 管理引用计数时，它必须在每一个 `clone` 调用时增加计数，并在每一个克隆被丢弃时减少计数。`Rc<T>` 并没有使用任何并发原语，来确保改变计数的操作不会被其他线程打断。在计数出错时可能会导致诡异的 bug，比如可能会造成内存泄漏，或在使用结束之前就丢弃一个值。我们所需要的是一个完全类似 `Rc<T>`，又以一种线程安全的方式改变引用计数的类型。
 
-[**原子引用计数 `Arc<T>`**](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#%E5%8E%9F%E5%AD%90%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0-arct)
+#### [**原子引用计数 `Arc<T>`**](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#%E5%8E%9F%E5%AD%90%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0-arct)
 
 所幸 `Arc<T>` **正是** 这么一个类似 `Rc<T>` 并可以安全的用于并发环境的类型。字母 “a” 代表 **原子性**（_atomic_），所以这是一个 **原子引用计数**（_atomically reference counted_）类型。原子性是另一类这里还未涉及到的并发原语：请查看标准库中 [`std::sync::atomic`](https://doc.rust-lang.org/std/sync/atomic/index.html) 的文档来获取更多细节。目前我们只需要知道原子类就像基本类型一样可以安全的在线程间共享。
 
@@ -675,7 +760,30 @@ error: could not compile `shared-state` due to previous error
 文件名：src/main.rs
 
 ```rust
-use std::sync::{Arc, Mutex};use std::thread;fn main() {    let counter = Arc::new(Mutex::new(0));    let mut handles = vec![];    for _ in 0..10 {        let counter = Arc::clone(&counter);        let handle = thread::spawn(move || {            let mut num = counter.lock().unwrap();            *num += 1;        });        handles.push(handle);    }    for handle in handles {        handle.join().unwrap();    }    println!("Result: {}", *counter.lock().unwrap());}
+use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
+}
+
 ```
 
 示例 16-15: 使用 `Arc<T>` 包装一个 `Mutex<T>` 能够实现在多线程之间共享所有权
@@ -690,7 +798,7 @@ Result: 10
 
 注意如果是简单的数值运算，[标准库中 `std::sync::atomic` 模块](https://doc.rust-lang.org/std/sync/atomic/index.html) 提供的比 `Mutex<T>` 更简单的类型。这些类型提供了基本类型之上安全、并发、原子的操作。这个例子中选择在基本类型上使用 `Mutex<T>` 以便我们可以专注于 `Mutex<T>` 如何工作。
 
-#### [`RefCell<T>`/`Rc<T>` 与 `Mutex<T>`/`Arc<T>` 的相似性](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#refcelltrct-%E4%B8%8E-mutextarct-%E7%9A%84%E7%9B%B8%E4%BC%BC%E6%80%A7) <a href="#refcelltrct-yu-mutextarct-de-xiang-si-xing" id="refcelltrct-yu-mutextarct-de-xiang-si-xing"></a>
+### [`RefCell<T>`/`Rc<T>` 与 `Mutex<T>`/`Arc<T>` 的相似性](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#refcelltrct-%E4%B8%8E-mutextarct-%E7%9A%84%E7%9B%B8%E4%BC%BC%E6%80%A7) <a href="#refcelltrct-yu-mutextarct-de-xiang-si-xing" id="refcelltrct-yu-mutextarct-de-xiang-si-xing"></a>
 
 你可能注意到了，因为 `counter` 是不可变的，不过可以获取其内部值的可变引用；这意味着 `Mutex<T>` 提供了内部可变性，就像 `Cell` 系列类型那样。正如第十五章中使用 `RefCell<T>` 可以改变 `Rc<T>` 中的内容那样，同样的可以使用 `Mutex<T>` 来改变 `Arc<T>` 中的内容。
 
@@ -698,15 +806,13 @@ Result: 10
 
 接下来，为了丰富本章的内容，让我们讨论一下 `Send`和 `Sync` trait 以及如何对自定义类型使用他们。
 
-[使用 `Sync` 和 `Send` trait 的可扩展并发](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#%E4%BD%BF%E7%94%A8-sync-%E5%92%8C-send-trait-%E7%9A%84%E5%8F%AF%E6%89%A9%E5%B1%95%E5%B9%B6%E5%8F%91)\
-
-
+## [使用 `Sync` 和 `Send` trait 的可扩展并发](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#%E4%BD%BF%E7%94%A8-sync-%E5%92%8C-send-trait-%E7%9A%84%E5%8F%AF%E6%89%A9%E5%B1%95%E5%B9%B6%E5%8F%91)
 
 Rust 的并发模型中一个有趣的方面是：语言本身对并发知之 **甚少**。我们之前讨论的几乎所有内容，都属于标准库，而不是语言本身的内容。由于不需要语言提供并发相关的基础设施，并发方案不受标准库或语言所限：我们可以编写自己的或使用别人编写的并发功能。
 
 然而有两个并发概念是内嵌于语言中的：`std::marker` 中的 `Sync` 和 `Send` trait。
 
-#### [通过 `Send` 允许在线程间转移所有权](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#%E9%80%9A%E8%BF%87-send-%E5%85%81%E8%AE%B8%E5%9C%A8%E7%BA%BF%E7%A8%8B%E9%97%B4%E8%BD%AC%E7%A7%BB%E6%89%80%E6%9C%89%E6%9D%83) <a href="#tong-guo-send-yun-xu-zai-xian-cheng-jian-zhuan-yi-suo-you-quan" id="tong-guo-send-yun-xu-zai-xian-cheng-jian-zhuan-yi-suo-you-quan"></a>
+### [通过 `Send` 允许在线程间转移所有权](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#%E9%80%9A%E8%BF%87-send-%E5%85%81%E8%AE%B8%E5%9C%A8%E7%BA%BF%E7%A8%8B%E9%97%B4%E8%BD%AC%E7%A7%BB%E6%89%80%E6%9C%89%E6%9D%83) <a href="#tong-guo-send-yun-xu-zai-xian-cheng-jian-zhuan-yi-suo-you-quan" id="tong-guo-send-yun-xu-zai-xian-cheng-jian-zhuan-yi-suo-you-quan"></a>
 
 `Send` 标记 trait 表明实现了 `Send` 的类型值的所有权可以在线程间传送。几乎所有的 Rust 类型都是`Send` 的，不过有一些例外，包括 `Rc<T>`：这是不能 `Send` 的，因为如果克隆了 `Rc<T>` 的值并尝试将克隆的所有权转移到另一个线程，这两个线程都可能同时更新引用计数。为此，`Rc<T>` 被实现为用于单线程场景，这时不需要为拥有线程安全的引用计数而付出性能代价。
 
@@ -714,19 +820,19 @@ Rust 的并发模型中一个有趣的方面是：语言本身对并发知之 **
 
 任何完全由 `Send` 的类型组成的类型也会自动被标记为 `Send`。几乎所有基本类型都是 `Send` 的，除了第十九章将会讨论的裸指针（raw pointer）。
 
-#### [`Sync` 允许多线程访问](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#sync-%E5%85%81%E8%AE%B8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%AE%BF%E9%97%AE) <a href="#sync-yun-xu-duo-xian-cheng-fang-wen" id="sync-yun-xu-duo-xian-cheng-fang-wen"></a>
+### [`Sync` 允许多线程访问](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#sync-%E5%85%81%E8%AE%B8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E8%AE%BF%E9%97%AE) <a href="#sync-yun-xu-duo-xian-cheng-fang-wen" id="sync-yun-xu-duo-xian-cheng-fang-wen"></a>
 
 `Sync` 标记 trait 表明一个实现了 `Sync` 的类型可以安全的在多个线程中拥有其值的引用。换一种方式来说，对于任意类型 `T`，如果 `&T`（`T` 的不可变引用）是 `Send` 的话 `T` 就是 `Sync` 的，这意味着其引用就可以安全的发送到另一个线程。类似于 `Send` 的情况，基本类型是 `Sync` 的，完全由 `Sync` 的类型组成的类型也是 `Sync` 的。
 
 智能指针 `Rc<T>` 也不是 `Sync` 的，出于其不是 `Send` 相同的原因。`RefCell<T>`（第十五章讨论过）和 `Cell<T>` 系列类型不是 `Sync` 的。`RefCell<T>` 在运行时所进行的借用检查也不是线程安全的。`Mutex<T>` 是 `Sync` 的，正如 [“在线程间共享 `Mutex<T>`”](https://kaisery.github.io/trpl-zh-cn/ch16-03-shared-state.html#%E5%9C%A8%E7%BA%BF%E7%A8%8B%E9%97%B4%E5%85%B1%E4%BA%AB-mutext) 部分所讲的它可以被用来在多线程中共享访问。
 
-#### [手动实现 `Send` 和 `Sync` 是不安全的](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#%E6%89%8B%E5%8A%A8%E5%AE%9E%E7%8E%B0-send-%E5%92%8C-sync-%E6%98%AF%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84) <a href="#shou-dong-shi-xian-send-he-sync-shi-bu-an-quan-de" id="shou-dong-shi-xian-send-he-sync-shi-bu-an-quan-de"></a>
+### [手动实现 `Send` 和 `Sync` 是不安全的](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#%E6%89%8B%E5%8A%A8%E5%AE%9E%E7%8E%B0-send-%E5%92%8C-sync-%E6%98%AF%E4%B8%8D%E5%AE%89%E5%85%A8%E7%9A%84) <a href="#shou-dong-shi-xian-send-he-sync-shi-bu-an-quan-de" id="shou-dong-shi-xian-send-he-sync-shi-bu-an-quan-de"></a>
 
 通常并不需要手动实现 `Send` 和 `Sync` trait，因为由 `Send` 和 `Sync` 的类型组成的类型，自动就是 `Send` 和 `Sync` 的。因为他们是标记 trait，甚至都不需要实现任何方法。他们只是用来加强并发相关的不可变性的。
 
 手动实现这些标记 trait 涉及到编写不安全的 Rust 代码，第十九章将会讲述具体的方法；当前重要的是，在创建新的由不是 `Send` 和 `Sync` 的部分构成的并发类型时需要多加小心，以确保维持其安全保证。[“The Rustonomicon”](https://doc.rust-lang.org/nomicon/index.html) 中有更多关于这些保证以及如何维持他们的信息。
 
-### [总结](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
+## [总结](https://kaisery.github.io/trpl-zh-cn/ch16-04-extensible-concurrency-sync-and-send.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
 
 这不会是本书最后一个出现并发的章节：第二十章的项目会在更现实的场景中使用这些概念，而不像本章中讨论的这些小例子。
 
