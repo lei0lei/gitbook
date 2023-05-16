@@ -6,13 +6,11 @@
 
 对象（Object）来源于 20 世纪 60 年代的 Simula 编程语言。为了描述这种架构，他在 1967 年创造了 **面向对象编程** （_object-oriented programming_）这个术语。关于 OOP 是什么有很多相互矛盾的定义；在一些定义下，Rust 是面向对象的；在其他定义下，Rust 不是。在本章节中，我们会探索一些被普遍认为是面向对象的特性和这些特性是如何体现在 Rust 语言习惯中的。接着会展示如何在 Rust 中实现面向对象设计模式，并讨论这么做与利用 Rust 自身的一些优势实现的方案相比有什么取舍。
 
-[面向对象语言的特征](https://kaisery.github.io/trpl-zh-cn/ch17-01-what-is-oo.html#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AF%AD%E8%A8%80%E7%9A%84%E7%89%B9%E5%BE%81)\
-
-
+## [面向对象语言的特征](https://kaisery.github.io/trpl-zh-cn/ch17-01-what-is-oo.html#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AF%AD%E8%A8%80%E7%9A%84%E7%89%B9%E5%BE%81)
 
 关于一个语言被称为面向对象所需的功能，在编程社区内并未达成一致意见。Rust 被很多不同的编程范式影响，包括面向对象编程；比如第十三章提到了来自函数式编程的特性。面向对象编程语言所共享的一些特性往往是对象、封装和继承。让我们看一下这每一个概念的含义以及 Rust 是否支持他们。
 
-#### [对象包含数据和行为](https://kaisery.github.io/trpl-zh-cn/ch17-01-what-is-oo.html#%E5%AF%B9%E8%B1%A1%E5%8C%85%E5%90%AB%E6%95%B0%E6%8D%AE%E5%92%8C%E8%A1%8C%E4%B8%BA) <a href="#dui-xiang-bao-han-shu-ju-he-hang-wei" id="dui-xiang-bao-han-shu-ju-he-hang-wei"></a>
+### [对象包含数据和行为](https://kaisery.github.io/trpl-zh-cn/ch17-01-what-is-oo.html#%E5%AF%B9%E8%B1%A1%E5%8C%85%E5%90%AB%E6%95%B0%E6%8D%AE%E5%92%8C%E8%A1%8C%E4%B8%BA) <a href="#dui-xiang-bao-han-shu-ju-he-hang-wei" id="dui-xiang-bao-han-shu-ju-he-hang-wei"></a>
 
 由 Erich Gamma、Richard Helm、Ralph Johnson 和 John Vlissides（Addison-Wesley Professional, 1994）编写的书 _Design Patterns: Elements of Reusable Object-Oriented Software_ 被俗称为 _The Gang of Four_ (字面意思为 “四人帮”)，它是面向对象编程模式的目录。它这样定义面向对象编程：
 
@@ -22,7 +20,7 @@
 
 在这个定义下，Rust 是面向对象的：结构体和枚举包含数据而 `impl` 块提供了在结构体和枚举之上的方法。虽然带有方法的结构体和枚举并不被 **称为** 对象，但是他们提供了与对象相同的功能，参考 _The Gang of Four_ 中对象的定义。
 
-#### [封装隐藏了实现细节](https://kaisery.github.io/trpl-zh-cn/ch17-01-what-is-oo.html#%E5%B0%81%E8%A3%85%E9%9A%90%E8%97%8F%E4%BA%86%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82) <a href="#feng-zhuang-yin-cang-le-shi-xian-xi-jie" id="feng-zhuang-yin-cang-le-shi-xian-xi-jie"></a>
+### [封装隐藏了实现细节](https://kaisery.github.io/trpl-zh-cn/ch17-01-what-is-oo.html#%E5%B0%81%E8%A3%85%E9%9A%90%E8%97%8F%E4%BA%86%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82) <a href="#feng-zhuang-yin-cang-le-shi-xian-xi-jie" id="feng-zhuang-yin-cang-le-shi-xian-xi-jie"></a>
 
 另一个通常与面向对象编程相关的方面是 **封装**（_encapsulation_）的思想：对象的实现细节不能被使用对象的代码获取到。所以唯一与对象交互的方式是通过对象提供的公有 API；使用对象的代码无法深入到对象内部并直接改变数据或者行为。封装使得改变和重构对象的内部时无需改变使用对象的代码。
 
@@ -104,9 +102,7 @@ impl AveragedCollection {
 
 因为这些原因，Rust 选择了一个不同的途径，使用 trait 对象而不是继承。让我们看一下 Rust 中的 trait 对象是如何实现多态的。
 
-[顾及不同类型值的 trait 对象](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#%E9%A1%BE%E5%8F%8A%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E5%80%BC%E7%9A%84-trait-%E5%AF%B9%E8%B1%A1)\
-
-
+## [顾及不同类型值的 trait 对象](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#%E9%A1%BE%E5%8F%8A%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E5%80%BC%E7%9A%84-trait-%E5%AF%B9%E8%B1%A1)
 
 在第八章中，我们谈到了 vector 只能存储同种类型元素的局限。示例 8-9 中提供了一个定义 `SpreadsheetCell` 枚举来储存整型，浮点型和文本成员的替代方案。这意味着可以在每个单元中储存不同类型的数据，并仍能拥有一个代表一排单元的 vector。这在当编译代码时就知道希望可以交替使用的类型为固定集合的情况下是完全可行的。
 
@@ -116,7 +112,7 @@ impl AveragedCollection {
 
 在拥有继承的语言中，可以定义一个名为 `Component` 的类，该类上有一个 `draw` 方法。其他的类比如 `Button`、`Image` 和 `SelectBox` 会从 `Component` 派生并因此继承 `draw` 方法。它们各自都可以覆盖 `draw` 方法来定义自己的行为，但是框架会把所有这些类型当作是 `Component` 的实例，并在其上调用 `draw`。不过 Rust 并没有继承，我们得另寻出路。
 
-#### [定义通用行为的 trait](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#%E5%AE%9A%E4%B9%89%E9%80%9A%E7%94%A8%E8%A1%8C%E4%B8%BA%E7%9A%84-trait) <a href="#ding-yi-tong-yong-hang-wei-de-trait" id="ding-yi-tong-yong-hang-wei-de-trait"></a>
+### [定义通用行为的 trait](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#%E5%AE%9A%E4%B9%89%E9%80%9A%E7%94%A8%E8%A1%8C%E4%B8%BA%E7%9A%84-trait) <a href="#ding-yi-tong-yong-hang-wei-de-trait" id="ding-yi-tong-yong-hang-wei-de-trait"></a>
 
 为了实现 `gui` 所期望的行为，让我们定义一个 `Draw` trait，其中包含名为 `draw` 的方法。接着可以定义一个存放 **trait 对象**（_trait object_）的 vector。trait 对象指向一个实现了我们指定 trait 的类型的实例，以及一个用于在运行时查找该类型的 trait 方法的表。我们通过指定某种指针来创建 trait 对象，例如 `&` 引用或 `Box<T>` 智能指针，还有 `dyn` keyword，以及指定相关的 trait（第十九章 [“动态大小类型和 `Sized` trait”](https://kaisery.github.io/trpl-zh-cn/ch19-04-advanced-types.html#%E5%8A%A8%E6%80%81%E5%A4%A7%E5%B0%8F%E7%B1%BB%E5%9E%8B%E5%92%8C-sized-trait) 部分会介绍 trait 对象必须使用指针的原因）。我们可以使用 trait 对象代替泛型或具体类型。任何使用 trait 对象的位置，Rust 的类型系统会在编译时确保任何在此上下文中使用的值会实现其 trait 对象的 trait。如此便无需在编译时就知晓所有可能的类型。
 
@@ -189,7 +185,7 @@ where
 
 另一方面，通过使用 trait 对象的方法，一个 `Screen` 实例可以存放一个既能包含 `Box<Button>`，也能包含 `Box<TextField>` 的 `Vec<T>`。让我们看看它是如何工作的，接着会讲到其运行时性能影响。
 
-#### [实现 trait](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#%E5%AE%9E%E7%8E%B0-trait) <a href="#shi-xian-trait" id="shi-xian-trait"></a>
+### [实现 trait](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#%E5%AE%9E%E7%8E%B0-trait) <a href="#shi-xian-trait" id="shi-xian-trait"></a>
 
 现在来增加一些实现了 `Draw` trait 的类型。我们将提供 `Button` 类型。再一次重申，真正实现 GUI 库超出了本书的范畴，所以 `draw` 方法体中不会有任何有意义的实现。为了想象一下这个实现看起来像什么，一个 `Button` 结构体可能会拥有 `width`、`height` 和 `label` 字段，如示例 17-7 所示：
 
@@ -312,13 +308,13 @@ error: could not compile `gui` due to previous error
 
 这告诉了我们，要么是我们传递了并不希望传递给 `Screen` 的类型并应该提供其他类型，要么应该在 `String` 上实现 `Draw` 以便 `Screen` 可以调用其上的 `draw`。
 
-#### [trait 对象执行动态分发](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#trait-%E5%AF%B9%E8%B1%A1%E6%89%A7%E8%A1%8C%E5%8A%A8%E6%80%81%E5%88%86%E5%8F%91) <a href="#trait-dui-xiang-zhi-hang-dong-tai-fen-fa" id="trait-dui-xiang-zhi-hang-dong-tai-fen-fa"></a>
+### [trait 对象执行动态分发](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#trait-%E5%AF%B9%E8%B1%A1%E6%89%A7%E8%A1%8C%E5%8A%A8%E6%80%81%E5%88%86%E5%8F%91) <a href="#trait-dui-xiang-zhi-hang-dong-tai-fen-fa" id="trait-dui-xiang-zhi-hang-dong-tai-fen-fa"></a>
 
 回忆一下第十章 [“泛型代码的性能”](https://kaisery.github.io/trpl-zh-cn/ch10-01-syntax.html#%E6%B3%9B%E5%9E%8B%E4%BB%A3%E7%A0%81%E7%9A%84%E6%80%A7%E8%83%BD) 部分讨论过的，当对泛型使用 trait bound 时编译器所执行的单态化处理：编译器为每一个被泛型类型参数代替的具体类型生成了函数和方法的非泛型实现。单态化产生的代码在执行 **静态分发**（_static dispatch_）。静态分发发生于编译器在编译时就知晓调用了什么方法的时候。这与 **动态分发** （_dynamic dispatch_）相对，这时编译器在编译时无法知晓调用了什么方法。在动态分发的场景下，编译器生成的代码到运行时才能确定调用了什么方法。
 
 当使用 trait 对象时，Rust 必须使用动态分发。编译器无法知晓所有可能用于 trait 对象代码的类型，所以它也不知道应该调用哪个类型的哪个方法实现。为此，Rust 在运行时使用 trait 对象中的指针来知晓需要调用哪个方法。动态分发也阻止编译器有选择的内联方法代码，这会相应的禁用一些优化。尽管在编写示例 17-5 和可以支持示例 17-9 中的代码的过程中确实获得了额外的灵活性，但仍然需要权衡取舍。
 
-#### [trait 对象需要类型安全](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#trait-%E5%AF%B9%E8%B1%A1%E9%9C%80%E8%A6%81%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8) <a href="#trait-dui-xiang-xu-yao-lei-xing-an-quan" id="trait-dui-xiang-xu-yao-lei-xing-an-quan"></a>
+### [trait 对象需要类型安全](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html#trait-%E5%AF%B9%E8%B1%A1%E9%9C%80%E8%A6%81%E7%B1%BB%E5%9E%8B%E5%AE%89%E5%85%A8) <a href="#trait-dui-xiang-xu-yao-lei-xing-an-quan" id="trait-dui-xiang-xu-yao-lei-xing-an-quan"></a>
 
 只有对象安全（object-safe）的 trait 可以实现为特征对象。这里有一些复杂的规则来实现 trait 的对象安全，但在实践中，只有两个相关的规则。如果一个 trait 中定义的所有方法都符合以下规则，则该 trait 是对象安全的：
 
@@ -365,9 +361,7 @@ error: could not compile `gui` due to previous error
 
 这个错误意味着我们不能将此 trait 用于 trait 对象。如果你想了解更多有关对象安全的细节，请移步至 [Rust RFC 255](https://github.com/rust-lang/rfcs/blob/master/text/0255-object-safety.md) 或查看 [Rust Reference](https://doc.rust-lang.org/reference/items/traits.html#object-safety)
 
-[面向对象设计模式的实现](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AE%9E%E7%8E%B0)\
-
-
+## [面向对象设计模式的实现](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%AE%9E%E7%8E%B0)
 
 **状态模式**（_state pattern_）是一个面向对象设计模式。该模式的关键在于定义一系列值的内含状态。这些状态体现为一系列的 **状态对象**，同时值的行为随着其内部状态而改变。我们将编写一个博客发布结构体的例子，它拥有一个包含其状态的字段，这是一个有着 "draft"、"review" 或 "published" 的状态对象
 
@@ -415,7 +409,7 @@ fn main() {
 
 注意我们与 crate 交互的唯一的类型是 `Post`。这个类型会使用状态模式并会存放处于三种博文所可能的状态之一的值 —— 草案，等待审核和发布。状态上的改变由 `Post` 类型内部进行管理。状态依库用户对 `Post` 实例调用的方法而改变，但是不能直接管理状态变化。这也意味着用户不会在状态上犯错，比如在过审前发布博文。
 
-#### [定义 `Post` 并新建一个草案状态的实例](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%AE%9A%E4%B9%89-post-%E5%B9%B6%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%8D%89%E6%A1%88%E7%8A%B6%E6%80%81%E7%9A%84%E5%AE%9E%E4%BE%8B) <a href="#ding-yi-post-bing-xin-jian-yi-ge-cao-an-zhuang-tai-de-shi-li" id="ding-yi-post-bing-xin-jian-yi-ge-cao-an-zhuang-tai-de-shi-li"></a>
+### [定义 `Post` 并新建一个草案状态的实例](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%AE%9A%E4%B9%89-post-%E5%B9%B6%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%8D%89%E6%A1%88%E7%8A%B6%E6%80%81%E7%9A%84%E5%AE%9E%E4%BE%8B) <a href="#ding-yi-post-bing-xin-jian-yi-ge-cao-an-zhuang-tai-de-shi-li" id="ding-yi-post-bing-xin-jian-yi-ge-cao-an-zhuang-tai-de-shi-li"></a>
 
 让我们开始实现这个库吧！我们知道需要一个公有 `Post` 结构体来存放一些文本，所以让我们从结构体的定义和一个创建 `Post` 实例的公有关联函数 `new` 开始，如示例 17-12 所示。还需定义一个私有 trait `State`。
 
@@ -451,7 +445,7 @@ impl State for Draft {}
 
 当创建新的 `Post` 时，我们将其 `state` 字段设置为一个存放了 `Box` 的 `Some` 值。这个 `Box` 指向一个 `Draft` 结构体新实例。这确保了无论何时新建一个 `Post` 实例，它都会从草案开始。因为 `Post` 的 `state` 字段是私有的，也就无法创建任何其他状态的 `Post` 了！。`Post::new` 函数中将 `content` 设置为新建的空 `String`。
 
-#### [存放博文内容的文本](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%AD%98%E6%94%BE%E5%8D%9A%E6%96%87%E5%86%85%E5%AE%B9%E7%9A%84%E6%96%87%E6%9C%AC) <a href="#cun-fang-bo-wen-nei-rong-de-wen-ben" id="cun-fang-bo-wen-nei-rong-de-wen-ben"></a>
+### [存放博文内容的文本](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%AD%98%E6%94%BE%E5%8D%9A%E6%96%87%E5%86%85%E5%AE%B9%E7%9A%84%E6%96%87%E6%9C%AC) <a href="#cun-fang-bo-wen-nei-rong-de-wen-ben" id="cun-fang-bo-wen-nei-rong-de-wen-ben"></a>
 
 在示例 17-11 中，展示了我们希望能够调用一个叫做 `add_text` 的方法并向其传递一个 `&str` 来将文本增加到博文的内容中。选择实现为一个方法而不是将 `content` 字段暴露为 `pub` 。这意味着之后可以实现一个方法来控制 `content` 字段如何被读取。`add_text` 方法是非常直观的，让我们在示例 17-13 的 `impl Post` 块中增加一个实现：
 
@@ -470,7 +464,7 @@ impl Post {
 
 `add_text` 获取一个 `self` 的可变引用，因为需要改变调用 `add_text` 的 `Post` 实例。接着调用 `content` 中的 `String` 的 `push_str` 并传递 `text` 参数来保存到 `content` 中。这不是状态模式的一部分，因为它的行为并不依赖博文所处的状态。`add_text` 方法完全不与 `state` 状态交互，不过这是我们希望支持的行为的一部分。
 
-#### [确保博文草案的内容是空的](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E7%A1%AE%E4%BF%9D%E5%8D%9A%E6%96%87%E8%8D%89%E6%A1%88%E7%9A%84%E5%86%85%E5%AE%B9%E6%98%AF%E7%A9%BA%E7%9A%84) <a href="#que-bao-bo-wen-cao-an-de-nei-rong-shi-kong-de" id="que-bao-bo-wen-cao-an-de-nei-rong-shi-kong-de"></a>
+### [确保博文草案的内容是空的](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E7%A1%AE%E4%BF%9D%E5%8D%9A%E6%96%87%E8%8D%89%E6%A1%88%E7%9A%84%E5%86%85%E5%AE%B9%E6%98%AF%E7%A9%BA%E7%9A%84) <a href="#que-bao-bo-wen-cao-an-de-nei-rong-shi-kong-de" id="que-bao-bo-wen-cao-an-de-nei-rong-shi-kong-de"></a>
 
 即使调用 `add_text` 并向博文增加一些内容之后，我们仍然希望 `content` 方法返回一个空字符串 slice，因为博文仍然处于草案状态，如示例 17-11 的第 8 行所示。现在让我们使用能满足要求的最简单的方式来实现 `content` 方法：总是返回一个空字符串 slice。当实现了将博文状态改为发布的能力之后将改变这一做法。但是目前博文只能是草案状态，这意味着其内容应该总是空的。示例 17-14 展示了这个占位符实现：
 
@@ -489,7 +483,7 @@ impl Post {
 
 通过增加这个 `content` 方法，示例 17-11 中直到第 8 行的代码能如期运行。
 
-#### [请求审核博文来改变其状态](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E8%AF%B7%E6%B1%82%E5%AE%A1%E6%A0%B8%E5%8D%9A%E6%96%87%E6%9D%A5%E6%94%B9%E5%8F%98%E5%85%B6%E7%8A%B6%E6%80%81) <a href="#qing-qiu-shen-he-bo-wen-lai-gai-bian-qi-zhuang-tai" id="qing-qiu-shen-he-bo-wen-lai-gai-bian-qi-zhuang-tai"></a>
+### [请求审核博文来改变其状态](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E8%AF%B7%E6%B1%82%E5%AE%A1%E6%A0%B8%E5%8D%9A%E6%96%87%E6%9D%A5%E6%94%B9%E5%8F%98%E5%85%B6%E7%8A%B6%E6%80%81) <a href="#qing-qiu-shen-he-bo-wen-lai-gai-bian-qi-zhuang-tai" id="qing-qiu-shen-he-bo-wen-lai-gai-bian-qi-zhuang-tai"></a>
 
 接下来需要增加请求审核博文的功能，这应当将其状态由 `Draft` 改为 `PendingReview`。示例 17-15 展示了这个代码：
 
@@ -542,7 +536,7 @@ impl State for PendingReview {
 
 我们将继续保持 `Post` 的 `content` 方法实现不变，返回一个空字符串 slice。现在我们可以拥有 `PendingReview` 状态和 `Draft` 状态的 `Post` 了，不过我们希望在 `PendingReview` 状态下 `Post` 也有相同的行为。现在示例 17-11 中直到 10 行的代码是可以执行的！
 
-#### [增加改变 `content` 行为的 `approve` 方法](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%A2%9E%E5%8A%A0%E6%94%B9%E5%8F%98-content-%E8%A1%8C%E4%B8%BA%E7%9A%84-approve-%E6%96%B9%E6%B3%95) <a href="#zeng-jia-gai-bian-content-hang-wei-de-approve-fang-fa" id="zeng-jia-gai-bian-content-hang-wei-de-approve-fang-fa"></a>
+### [增加改变 `content` 行为的 `approve` 方法](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%A2%9E%E5%8A%A0%E6%94%B9%E5%8F%98-content-%E8%A1%8C%E4%B8%BA%E7%9A%84-approve-%E6%96%B9%E6%B3%95) <a href="#zeng-jia-gai-bian-content-hang-wei-de-approve-fang-fa" id="zeng-jia-gai-bian-content-hang-wei-de-approve-fang-fa"></a>
 
 `approve` 方法将与 `request_review` 方法类似：它会将 `state` 设置为审核通过时应处于的状态，如示例 17-16 所示。
 
@@ -657,7 +651,7 @@ impl State for Published {
 >
 > 你可能会好奇为什么不用包含不同可能的博文状态的 `enum` 作为变量。这确实是一个可能的方案，尝试实现并对比最终结果来看看哪一种更适合你！使用枚举的一个缺点是每一个检查枚举值的地方都需要一个 `match` 表达式或类似的代码来处理所有可能的成员。这相比 trait 对象模式可能显得更重复。
 
-#### [状态模式的权衡取舍](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%9D%83%E8%A1%A1%E5%8F%96%E8%88%8D) <a href="#zhuang-tai-mo-shi-de-quan-heng-qu-she" id="zhuang-tai-mo-shi-de-quan-heng-qu-she"></a>
+### [状态模式的权衡取舍](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%9D%83%E8%A1%A1%E5%8F%96%E8%88%8D) <a href="#zhuang-tai-mo-shi-de-quan-heng-qu-she" id="zhuang-tai-mo-shi-de-quan-heng-qu-she"></a>
 
 我们展示了 Rust 是能够实现面向对象的状态模式的，以便能根据博文所处的状态来封装不同类型的行为。`Post` 的方法并不知道这些不同类型的行为。通过这种组织代码的方式，要找到所有已发布博文的不同行为只需查看一处代码：`Published` 的 `State` trait 的实现。
 
@@ -679,7 +673,7 @@ impl State for Published {
 
 完全按照面向对象语言的定义实现这个模式并没有尽可能地利用 Rust 的优势。让我们看看一些代码中可以做出的修改，来将无效的状态和状态转移变为编译时错误。
 
-[**将状态和行为编码为类型**](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%B0%86%E7%8A%B6%E6%80%81%E5%92%8C%E8%A1%8C%E4%B8%BA%E7%BC%96%E7%A0%81%E4%B8%BA%E7%B1%BB%E5%9E%8B)
+#### [**将状态和行为编码为类型**](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%B0%86%E7%8A%B6%E6%80%81%E5%92%8C%E8%A1%8C%E4%B8%BA%E7%BC%96%E7%A0%81%E4%B8%BA%E7%B1%BB%E5%9E%8B)
 
 我们将展示如何稍微反思状态模式来进行一系列不同的权衡取舍。不同于完全封装状态和状态转移使得外部代码对其毫不知情，我们将状态编码进不同的类型。如此，Rust 的类型检查就会将任何在只能使用发布博文的地方使用草案博文的尝试变为编译时错误。
 
@@ -736,7 +730,7 @@ impl DraftPost {
 
 `DraftPost` 上定义了一个 `add_text` 方法，这样就可以像之前那样向 `content` 增加文本，不过注意 `DraftPost` 并没有定义 `content` 方法！如此现在程序确保了所有博文都从草案开始，同时草案博文没有任何可供展示的内容。任何绕过这些限制的尝试都会产生编译错误。
 
-[**实现状态转移为不同类型的转换**](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%AE%9E%E7%8E%B0%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%E4%B8%BA%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%BD%AC%E6%8D%A2)
+#### [**实现状态转移为不同类型的转换**](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E5%AE%9E%E7%8E%B0%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%E4%B8%BA%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%BD%AC%E6%8D%A2)
 
 那么如何得到发布的博文呢？我们希望强制执行的规则是草案博文在可以发布之前必须被审核通过。等待审核状态的博文应该仍然不会显示任何内容。让我们通过增加另一个结构体 `PendingReviewPost` 来实现这个限制，在 `DraftPost` 上定义 `request_review` 方法来返回 `PendingReviewPost`，并在 `PendingReviewPost` 上定义 `approve` 方法来返回 `Post`，如示例 17-20 所示：
 
@@ -797,7 +791,7 @@ fn main() {
 
 即便 Rust 能够实现面向对象设计模式，也有其他像将状态编码进类型这样的模式存在。这些模式有着不同的权衡取舍。虽然你可能非常熟悉面向对象模式，重新思考这些问题来利用 Rust 提供的像在编译时避免一些 bug 这样有益功能。在 Rust 中面向对象模式并不总是最好的解决方案，因为 Rust 拥有像所有权这样的面向对象语言所没有的功能。
 
-### [总结](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
+## [总结](https://kaisery.github.io/trpl-zh-cn/ch17-03-oo-design-patterns.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
 
 阅读本章后，不管你是否认为 Rust 是一个面向对象语言，现在你都见识了 trait 对象是一个 Rust 中获取部分面向对象功能的方法。动态分发可以通过牺牲少量运行时性能来为你的代码提供一些灵活性。这些灵活性可以用来实现有助于代码可维护性的面向对象模式。Rust 也有像所有权这样不同于面向对象语言的功能。面向对象模式并不总是利用 Rust 优势的最好方式，但也是可用的选项。
 
