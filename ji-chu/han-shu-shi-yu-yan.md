@@ -255,15 +255,15 @@ fn main() {
 
 一旦闭包捕获了定义它的环境中一个值的引用或者所有权（也就影响了什么会被移 _进_ 闭包，如有)，闭包体中的代码定义了稍后在闭包计算时对引用或值如何操作（也就影响了什么会被移 _出_ 闭包，如有）。闭包体可以做以下任何事：将一个捕获的值移出闭包，修改捕获的值，既不移动也不修改值，或者一开始就不从环境中捕获值。
 
-闭包捕获和处理环境中的值的方式影响闭包实现的 trait。Trait 是函数和结构体指定它们能用的闭包的类型的方式。取决于闭包体如何处理值，闭包自动、渐进地实现一个、两个或三个 `Fn` trait。
+闭包捕获和处理环境中的值的方式影响闭包实现的 trait。<mark style="color:red;">Trait 是函数和结构体指定它们能用的闭包的类型的方式</mark>。取决于闭包体如何处理值，闭包自动、渐进地实现一个、两个或三个 `Fn` trait。
 
 1. `FnOnce` 适用于能被调用一次的闭包，所有闭包都至少实现了这个 trait，因为所有闭包都能被调用。一个会将捕获的值移出闭包体的闭包只实现 `FnOnce` trait，这是因为它只能被调用一次。
 2. `FnMut` 适用于不会将捕获的值移出闭包体的闭包，但它可能会修改被捕获的值。这类闭包可以被调用多次。
-3. `Fn` 适用于既不将被捕获的值移出闭包体也不修改被捕获的值的闭包，当然也包括不从环境中捕获值的闭包。这类闭包可以被调用多次而不改变它们的环境，这在会多次并发调用闭包的场景中十分重要。
+3. `Fn` 适用于既不将被捕获的值移出闭包体也不修改被捕获的值的闭包，当然也包括不从环境中捕获值的闭包。这类闭包可以被调用多次而不改变它们的环境，这在会<mark style="color:red;">多次并发调用闭包的场景中十分重要。</mark>
 
 让我们来看示例 13-1 中使用的在 `Option<T>` 上的 `unwrap_or_else` 方法的定义：
 
-```
+```rust
 // Some code
 impl<T> Option<T> {
     pub fn unwrap_or_else<F>(self, f: F) -> T
@@ -290,7 +290,7 @@ impl<T> Option<T> {
 
 现在让我们来看定义在 slice 上的标准库方法 `sort_by_key`，看看它与 `unwrap_or_else` 的区别以及为什么 `sort_by_key` 使用 `FnMut` 而不是 `FnOnce` trait bound。这个闭包以一个 slice 中当前被考虑的元素的引用作为参数，返回一个可以用来排序的 `K` 类型的值。当你想按照 slice 中元素的某个属性来进行排序时这个函数很有用。在示例 13-7 中有一个 `Rectangle` 实例的列表，我们使用 `sort_by_key` 按 `Rectangle` 的 `width` 属性对它们从低到高排序：
 
-```
+```rust
 // Some code
 #[derive(Debug)]
 struct Rectangle {
@@ -338,7 +338,7 @@ $ cargo run
 
 作为对比，示例 13-8 展示了一个只实现了 `FnOnce` trait 的闭包（因为它从环境中移出了一个值）的例子。编译器不允许我们在 `sort_by_key` 上使用这个闭包：
 
-```
+```rust
 // Some code
 #[derive(Debug)]
 struct Rectangle {
@@ -387,7 +387,7 @@ error: could not compile `rectangles` due to previous error
 
 报错指向了闭包体中将 `value` 移出环境的那一行。要修复这里，我们需要改变闭包体让它不将值移出环境。在环境中保持一个计数器并在闭包体中增加它的值是计算 `sort_by_key` 被调用次数的一个更简单直接的方法。示例 13-9 中的闭包可以在 `sort_by_key` 中使用，因为它只捕获了 `num_sort_operations` 计数器的可变引用，这就可以被调用多次。
 
-```
+```rust
 // Some code
 #[derive(Debug)]
 struct Rectangle {
@@ -419,7 +419,7 @@ fn main() {
 
 在 Rust 中，迭代器是 **惰性的**（_lazy_），这意味着在调用方法使用迭代器之前它都不会有效果。例如，示例 13-10 中的代码通过调用定义于 `Vec` 上的 `iter` 方法在一个 vector `v1` 上创建了一个迭代器。这段代码本身没有任何用处：
 
-```
+```rust
 // Some code
     let v1 = vec![1, 2, 3];
 
@@ -430,7 +430,7 @@ fn main() {
 
 示例 13-11 中的例子将迭代器的创建和 `for` 循环中的使用分开。迭代器被储存在 `v1_iter` 变量中，而这时没有进行迭代。一旦 `for` 循环开始使用 `v1_iter`，接着迭代器中的每一个元素被用于循环的一次迭代，这会打印出其每一个值：
 
-```
+```rust
 // Some code
     let v1 = vec![1, 2, 3];
 
@@ -443,13 +443,13 @@ fn main() {
 
 在标准库中没有提供迭代器的语言中，我们可能会使用一个从 0 开始的索引变量，使用这个变量索引 vector 中的值，并循环增加其值直到达到 vector 的元素数量。
 
-迭代器为我们处理了所有这些逻辑，这减少了重复代码并消除了潜在的混乱。另外，迭代器的实现方式提供了对多种不同的序列使用相同逻辑的灵活性，而不仅仅是像 vector 这样可索引的数据结构。让我们看看迭代器是如何做到这些的。
+迭代器为我们处理了所有这些逻辑，这减少了重复代码并消除了潜在的混乱。另外，<mark style="color:red;">迭代器的实现方式提供了对多种不同的序列使用相同逻辑的灵活性，而不仅仅是像 vector 这样可索引的数据结构</mark>。让我们看看迭代器是如何做到这些的。
 
 ### `Iterator` trait 和 `next` 方法 <a href="#iteratortrait-he-next-fang-fa" id="iteratortrait-he-next-fang-fa"></a>
 
 迭代器都实现了一个叫做 `Iterator` 的定义于标准库的 trait。这个 trait 的定义看起来像这样：
 
-```
+```rust
 // Some code
 pub trait Iterator {
     type Item;
@@ -460,13 +460,13 @@ pub trait Iterator {
 }
 ```
 
-注意这里有一个我们还未讲到的新语法：`type Item` 和 `Self::Item`，他们定义了 trait 的 **关联类型**（_associated type_）。第十九章会深入讲解关联类型，不过现在只需知道这段代码表明实现 `Iterator` trait 要求同时定义一个 `Item` 类型，这个 `Item` 类型被用作 `next` 方法的返回值类型。换句话说，`Item` 类型将是迭代器返回元素的类型。
+注意这里有一个我们还未讲到的新语法：`type Item` 和 `Self::Item`，他们定义了 trait 的 **关联类型**（_associated type_）。第十九章会深入讲解关联类型，不过现在只需知道<mark style="color:red;">这段代码表明实现</mark> <mark style="color:red;"></mark><mark style="color:red;">`Iterator`</mark> <mark style="color:red;"></mark><mark style="color:red;">trait 要求同时定义一个</mark> <mark style="color:red;"></mark><mark style="color:red;">`Item`</mark> <mark style="color:red;"></mark><mark style="color:red;">类型，这个</mark> <mark style="color:red;"></mark><mark style="color:red;">`Item`</mark> <mark style="color:red;"></mark><mark style="color:red;">类型被用作</mark> <mark style="color:red;"></mark><mark style="color:red;">`next`</mark> <mark style="color:red;"></mark><mark style="color:red;">方法的返回值类型。换句话说，</mark><mark style="color:red;">`Item`</mark> <mark style="color:red;"></mark><mark style="color:red;">类型将是迭代器返回元素的类型。</mark>
 
 `next` 是 `Iterator` 实现者被要求定义的唯一方法。`next` 一次返回迭代器中的一个项，封装在 `Some` 中，当迭代器结束时，它返回 `None`。
 
 可以直接调用迭代器的 `next` 方法；示例 13-12 有一个测试展示了重复调用由 vector 创建的迭代器的 `next` 方法所得到的值：
 
-```
+```rust
 // Some code
     #[test]
     fn iterator_demonstration() {
@@ -481,7 +481,7 @@ pub trait Iterator {
     }
 ```
 
-注意 `v1_iter` 需要是可变的：在迭代器上调用 `next` 方法改变了迭代器中用来记录序列位置的状态。换句话说，代码 **消费**（consume）了，或使用了迭代器。每一个 `next` 调用都会从迭代器中消费一个项。使用 `for` 循环时无需使 `v1_iter` 可变因为 `for` 循环会获取 `v1_iter` 的所有权并在后台使 `v1_iter` 可变。
+注意 `v1_iter` 需要是可变的：在迭代器上调用 `next` 方法改变了迭代器中用来记录序列位置的状态。换句话说，代码 **消费**（consume）了，或使用了迭代器。每一个 `next` 调用都会从迭代器中消费一个项。使用 `for` 循环时无需使 `v1_iter` 可变因为 <mark style="color:red;">`for`</mark> <mark style="color:red;"></mark><mark style="color:red;">循环会获取</mark> <mark style="color:red;"></mark><mark style="color:red;">`v1_iter`</mark> <mark style="color:red;"></mark><mark style="color:red;">的所有权并在后台使</mark> <mark style="color:red;"></mark><mark style="color:red;">`v1_iter`</mark> <mark style="color:red;"></mark><mark style="color:red;">可变。</mark>
 
 另外需要注意到从 `next` 调用中得到的值是 vector 的不可变引用。`iter` 方法生成一个不可变引用的迭代器。如果我们需要一个获取 `v1` 所有权并返回拥有所有权的迭代器，则可以调用 `into_iter` 而不是 `iter`。类似的，如果我们希望迭代可变引用，则可以调用 `iter_mut` 而不是 `iter`。
 
@@ -491,7 +491,7 @@ pub trait Iterator {
 
 这些调用 `next` 方法的方法被称为 **消费适配器**（_consuming adaptors_），因为调用他们会消耗迭代器。一个消费适配器的例子是 `sum` 方法。这个方法获取迭代器的所有权并反复调用 `next` 来遍历迭代器，因而会消费迭代器。当其遍历每一个项时，它将每一个项加总到一个总和并在迭代完成时返回总和。示例 13-13 有一个展示 `sum` 方法使用的测试：
 
-```
+```rust
 // Some code
     #[test]
     fn iterator_sum() {
@@ -513,7 +513,7 @@ pub trait Iterator {
 
 示例 13-14 展示了一个调用迭代器适配器方法 `map` 的例子，该 `map` 方法使用闭包来调用每个元素以生成新的迭代器。这里的闭包创建了一个新的迭代器，对其中 vector 中的每个元素都被加 1。：
 
-```
+```rust
 // Some code
     let v1: Vec<i32> = vec![1, 2, 3];
 
@@ -546,7 +546,7 @@ warning: `iterators` (bin "iterators") generated 1 warning
 
 在示例 13-15 中，我们将遍历由 `map` 调用生成的迭代器的结果收集到一个 vector 中，它将会含有原始 vector 中每个元素加 1 的结果：
 
-```
+```rust
 // Some code
     let v1: Vec<i32> = vec![1, 2, 3];
 
@@ -567,7 +567,7 @@ warning: `iterators` (bin "iterators") generated 1 warning
 
 示例 13-16 中使用 `filter` 和一个捕获环境中变量 `shoe_size` 的闭包来遍历一个 `Shoe` 结构体集合。它只会返回指定大小的鞋子。
 
-```
+```rust
 // Some code
 #[derive(PartialEq, Debug)]
 struct Shoe {
