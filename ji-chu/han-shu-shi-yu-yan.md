@@ -15,7 +15,7 @@ Rust 的设计灵感来源于很多现存的语言和技术。其中一个显著
 
 ## 闭包：可以捕获环境的匿名函数 <a href="#bi-bao-ke-yi-bu-huo-huan-jing-de-ni-ming-han-shu" id="bi-bao-ke-yi-bu-huo-huan-jing-de-ni-ming-han-shu"></a>
 
-Rust 的 **闭包**（_closures_）是可以保存在一个变量中或作为参数传递给其他函数的匿名函数。可以在一个地方创建闭包，然后在不同的上下文中执行闭包运算。不同于函数，闭包允许捕获被定义时所在作用域中的值。我们将展示闭包的这些功能如何复用代码和自定义行为。
+Rust 的 <mark style="color:red;">**闭包**</mark><mark style="color:red;">（</mark>_<mark style="color:red;">closures</mark>_<mark style="color:red;">）是可以保存在一个变量中或作为参数传递给其他函数的匿名函数。</mark>可以在一个地方创建闭包，然后在不同的上下文中执行闭包运算。不同于函数，闭包允许捕获被定义时所在作用域中的值。我们将展示闭包的这些功能如何复用代码和自定义行为。
 
 ### 闭包会捕获其环境 <a href="#bi-bao-hui-bu-huo-qi-huan-jing" id="bi-bao-hui-bu-huo-qi-huan-jing"></a>
 
@@ -23,7 +23,7 @@ Rust 的 **闭包**（_closures_）是可以保存在一个变量中或作为参
 
 有很多种方式来实现这些。例如，使用有 `Red` 和 `Blue` 两个成员的 `ShirtColor` 枚举（出于简单考虑限定为两种颜色）。我们使用 `Inventory` 结构体来代表公司的库存，它有一个类型为 `Vec<ShirtColor>` 的 `shirts` 字段表示库存中的衬衫的颜色。`Inventory` 上定义的 `giveaway` 方法获取免费衬衫得主所喜爱的颜色（如有），并返回其获得的衬衫的颜色。初始代码如示例 13-1 所示：
 
-```
+```rust
 // Some code
 #[derive(Debug, PartialEq, Copy, Clone)]
 enum ShirtColor {
@@ -102,13 +102,13 @@ The user with preference None gets Blue
 
 ### 闭包类型推断和注解 <a href="#bi-bao-lei-xing-tui-duan-he-zhu-jie" id="bi-bao-lei-xing-tui-duan-he-zhu-jie"></a>
 
-函数与闭包还有更多区别。闭包并不总是要求像 `fn` 函数那样在参数和返回值上注明类型。函数中需要类型注解是因为他们是暴露给用户的显式接口的一部分。严格定义这些接口对保证所有人都对函数使用和返回值的类型理解一致是很重要的。与此相比，闭包并不用于这样暴露在外的接口：他们储存在变量中并被使用，不用命名他们或暴露给库的用户调用。
+函数与闭包还有更多区别。<mark style="color:red;">闭包并不总是要求像</mark> <mark style="color:red;"></mark><mark style="color:red;">`fn`</mark> <mark style="color:red;"></mark><mark style="color:red;">函数那样在参数和返回值上注明类型</mark>。函数中需要类型注解是因为他们是暴露给用户的显式接口的一部分。严格定义这些接口对保证所有人都对函数使用和返回值的类型理解一致是很重要的。与此相比，闭包并不用于这样暴露在外的接口：他们储存在变量中并被使用，不用命名他们或暴露给库的用户调用。
 
 闭包通常很短，并只关联于小范围的上下文而非任意情境。在这些有限制的上下文中，编译器能可靠地推断参数和返回值的类型，类似于它是如何能够推断大部分变量的类型一样（同时也有编译器需要闭包类型注解的罕见情况）。
 
 类似于变量，如果我们希望增加明确性和清晰度也可以添加类型标注，坏处是使代码变得更啰嗦（相对于严格必要的代码）。为示例 13-1 中定义的闭包标注类型看起来如示例 13-2 中的定义一样。这个例子中，我们定义了一个闭包并将它保存在变量中，而不是像示例 13-1 那样在传参的地方定义它：
 
-```
+```rust
 // Some code
     let expensive_closure = |num: u32| -> u32 {
         println!("calculating slowly...");
@@ -129,9 +129,9 @@ let add_one_v4 = |x|               x + 1  ;
 
 第一行展示了一个函数定义，第二行展示了一个完整标注的闭包定义。第三行闭包定义中省略了类型注解，而第四行去掉了可选的大括号，因为闭包体只有一个表达式。这些都是有效的闭包定义，并在调用时产生相同的行为。调用闭包是 `add_one_v3` 和 `add_one_v4` 能够编译的必要条件，因为类型将从其用法中推断出来。这类似于 `let v = Vec::new();`，Rust 需要类型注解或是某种类型的值被插入到 `Vec` 才能推断其类型。
 
-编译器会为闭包定义中的每个参数和返回值推断一个具体类型。例如，示例 13-3 中展示了仅仅将参数作为返回值的简短的闭包定义。除了作为示例的目的这个闭包并不是很实用。注意这个定义没有增加任何类型注解，所以我们可以用任意类型来调用这个闭包。但是如果尝试调用闭包两次，第一次使用 `String` 类型作为参数而第二次使用 `u32`，则会得到一个错误：
+<mark style="color:red;">编译器会为闭包定义中的每个参数和返回值推断一个具体类型</mark>。例如，示例 13-3 中展示了仅仅将参数作为返回值的简短的闭包定义。除了作为示例的目的这个闭包并不是很实用。注意这个定义没有增加任何类型注解，所以我们可以用任意类型来调用这个闭包。但是如果尝试调用闭包两次，第一次使用 `String` 类型作为参数而第二次使用 `u32`，则会得到一个错误：
 
-```
+```rust
 // Some code
     let example_closure = |x| x;
 
@@ -164,7 +164,7 @@ For more information about this error, try `rustc --explain E0308`.
 error: could not compile `closure-example` due to previous error
 ```
 
-第一次使用 `String` 值调用 `example_closure` 时，编译器推断这个闭包中 `x` 的类型以及返回值的类型是 `String`。接着这些类型被锁定进闭包 `example_closure` 中，如果尝试对同一闭包使用不同类型则就会得到类型错误。
+<mark style="color:red;">第一次使用</mark> <mark style="color:red;"></mark><mark style="color:red;">`String`</mark> <mark style="color:red;"></mark><mark style="color:red;">值调用</mark> <mark style="color:red;"></mark><mark style="color:red;">`example_closure`</mark> <mark style="color:red;"></mark><mark style="color:red;">时，编译器推断这个闭包中</mark> <mark style="color:red;"></mark><mark style="color:red;">`x`</mark> <mark style="color:red;"></mark><mark style="color:red;">的类型以及返回值的类型是</mark> <mark style="color:red;"></mark><mark style="color:red;">`String`</mark><mark style="color:red;">。接着这些类型被锁定进闭包</mark> <mark style="color:red;"></mark><mark style="color:red;">`example_closure`</mark> <mark style="color:red;"></mark><mark style="color:red;">中，如果尝试对同一闭包使用不同类型则就会得到类型错误。</mark>
 
 ### 捕获引用或者移动所有权 <a href="#bu-huo-yin-yong-huo-zhe-yi-dong-suo-you-quan" id="bu-huo-yin-yong-huo-zhe-yi-dong-suo-you-quan"></a>
 
@@ -172,7 +172,7 @@ error: could not compile `closure-example` due to previous error
 
 在示例 13-4 中定义了一个捕获名为 `list` 的 vector 的不可变引用的闭包，因为只需不可变引用就能打印其值：
 
-```
+```rust
 // Some code
 fn main() {
     let list = vec![1, 2, 3];
@@ -204,7 +204,7 @@ After calling closure: [1, 2, 3]
 
 接下来在示例 13-5 中，我们修改闭包体让它向 `list` vector 增加一个元素。闭包现在捕获一个可变引用：
 
-```
+```rust
 // Some code
 fn main() {
     let mut list = vec![1, 2, 3];
@@ -235,7 +235,7 @@ After calling closure: [1, 2, 3, 7]
 
 在将闭包传递到一个新的线程时这个技巧很有用，它可以移动数据所有权给新线程。我们将在 16 章讨论并发时详细讨论线程以及为什么你想要使用它们。现在我们先简单探讨用需要 `move` 关键字的闭包来生成新的线程。示例 13-6 修改了示例 13-4 以便在一个新的线程而非主线程中打印 vector：
 
-```
+```rust
 // Some code
 use std::thread;
 
