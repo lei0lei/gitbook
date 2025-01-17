@@ -36,7 +36,7 @@
 
 ## 附录
 
-* [排序算法](fu-lu/pai-xu-suan-fa.md)
+* [排序算法](fu-lu/page-1.md)
 * [DP算法](fu-lu/dp-suan-fa.md)
 
 ## 示例
@@ -60,7 +60,7 @@
 * [创建宏](shi-li/chuang-jian-hong.md)
 * [错误处理](shi-li/cuo-wu-chu-li.md)
 * [标准库类型](shi-li/biao-zhun-ku-lei-xing.md)
-* [标准库more](shi-li/biao-zhun-ku-more.md)
+* [标准库more](shi-li/biao-zhun-ku.md)
 * [测试](shi-li/ce-shi.md)
 * [不安全操作](shi-li/bu-an-quan-cao-zuo.md)
 * [兼容](shi-li/jian-rong.md)
@@ -84,7 +84,7 @@
 
 ## 深入理解RUST
 
-* [Page 1](shen-ru-li-jie-rust/page-1.md)
+* [Page 1](unofficial/page-1.md)
 
 ## Reference
 
