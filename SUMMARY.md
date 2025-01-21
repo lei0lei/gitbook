@@ -6,8 +6,6 @@
 ## 基础
 
 * [简单例子](ji-chu/jian-dan-li-zi.md)
-* [变量绑定与解构](ji-chu/bian-liang-bang-ding-yu-jie-gou.md)
-* [基本类型](ji-chu/ji-ben-lei-xing.md)
 * [常见概念](ji-chu/chang-jian-gai-nian.md)
 * [所有权](ji-chu/suo-you-quan.md)
 * [结构体](ji-chu/jie-gou-ti.md)
@@ -68,6 +66,9 @@
 
 ## courses
 
+* [变量绑定与解构](courses/bian-liang-bang-ding-yu-jie-gou.md)
+* [基本类型](courses/ji-ben-lei-xing.md)
+* [所有权和借用](courses/suo-you-quan-he-jie-yong.md)
 * [生命周期](courses/sheng-ming-zhou-qi.md)
 * [函数式编程](courses/han-shu-shi-bian-cheng.md)
 * [类型](courses/lei-xing.md)
