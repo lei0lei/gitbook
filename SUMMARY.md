@@ -69,6 +69,7 @@
 * [变量绑定与解构](courses/bian-liang-bang-ding-yu-jie-gou.md)
 * [基本类型](courses/ji-ben-lei-xing.md)
 * [所有权和借用](courses/suo-you-quan-he-jie-yong.md)
+* [复合类型](courses/fu-he-lei-xing.md)
 * [生命周期](courses/sheng-ming-zhou-qi.md)
 * [函数式编程](courses/han-shu-shi-bian-cheng.md)
 * [类型](courses/lei-xing.md)
