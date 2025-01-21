@@ -200,13 +200,165 @@ assert_eq!(slice, &[2, 3]);
 
 ### [什么是字符串?](https://course.rs/basic/compound-type/string-slice.html#%E4%BB%80%E4%B9%88%E6%98%AF%E5%AD%97%E7%AC%A6%E4%B8%B2) <a href="#shen-me-shi-zi-fu-chuan" id="shen-me-shi-zi-fu-chuan"></a>
 
+顾名思义，字符串是由字符组成的连续集合，但是在上一节中我们提到过，**Rust 中的字符是 Unicode 类型，因此每个字符占据 4 个字节内存空间，但是在字符串中不一样，字符串是 UTF-8 编码，也就是字符串中的字符所占的字节数是变化的(1 - 4)**，这样有助于大幅降低字符串所占用的内存空间。
+
+Rust 在语言级别，只有一种字符串类型： `str`，它通常是以引用类型出现 `&str`，也就是上文提到的字符串切片。虽然语言级别只有上述的 `str` 类型，但是在标准库里，还有多种不同用途的字符串类型，其中使用最广的即是 `String` 类型。
+
+`str` 类型是硬编码进可执行文件，也无法被修改，但是 `String` 则是一个可增长、可改变且具有所有权的 UTF-8 编码字符串，**当 Rust 用户提到字符串时，往往指的就是 `String` 类型和 `&str` 字符串切片类型，这两个类型都是 UTF-8 编码**。
+
+除了 `String` 类型的字符串，Rust 的标准库还提供了其他类型的字符串，例如 `OsString`， `OsStr`， `CsString` 和 `CsStr` 等，注意到这些名字都以 `String` 或者 `Str` 结尾了吗？它们分别对应的是具有所有权和被借用的变量。
+
 ### [String 与 \&str 的转换](https://course.rs/basic/compound-type/string-slice.html#string-%E4%B8%8E-str-%E7%9A%84%E8%BD%AC%E6%8D%A2) <a href="#string-yu-str-de-zhuan-huan" id="string-yu-str-de-zhuan-huan"></a>
+
+在之前的代码中，已经见到好几种从 `&str` 类型生成 `String` 类型的操作：
+
+* `String::from("hello,world")`
+* `"hello,world".to_string()`
+
+那么如何将 `String` 类型转为 `&str` 类型呢？答案很简单，取引用即可：
+
+```rust
+// Some code
+fn main() {
+    let s = String::from("hello,world!");
+    say_hello(&s);
+    say_hello(&s[..]);
+    say_hello(s.as_str());
+}
+
+fn say_hello(s: &str) {
+    println!("{}",s);
+}
+```
+
+实际上这种灵活用法是因为 `deref` 隐式强制转换，具体我们会在 [`Deref` 特征](https://course.rs/advance/smart-pointer/deref.html)进行详细讲解。
 
 ### [字符串索引](https://course.rs/basic/compound-type/string-slice.html#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%B4%A2%E5%BC%95) <a href="#zi-fu-chuan-suo-yin" id="zi-fu-chuan-suo-yin"></a>
 
+在其它语言中，使用索引的方式访问字符串的某个字符或者子串是很正常的行为，但是在 Rust 中就会报错：
+
+```rust
+// Some code
+   let s1 = String::from("hello");
+   let h = s1[0];
+```
+
+该代码会产生如下错误：
+
+```
+// Some code
+3 |     let h = s1[0];
+  |             ^^^^^ `String` cannot be indexed by `{integer}`
+  |
+  = help: the trait `Index<{integer}>` is not implemented for `String`
+
+```
+
+[**深入字符串内部**](https://course.rs/basic/compound-type/string-slice.html#%E6%B7%B1%E5%85%A5%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%86%85%E9%83%A8)
+
+字符串的底层的数据存储格式实际上是\[ `u8` ]，一个字节数组。对于 `let hello = String::from("Hola");` 这行代码来说，`Hola` 的长度是 `4` 个字节，因为 `"Hola"` 中的每个字母在 UTF-8 编码中仅占用 1 个字节，但是对于下面的代码呢？
+
+```rust
+// Some code
+let hello = String::from("中国人");
+
+```
+
+如果问你该字符串多长，你可能会说 `3`，但是实际上是 `9` 个字节的长度，因为大部分常用汉字在 UTF-8 中的长度是 `3` 个字节，因此这种情况下对 `hello` 进行索引，访问 `&hello[0]` 没有任何意义，因为你取不到 `中` 这个字符，而是取到了这个字符三个字节中的第一个字节，这是一个非常奇怪而且难以理解的返回值。
+
+[**字符串的不同表现形式**](https://course.rs/basic/compound-type/string-slice.html#%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9A%84%E4%B8%8D%E5%90%8C%E8%A1%A8%E7%8E%B0%E5%BD%A2%E5%BC%8F)
+
+现在看一下用梵文写的字符串 `“नमस्ते”`, 它底层的字节数组如下形式：
+
+```
+// Some code
+[224, 164, 168, 224, 164, 174, 224, 164, 184, 224, 165, 141, 224, 164, 164,
+224, 165, 135]
+
+```
+
+长度是 18 个字节，这也是计算机最终存储该字符串的形式。如果从字符的形式去看，则是：
+
+```
+// Some code
+['न', 'म', 'स', '्', 'त', 'े']
+
+```
+
+但是这种形式下，第四和六两个字母根本就不存在，没有任何意义，接着再从字母串的形式去看：
+
+```
+// Some code
+["न", "म", "स्", "ते"]
+
+```
+
+所以，可以看出来 Rust 提供了不同的字符串展现方式，这样程序可以挑选自己想要的方式去使用，而无需去管字符串从人类语言角度看长什么样。
+
+还有一个原因导致了 Rust 不允许去索引字符串：因为索引操作，我们总是期望它的性能表现是 O(1)，然而对于 `String` 类型来说，无法保证这一点，因为 Rust 可能需要从 0 开始去遍历字符串来定位合法的字符。
+
 ### [字符串切片](https://course.rs/basic/compound-type/string-slice.html#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%88%87%E7%89%87) <a href="#zi-fu-chuan-qie-pian" id="zi-fu-chuan-qie-pian"></a>
 
+前文提到过，字符串切片是非常危险的操作，因为切片的索引是通过字节来进行，但是字符串又是 UTF-8 编码，因此你无法保证索引的字节刚好落在字符的边界上，例如：
+
+```
+// Some code
+let hello = "中国人";
+
+let s = &hello[0..2];
+
+```
+
+运行上面的程序，会直接造成崩溃：
+
+```
+// Some code
+thread 'main' panicked at 'byte index 2 is not a char boundary; it is inside '中' (bytes 0..3) of `中国人`', src/main.rs:4:14
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+```
+
+这里提示的很清楚，我们索引的字节落在了 `中` 字符的内部，这种返回没有任何意义。
+
+因此在通过索引区间来访问字符串时，**需要格外的小心**，一不注意，就会导致你程序的崩溃！
+
 ### [操作字符串](https://course.rs/basic/compound-type/string-slice.html#%E6%93%8D%E4%BD%9C%E5%AD%97%E7%AC%A6%E4%B8%B2) <a href="#cao-zuo-zi-fu-chuan" id="cao-zuo-zi-fu-chuan"></a>
+
+由于 `String` 是可变字符串，下面介绍 Rust 字符串的修改，添加，删除等常用方法：
+
+[**追加 (Push)**](https://course.rs/basic/compound-type/string-slice.html#%E8%BF%BD%E5%8A%A0-push)
+
+在字符串尾部可以使用 `push()` 方法追加字符 `char`，也可以使用 `push_str()` 方法追加字符串字面量。这两个方法都是**在原有的字符串上追加，并不会返回新的字符串**。由于字符串追加操作要修改原来的字符串，则该字符串必须是可变的，即**字符串变量必须由 `mut` 关键字修饰**。
+
+示例代码如下：
+
+```rust
+// Some code
+fn main() {
+    let mut s = String::from("Hello ");
+
+    s.push_str("rust");
+    println!("追加字符串 push_str() -> {}", s);
+
+    s.push('!');
+    println!("追加字符 push() -> {}", s);
+}
+```
+
+代码运行结果：
+
+```
+// Some code
+追加字符串 push_str() -> Hello rust
+追加字符 push() -> Hello rust!
+
+```
+
+
+
+
+
+
 
 ### [字符串转义](https://course.rs/basic/compound-type/string-slice.html#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E4%B9%89) <a href="#zi-fu-chuan-zhuan-yi" id="zi-fu-chuan-zhuan-yi"></a>
 
