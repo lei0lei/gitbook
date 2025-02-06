@@ -360,7 +360,102 @@ fn main() {
 
 示例代码如下：
 
-z/[符串转义](https://course.rs/basic/compound-type/string-slice.html#%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E4%B9%89)
+```rust
+// Some code
+fn main() {
+    let mut s = String::from("Hello rust!");
+    s.insert(5, ',');
+    println!("插入字符 insert() -> {}", s);
+    s.insert_str(6, " I like");
+    println!("插入字符串 insert_str() -> {}", s);
+}
+```
+
+代码运行结果：
+
+```
+// Some code
+插入字符 insert() -> Hello, rust!
+插入字符串 insert_str() -> Hello, I like rust!
+
+```
+
+[**替换 (Replace)**](https://course.rs/basic/compound-type/string-slice.html#%E6%9B%BF%E6%8D%A2-replace)
+
+如果想要把字符串中的某个字符串替换成其它的字符串，那可以使用 `replace()` 方法。与替换有关的方法有三个。
+
+1、`replace`
+
+该方法可适用于 `String` 和 `&str` 类型。`replace()` 方法接收两个参数，第一个参数是要被替换的字符串，第二个参数是新的字符串。该方法会替换所有匹配到的字符串。**该方法是返回一个新的字符串，而不是操作原来的字符串**。
+
+```rust
+// Some code
+fn main() {
+    let string_replace = String::from("I like rust. Learning rust is my favorite!");
+    let new_string_replace = string_replace.replace("rust", "RUST");
+    dbg!(new_string_replace);
+}
+```
+
+代码运行结果：
+
+```
+// Some code
+new_string_replace = "I like RUST. Learning RUST is my favorite!"
+
+```
+
+2、`replacen`
+
+该方法可适用于 `String` 和 `&str` 类型。`replacen()` 方法接收三个参数，前两个参数与 `replace()` 方法一样，第三个参数则表示替换的个数。**该方法是返回一个新的字符串，而不是操作原来的字符串**。
+
+```rust
+// Some code
+fn main() {
+    let string_replace = "I like rust. Learning rust is my favorite!";
+    let new_string_replacen = string_replace.replacen("rust", "RUST", 1);
+    dbg!(new_string_replacen);
+}
+```
+
+代码运行结果：
+
+```
+// Some code
+new_string_replacen = "I like RUST. Learning rust is my favorite!"
+```
+
+3、`replace_range`
+
+该方法仅适用于 `String` 类型。`replace_range` 接收两个参数，第一个参数是要替换字符串的范围（Range），第二个参数是新的字符串。**该方法是直接操作原来的字符串，不会返回新的字符串。该方法需要使用 `mut` 关键字修饰**。
+
+```rust
+// Some code
+fn main() {
+    let mut string_replace_range = String::from("I like rust!");
+    string_replace_range.replace_range(7..8, "R");
+    dbg!(string_replace_range);
+}
+```
+
+代码运行结果：
+
+```
+// Some code
+string_replace_range = "I like Rust!"
+```
+
+[**删除 (Delete)**](https://course.rs/basic/compound-type/string-slice.html#%E5%88%A0%E9%99%A4-delete)
+
+与字符串删除相关的方法有 4 个，它们分别是 `pop()`，`remove()`，`truncate()`，`clear()`。这四个方法仅适用于 `String` 类型。
+
+1、 `pop` —— 删除并返回字符串的最后一个字符
+
+**该方法是直接操作原来的字符串**。但是存在返回值，其返回值是一个 `Option` 类型，如果字符串为空，则返回 `None`。
+
+
+
+### 字符串转义
 
 ### [操作 UTF-8 字符串](https://course.rs/basic/compound-type/string-slice.html#%E6%93%8D%E4%BD%9C-utf-8-%E5%AD%97%E7%AC%A6%E4%B8%B2) <a href="#cao-zuo-utf8-zi-fu-chuan" id="cao-zuo-utf8-zi-fu-chuan"></a>
 
