@@ -18,7 +18,7 @@
 * [返回值和错误处理](ji-chu/fan-hui-zhi-he-cuo-wu-chu-li.md)
 * [包和模块](ji-chu/bao-he-mo-kuai.md)
 * [注释和文档](ji-chu/zhu-shi-he-wen-dang.md)
-* [格式化输出](ji-chu/ge-shi-hua-shu-chu.md)
+* [格式化输出✔](ji-chu/ge-shi-hua-shu-chu.md)
 * [简单例子](ji-chu/jian-dan-li-zi.md)
 * [常见概念](ji-chu/chang-jian-gai-nian.md)
 * [所有权](ji-chu/suo-you-quan.md)
