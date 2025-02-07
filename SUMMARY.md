@@ -3,42 +3,43 @@
 * [资源](README.md)
 * [入门](ru-men.md)
 
-## 基础
+## Rust Course
 
-* [变量绑定与解构](ji-chu/bian-liang-bang-ding-yu-jie-gou.md)
-* [基本类型](ji-chu/ji-ben-lei-xing.md)
-* [所有权与借用](ji-chu/suo-you-quan-yu-jie-yong.md)
-* [复合类型](ji-chu/fu-he-lei-xing.md)
-* [流程控制](ji-chu/liu-cheng-kong-zhi.md)
-* [模式匹配](ji-chu/mo-shi-pi-pei.md)
-* [方法](ji-chu/fang-fa.md)
-* [泛型与特征](ji-chu/fan-xing-yu-te-zheng.md)
-* [集合类型](ji-chu/ji-he-lei-xing.md)
-* [认识生命周期](ji-chu/ren-shi-sheng-ming-zhou-qi.md)
-* [返回值和错误处理](ji-chu/fan-hui-zhi-he-cuo-wu-chu-li.md)
-* [包和模块✔](ji-chu/bao-he-mo-kuai/README.md)
-  * [包crate✔](ji-chu/bao-he-mo-kuai/bao-crate.md)
-  * [模块module✔](ji-chu/bao-he-mo-kuai/mo-kuai-module.md)
-  * [使用 use 及受限可见性](ji-chu/bao-he-mo-kuai/shi-yong-use-ji-shou-xian-ke-jian-xing.md)
-* [注释和文档](ji-chu/zhu-shi-he-wen-dang.md)
-* [格式化输出✔](ji-chu/ge-shi-hua-shu-chu.md)
-* [简单例子](ji-chu/jian-dan-li-zi.md)
-* [常见概念](ji-chu/chang-jian-gai-nian.md)
-* [所有权](ji-chu/suo-you-quan.md)
-* [结构体](ji-chu/jie-gou-ti.md)
-* [枚举](ji-chu/mei-ju.md)
-* [集合](ji-chu/ji-he.md)
-* [包管理](ji-chu/bao-guan-li.md)
-* [错误处理](ji-chu/cuo-wu-chu-li.md)
-* [泛型,trait,生命周期](ji-chu/fan-xing-trait-sheng-ming-zhou-qi.md)
-* [自动化测试](ji-chu/zi-dong-hua-ce-shi.md)
-* [IO](ji-chu/io.md)
-* [函数式语言](ji-chu/han-shu-shi-yu-yan.md)
-* [智能指针](ji-chu/zhi-neng-zhi-zhen.md)
-* [并发](ji-chu/bing-fa.md)
-* [OOP](ji-chu/oop.md)
-* [高级特征](ji-chu/gao-ji-te-zheng.md)
-* [cargo](ji-chu/cargo.md)
+* [资源](rust-course/zi-yuan.md)
+* [变量绑定与解构](rust-course/bian-liang-bang-ding-yu-jie-gou.md)
+* [基本类型](rust-course/ji-ben-lei-xing.md)
+* [所有权与借用](rust-course/suo-you-quan-yu-jie-yong.md)
+* [复合类型](rust-course/fu-he-lei-xing.md)
+* [流程控制](rust-course/liu-cheng-kong-zhi.md)
+* [模式匹配](rust-course/mo-shi-pi-pei.md)
+* [方法](rust-course/fang-fa.md)
+* [泛型与特征](rust-course/fan-xing-yu-te-zheng.md)
+* [集合类型](rust-course/ji-he-lei-xing.md)
+* [认识生命周期](rust-course/ren-shi-sheng-ming-zhou-qi.md)
+* [返回值和错误处理](rust-course/fan-hui-zhi-he-cuo-wu-chu-li.md)
+* [包和模块✔](rust-course/bao-he-mo-kuai/README.md)
+  * [包crate✔](rust-course/bao-he-mo-kuai/bao-crate.md)
+  * [模块module✔](rust-course/bao-he-mo-kuai/mo-kuai-module.md)
+  * [使用 use 及受限可见性](rust-course/bao-he-mo-kuai/shi-yong-use-ji-shou-xian-ke-jian-xing.md)
+* [注释和文档](rust-course/zhu-shi-he-wen-dang.md)
+* [格式化输出✔](rust-course/ge-shi-hua-shu-chu.md)
+* [简单例子](rust-course/jian-dan-li-zi.md)
+* [常见概念](rust-course/chang-jian-gai-nian.md)
+* [所有权](rust-course/suo-you-quan.md)
+* [结构体](rust-course/jie-gou-ti.md)
+* [枚举](rust-course/mei-ju.md)
+* [集合](rust-course/ji-he.md)
+* [包管理](rust-course/bao-guan-li.md)
+* [错误处理](rust-course/cuo-wu-chu-li.md)
+* [泛型,trait,生命周期](rust-course/fan-xing-trait-sheng-ming-zhou-qi.md)
+* [自动化测试](rust-course/zi-dong-hua-ce-shi.md)
+* [IO](rust-course/io.md)
+* [函数式语言](rust-course/han-shu-shi-yu-yan.md)
+* [智能指针](rust-course/zhi-neng-zhi-zhen.md)
+* [并发](rust-course/bing-fa.md)
+* [OOP](rust-course/oop.md)
+* [高级特征](rust-course/gao-ji-te-zheng.md)
+* [cargo](rust-course/cargo.md)
 
 ## web开发
 
@@ -112,3 +113,15 @@
 ## actix
 
 * [Page 7](actix/page-7.md)
+
+## Rust-lang
+
+* [资源](rust-lang/zi-yuan.md)
+
+## Rust by Example
+
+* [资源](rust-by-example/zi-yuan.md)
+
+## Comprehensive Rust
+
+* [资源](comprehensive-rust/zi-yuan.md)
