@@ -30,28 +30,6 @@
 * [注释和文档✔](rust-course/zhu-shi-he-wen-dang.md)
 * [格式化输出✔](rust-course/ge-shi-hua-shu-chu.md)
 * [宏编程✔](rust-course/hong-bian-cheng.md)
-* [简单例子](rust-course/jian-dan-li-zi.md)
-* [常见概念](rust-course/chang-jian-gai-nian.md)
-* [所有权](rust-course/suo-you-quan.md)
-* [结构体](rust-course/jie-gou-ti.md)
-* [枚举](rust-course/mei-ju.md)
-* [集合](rust-course/ji-he.md)
-* [包管理](rust-course/bao-guan-li.md)
-* [错误处理](rust-course/cuo-wu-chu-li.md)
-* [泛型,trait,生命周期](rust-course/fan-xing-trait-sheng-ming-zhou-qi.md)
-* [自动化测试](rust-course/zi-dong-hua-ce-shi.md)
-* [IO](rust-course/io.md)
-* [函数式语言](rust-course/han-shu-shi-yu-yan.md)
-* [智能指针](rust-course/zhi-neng-zhi-zhen.md)
-* [并发](rust-course/bing-fa.md)
-* [OOP](rust-course/oop.md)
-* [高级特征](rust-course/gao-ji-te-zheng.md)
-* [cargo](rust-course/cargo.md)
-
-## web开发
-
-* [构建多线程web server](web-kai-fa/gou-jian-duo-xian-cheng-web-server.md)
-* [carte](web-kai-fa/carte.md)
 
 ## 标准库
 
