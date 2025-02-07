@@ -21,7 +21,7 @@
   * [包crate✔](rust-course/bao-he-mo-kuai/bao-crate.md)
   * [模块module✔](rust-course/bao-he-mo-kuai/mo-kuai-module.md)
   * [使用 use 及受限可见性](rust-course/bao-he-mo-kuai/shi-yong-use-ji-shou-xian-ke-jian-xing.md)
-* [注释和文档](rust-course/zhu-shi-he-wen-dang.md)
+* [注释和文档✔](rust-course/zhu-shi-he-wen-dang.md)
 * [格式化输出✔](rust-course/ge-shi-hua-shu-chu.md)
 * [简单例子](rust-course/jian-dan-li-zi.md)
 * [常见概念](rust-course/chang-jian-gai-nian.md)
