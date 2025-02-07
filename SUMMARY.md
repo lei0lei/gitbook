@@ -12,7 +12,7 @@
 * [复合类型](rust-course/fu-he-lei-xing.md)
 * [流程控制](rust-course/liu-cheng-kong-zhi.md)
 * [模式匹配](rust-course/mo-shi-pi-pei.md)
-* [方法 method](rust-course/fang-fa-method.md)
+* [方法 method ✔](rust-course/fang-fa-method.md)
 * [泛型与特征](rust-course/fan-xing-yu-te-zheng/README.md)
   * [泛型 Generics](rust-course/fan-xing-yu-te-zheng/fan-xing-generics.md)
   * [特征Trait](rust-course/fan-xing-yu-te-zheng/te-zheng-trait.md)
