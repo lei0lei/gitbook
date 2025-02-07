@@ -296,7 +296,7 @@ mod back_of_house {
 
 而结构体的应用场景比较复杂，其中的字段也往往部分在 A 处被使用，部分在 B 处被使用，因此无法确定成员的可见性，那索性就设置为全部不可见，将选择权交给程序员。
 
-### [模块与文件分离](https://course.rs/basic/crate-module/module.html#%E6%A8%A1%E5%9D%97%E4%B8%8E%E6%96%87%E4%BB%B6%E5%88%86%E7%A6%BB) <a href="#mo-kuai-yu-wen-jian-fen-li" id="mo-kuai-yu-wen-jian-fen-li"></a>
+## [模块与文件分离](https://course.rs/basic/crate-module/module.html#%E6%A8%A1%E5%9D%97%E4%B8%8E%E6%96%87%E4%BB%B6%E5%88%86%E7%A6%BB) <a href="#mo-kuai-yu-wen-jian-fen-li" id="mo-kuai-yu-wen-jian-fen-li"></a>
 
 在之前的例子中，我们所有的模块都定义在 `src/lib.rs` 中，但是当模块变多或者变大时，需要将模块放入一个单独的文件中，让代码更好维护。
 
