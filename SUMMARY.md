@@ -30,6 +30,16 @@
 * [注释和文档✔](rust-course/zhu-shi-he-wen-dang.md)
 * [格式化输出✔](rust-course/ge-shi-hua-shu-chu.md)
 * [宏编程✔](rust-course/hong-bian-cheng.md)
+* [生命周期](rust-course/sheng-ming-zhou-qi.md)
+* [函数式编程](rust-course/han-shu-shi-bian-cheng.md)
+* [深入类型](rust-course/shen-ru-lei-xing.md)
+* [智能指针](rust-course/zhi-neng-zhi-zhen.md)
+* [循环引用与自引用](rust-course/xun-huan-yin-yong-yu-zi-yin-yong.md)
+* [多线程并发](rust-course/duo-xian-cheng-bing-fa.md)
+* [全局变量](rust-course/quan-ju-bian-liang.md)
+* [错误处理](rust-course/cuo-wu-chu-li.md)
+* [unsafe rust](rust-course/unsafe-rust.md)
+* [async/await异步](rust-course/asyncawait-yi-bu.md)
 
 ## 标准库
 
