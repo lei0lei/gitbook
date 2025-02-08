@@ -54,7 +54,7 @@
   * [闭包 Closure](rust-course/han-shu-shi-bian-cheng/bi-bao-closure.md)
   * [迭代器 Iterator](rust-course/han-shu-shi-bian-cheng/die-dai-qi-iterator.md)
 * [深入类型](rust-course/shen-ru-lei-xing.md)
-* [智能指针](rust-course/zhi-neng-zhi-zhen/README.md)
+* [智能指针](rust-course/zhi-neng-zhi-zhen.md)
   * [Box\<T> 堆对象分配](rust-course/zhi-neng-zhi-zhen/boxt-dui-dui-xiang-fen-pei.md)
   * [Deref 解引用](rust-course/zhi-neng-zhi-zhen/deref-jie-yin-yong.md)
   * [Drop 释放资源](rust-course/zhi-neng-zhi-zhen/drop-shi-fang-zi-yuan.md)

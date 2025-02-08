@@ -6,12 +6,19 @@ Rust 的编译器之严格，可以说是举世无双。特别是在所有权方
 
 > 内部可变性的实现是因为 Rust 使用了 `unsafe` 来做到这一点，但是对于使用者来说，这些都是透明的，因为这些不安全代码都被封装到了安全的 API 中
 
-### [Cell](https://course.rs/advance/smart-pointer/cell-refcell.html#cell) <a href="#cell" id="cell"></a>
+## [Cell](https://course.rs/advance/smart-pointer/cell-refcell.html#cell) <a href="#cell" id="cell"></a>
 
 `Cell` 和 `RefCell` 在功能上没有区别，区别在于 `Cell<T>` 适用于 `T` 实现 `Copy` 的情况：
 
 ```rust
-use std::cell::Cell;fn main() {  let c = Cell::new("asdf");  let one = c.get();  c.set("qwer");  let two = c.get();  println!("{},{}", one, two);}
+use std::cell::Cell;
+fn main() {
+  let c = Cell::new("asdf");
+  let one = c.get();
+  c.set("qwer");
+  let two = c.get();
+  println!("{},{}", one, two);
+}
 ```
 
 以上代码展示了 `Cell` 的基本用法，有几点值得注意：
@@ -35,7 +42,7 @@ use std::cell::Cell;fn main() {  let c = Cell::new("asdf");  let one = c.get(); 
         `String: Copy`
 ```
 
-### [RefCell](https://course.rs/advance/smart-pointer/cell-refcell.html#refcell) <a href="#refcell" id="refcell"></a>
+## [RefCell](https://course.rs/advance/smart-pointer/cell-refcell.html#refcell) <a href="#refcell" id="refcell"></a>
 
 由于 `Cell` 类型针对的是实现了 `Copy` 特征的值类型，因此在实际开发中，`Cell` 使用的并不多，因为我们要解决的往往是可变、不可变引用共存导致的问题，此时就需要借助于 `RefCell` 来达成目的。
 
@@ -50,7 +57,15 @@ use std::cell::Cell;fn main() {  let c = Cell::new("asdf");  let one = c.get(); 
 可以看出，`Rc/Arc` 和 `RefCell` 合在一起，解决了 Rust 中严苛的所有权和借用规则带来的某些场景下难使用的问题。但是它们并不是银弹，例如 `RefCell` 实际上并没有解决可变引用和引用可以共存的问题，只是将报错从编译期推迟到运行时，从编译器错误变成了 `panic` 异常：
 
 ```rust
-use std::cell::RefCell;fn main() {    let s = RefCell::new(String::from("hello, world"));    let s1 = s.borrow();    let s2 = s.borrow_mut();    println!("{},{}", s1, s2);}
+use std::cell::RefCell;
+
+fn main() {
+    let s = RefCell::new(String::from("hello, world"));
+    let s1 = s.borrow();
+    let s2 = s.borrow_mut();
+
+    println!("{},{}", s1, s2);
+}
 ```
 
 上面代码在编译期不会报任何错误，你可以顺利运行程序：
@@ -62,7 +77,7 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 但是依然会因为违背了借用规则导致了运行期 `panic`，这非常像中国的天网，它也许会被罪犯蒙蔽一时，但是并不会被蒙蔽一世，任何导致安全风险的存在都将不能被容忍，法网恢恢，疏而不漏。
 
-[**RefCell 为何存在**](https://course.rs/advance/smart-pointer/cell-refcell.html#refcell-%E4%B8%BA%E4%BD%95%E5%AD%98%E5%9C%A8)
+### [**RefCell 为何存在**](https://course.rs/advance/smart-pointer/cell-refcell.html#refcell-%E4%B8%BA%E4%BD%95%E5%AD%98%E5%9C%A8)
 
 相信肯定有读者有疑问了，这么做有任何意义吗？还不如在编译期报错，至少能提前发现问题，而且性能还更好。
 
@@ -74,26 +89,43 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 总之，当你确信编译器误报但不知道该如何解决时，或者你有一个引用类型，需要被四处使用和修改然后导致借用关系难以管理时，都可以优先考虑使用 `RefCell`。
 
-[**RefCell 简单总结**](https://course.rs/advance/smart-pointer/cell-refcell.html#refcell-%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93)
+### [**RefCell 简单总结**](https://course.rs/advance/smart-pointer/cell-refcell.html#refcell-%E7%AE%80%E5%8D%95%E6%80%BB%E7%BB%93)
 
 * 与 `Cell` 用于可 `Copy` 的值不同，`RefCell` 用于引用
 * `RefCell` 只是将借用规则从编译期推迟到程序运行期，并不能帮你绕过这个规则
 * `RefCell` 适用于编译期误报或者一个引用被在多处代码使用、修改以至于难于管理借用关系时
 * 使用 `RefCell` 时，违背借用规则会导致运行期的 `panic`
 
-### [选择 `Cell` 还是 `RefCell`](https://course.rs/advance/smart-pointer/cell-refcell.html#%E9%80%89%E6%8B%A9-cell-%E8%BF%98%E6%98%AF-refcell) <a href="#xuan-ze-cell-hai-shi-refcell" id="xuan-ze-cell-hai-shi-refcell"></a>
+## [选择 `Cell` 还是 `RefCell`](https://course.rs/advance/smart-pointer/cell-refcell.html#%E9%80%89%E6%8B%A9-cell-%E8%BF%98%E6%98%AF-refcell) <a href="#xuan-ze-cell-hai-shi-refcell" id="xuan-ze-cell-hai-shi-refcell"></a>
 
 根据本文的内容，我们可以大概总结下两者的区别：
 
 * `Cell` 只适用于 `Copy` 类型，用于提供值，而 `RefCell` 用于提供引用
 * `Cell` 不会 `panic`，而 `RefCell` 会
 
-[**性能比较**](https://course.rs/advance/smart-pointer/cell-refcell.html#%E6%80%A7%E8%83%BD%E6%AF%94%E8%BE%83)
+### [**性能比较**](https://course.rs/advance/smart-pointer/cell-refcell.html#%E6%80%A7%E8%83%BD%E6%AF%94%E8%BE%83)
 
 `Cell` 没有额外的性能损耗，例如以下两段代码的性能其实是一致的：
 
 ```rust
-// code snipet 1let x = Cell::new(1);let y = &x;let z = &x;x.set(2);y.set(3);z.set(4);println!("{}", x.get());// code snipet 2let mut x = 1;let y = &mut x;let z = &mut x;x = 2;*y = 3;*z = 4;println!("{}", x);
+// code snipet 1
+let x = Cell::new(1);
+let y = &x;
+let z = &x;
+x.set(2);
+y.set(3);
+z.set(4);
+println!("{}", x.get());
+
+// code snipet 2
+let mut x = 1;
+let y = &mut x;
+let z = &mut x;
+x = 2;
+*y = 3;
+*z = 4;
+println!("{}", x);
+
 ```
 
 虽然性能一致，但代码 `1` 拥有代码 `2` 不具有的优势：它能编译成功:)
@@ -102,12 +134,15 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 
 总之，当非要使用内部可变性时，首选 `Cell`，只有你的类型没有实现 `Copy` 时，才去选择 `RefCell`。
 
-### [内部可变性](https://course.rs/advance/smart-pointer/cell-refcell.html#%E5%86%85%E9%83%A8%E5%8F%AF%E5%8F%98%E6%80%A7) <a href="#nei-bu-ke-bian-xing" id="nei-bu-ke-bian-xing"></a>
+## [内部可变性](https://course.rs/advance/smart-pointer/cell-refcell.html#%E5%86%85%E9%83%A8%E5%8F%AF%E5%8F%98%E6%80%A7) <a href="#nei-bu-ke-bian-xing" id="nei-bu-ke-bian-xing"></a>
 
 之前我们提到 `RefCell` 具有内部可变性，何为内部可变性？简单来说，对一个不可变的值进行可变借用，但这个并不符合 Rust 的基本借用规则：
 
 ```rust
-fn main() {    let x = 5;    let y = &mut x;}
+fn main() {
+    let x = 5;
+    let y = &mut x;
+}
 ```
 
 上面的代码会报错，因为我们不能对一个不可变的值进行可变借用，这会破坏 Rust 的安全性保证，相反，你可以对一个可变值进行不可变借用。原因是：当值不可变时，可能会有多个不可变的引用指向它，此时若将其中一个修改为可变的，会造成可变引用与不可变引用共存的情况；而当值可变时，最多只会有一个可变引用指向它，将其修改为不可变，那么最终依然是只有一个不可变的引用指向它。
@@ -115,7 +150,23 @@ fn main() {    let x = 5;    let y = &mut x;}
 虽然基本借用规则是 Rust 的基石，然而在某些场景中，一个值可以在其方法内部被修改，同时对于其它代码不可变，是很有用的：
 
 ```rust
-// 定义在外部库中的特征pub trait Messenger {    fn send(&self, msg: String);}// --------------------------// 我们的代码中的数据结构和实现struct MsgQueue {    msg_cache: Vec<String>,}impl Messenger for MsgQueue {    fn send(&self, msg: String) {        self.msg_cache.push(msg)    }}
+// 定义在外部库中的特征
+pub trait Messenger {
+    fn send(&self, msg: String);
+}
+
+// --------------------------
+// 我们的代码中的数据结构和实现
+struct MsgQueue {
+    msg_cache: Vec<String>,
+}
+
+impl Messenger for MsgQueue {
+    fn send(&self, msg: String) {
+        self.msg_cache.push(msg)
+    }
+}
+
 ```
 
 如上所示，外部库中定义了一个消息发送器特征 `Messenger`，它只有一个发送消息的功能：`fn send(&self, msg: String)`，因为发送消息不需要修改自身，因此原作者在定义时，使用了 `&self` 的不可变借用，这个无可厚非。
@@ -136,17 +187,49 @@ error[E0596]: cannot borrow `self.msg_cache` as mutable, as it is behind a `&` r
 在报错的同时，编译器大聪明还善意地给出了提示：将 `&self` 修改为 `&mut self`，但是。。。我们实现的特征是定义在外部库中，因此该签名根本不能修改。值此危急关头， `RefCell` 闪亮登场：
 
 ```rust
-use std::cell::RefCell;pub trait Messenger {    fn send(&self, msg: String);}pub struct MsgQueue {    msg_cache: RefCell<Vec<String>>,}impl Messenger for MsgQueue {    fn send(&self, msg: String) {        self.msg_cache.borrow_mut().push(msg)    }}fn main() {    let mq = MsgQueue {        msg_cache: RefCell::new(Vec::new()),    };    mq.send("hello, world".to_string());}
+use std::cell::RefCell;
+pub trait Messenger {
+    fn send(&self, msg: String);
+}
+
+pub struct MsgQueue {
+    msg_cache: RefCell<Vec<String>>,
+}
+
+impl Messenger for MsgQueue {
+    fn send(&self, msg: String) {
+        self.msg_cache.borrow_mut().push(msg)
+    }
+}
+
+fn main() {
+    let mq = MsgQueue {
+        msg_cache: RefCell::new(Vec::new()),
+    };
+    mq.send("hello, world".to_string());
+}
 ```
 
 这个 MQ 功能很弱，但是并不妨碍我们演示内部可变性的核心用法：通过包裹一层 `RefCell`，成功的让 `&self` 中的 `msg_cache` 成为一个可变值，然后实现对其的修改。
 
-### [Rc + RefCell 组合使用](https://course.rs/advance/smart-pointer/cell-refcell.html#rc--refcell-%E7%BB%84%E5%90%88%E4%BD%BF%E7%94%A8) <a href="#rcrefcell-zu-he-shi-yong" id="rcrefcell-zu-he-shi-yong"></a>
+## [Rc + RefCell 组合使用](https://course.rs/advance/smart-pointer/cell-refcell.html#rc--refcell-%E7%BB%84%E5%90%88%E4%BD%BF%E7%94%A8) <a href="#rcrefcell-zu-he-shi-yong" id="rcrefcell-zu-he-shi-yong"></a>
 
 在 Rust 中，一个常见的组合就是 `Rc` 和 `RefCell` 在一起使用，前者可以实现一个数据拥有多个所有者，后者可以实现数据的可变性：
 
 ```rust
-use std::cell::RefCell;use std::rc::Rc;fn main() {    let s = Rc::new(RefCell::new("我很善变，还拥有多个主人".to_string()));    let s1 = s.clone();    let s2 = s.clone();    // let mut s2 = s.borrow_mut();    s2.borrow_mut().push_str(", oh yeah!");    println!("{:?}\n{:?}\n{:?}", s, s1, s2);}
+use std::cell::RefCell;
+use std::rc::Rc;
+fn main() {
+    let s = Rc::new(RefCell::new("我很善变，还拥有多个主人".to_string()));
+
+    let s1 = s.clone();
+    let s2 = s.clone();
+    // let mut s2 = s.borrow_mut();
+    s2.borrow_mut().push_str(", oh yeah!");
+
+    println!("{:?}\n{:?}\n{:?}", s, s1, s2);
+}
+
 ```
 
 上面代码中，我们使用 `RefCell<String>` 包裹一个字符串，同时通过 `Rc` 创建了它的三个所有者：`s`、`s1`和`s2`，并且通过其中一个所有者 `s2` 对字符串内容进行了修改。
@@ -161,23 +244,34 @@ RefCell { value: "我很善变，还拥有多个主人, oh yeah!" }
 RefCell { value: "我很善变，还拥有多个主人, oh yeah!" }
 ```
 
-[**性能损耗**](https://course.rs/advance/smart-pointer/cell-refcell.html#%E6%80%A7%E8%83%BD%E6%8D%9F%E8%80%97)
+### [**性能损耗**](https://course.rs/advance/smart-pointer/cell-refcell.html#%E6%80%A7%E8%83%BD%E6%8D%9F%E8%80%97)
 
 相信这两者组合在一起使用时，很多人会好奇到底性能如何，下面我们来简单分析下。
 
 首先给出一个大概的结论，这两者结合在一起使用的性能其实非常高，大致相当于没有线程安全版本的 C++ `std::shared_ptr` 指针，事实上，C++ 这个指针的主要开销也在于原子性这个并发原语上，毕竟线程安全在哪个语言中开销都不小。
 
-[**内存损耗**](https://course.rs/advance/smart-pointer/cell-refcell.html#%E5%86%85%E5%AD%98%E6%8D%9F%E8%80%97)
+### [**内存损耗**](https://course.rs/advance/smart-pointer/cell-refcell.html#%E5%86%85%E5%AD%98%E6%8D%9F%E8%80%97)
 
 两者结合的数据结构与下面类似：
 
 ```rust
-struct Wrapper<T> {    // Rc    strong_count: usize,    weak_count: usize,    // Refcell    borrow_count: isize,    // 包裹的数据    item: T,}
+struct Wrapper<T> {
+    // Rc
+    strong_count: usize,
+    weak_count: usize,
+
+    // Refcell
+    borrow_count: isize,
+
+    // 包裹的数据
+    item: T,
+}
+
 ```
 
 从上面可以看出，从对内存的影响来看，仅仅多分配了三个`usize/isize`，并没有其它额外的负担。
 
-[**CPU 损耗**](https://course.rs/advance/smart-pointer/cell-refcell.html#cpu-%E6%8D%9F%E8%80%97)
+### [**CPU 损耗**](https://course.rs/advance/smart-pointer/cell-refcell.html#cpu-%E6%8D%9F%E8%80%97)
 
 从 CPU 来看，损耗如下：
 
@@ -191,7 +285,7 @@ struct Wrapper<T> {    // Rc    strong_count: usize,    weak_count: usize,    //
 
 其实这些细节不必过于关注，只要知道 CPU 消耗也非常低，甚至编译器还会对此进行进一步优化！
 
-[**CPU 缓存 Miss**](https://course.rs/advance/smart-pointer/cell-refcell.html#cpu-%E7%BC%93%E5%AD%98-miss)
+### [**CPU 缓存 Miss**](https://course.rs/advance/smart-pointer/cell-refcell.html#cpu-%E7%BC%93%E5%AD%98-miss)
 
 唯一需要担心的可能就是这种组合数据结构对于 CPU 缓存是否亲和，这个我们无法证明，只能提出来存在这个可能性，最终的性能影响还需要在实际场景中进行测试。
 
@@ -201,7 +295,7 @@ struct Wrapper<T> {    // Rc    strong_count: usize,    weak_count: usize,    //
 * 但是由于 `Rc` 额外的引入了一次间接取值（`*`），在少数场景下可能会造成性能上的显著损失
 * CPU 缓存可能也不够亲和
 
-### [通过 `Cell::from_mut` 解决借用冲突](https://course.rs/advance/smart-pointer/cell-refcell.html#%E9%80%9A%E8%BF%87-cellfrom_mut-%E8%A7%A3%E5%86%B3%E5%80%9F%E7%94%A8%E5%86%B2%E7%AA%81) <a href="#tong-guo-cellfrommut-jie-jue-jie-yong-chong-tu" id="tong-guo-cellfrommut-jie-jue-jie-yong-chong-tu"></a>
+## [通过 `Cell::from_mut` 解决借用冲突](https://course.rs/advance/smart-pointer/cell-refcell.html#%E9%80%9A%E8%BF%87-cellfrom_mut-%E8%A7%A3%E5%86%B3%E5%80%9F%E7%94%A8%E5%86%B2%E7%AA%81) <a href="#tong-guo-cellfrommut-jie-jue-jie-yong-chong-tu" id="tong-guo-cellfrommut-jie-jue-jie-yong-chong-tu"></a>
 
 在 Rust 1.37 版本中新增了两个非常实用的方法：
 
@@ -211,7 +305,19 @@ struct Wrapper<T> {    // Rc    strong_count: usize,    weak_count: usize,    //
 这里我们不做深入的介绍，但是来看看如何使用这两个方法来解决一个常见的借用冲突问题：
 
 ```rust
-fn is_even(i: i32) -> bool {    i % 2 == 0}fn retain_even(nums: &mut Vec<i32>) {    let mut i = 0;    for num in nums.iter().filter(|&num| is_even(*num)) {        nums[i] = *num;        i += 1;    }    nums.truncate(i);}
+fn is_even(i: i32) -> bool {
+    i % 2 == 0
+}
+
+fn retain_even(nums: &mut Vec<i32>) {
+    let mut i = 0;
+    for num in nums.iter().filter(|&num| is_even(*num)) {
+        nums[i] = *num;
+        i += 1;
+    }
+    nums.truncate(i);
+}
+
 ```
 
 以上代码会报错：
@@ -232,7 +338,17 @@ error[E0502]: cannot borrow `*nums` as mutable because it is also borrowed as im
 很明显，报错是因为同时借用了不可变与可变引用，你可以通过索引的方式来避免这个问题：
 
 ```rust
-fn retain_even(nums: &mut Vec<i32>) {    let mut i = 0;    for j in 0..nums.len() {        if is_even(nums[j]) {            nums[i] = nums[j];            i += 1;        }    }    nums.truncate(i);}
+fn retain_even(nums: &mut Vec<i32>) {
+    let mut i = 0;
+    for j in 0..nums.len() {
+        if is_even(nums[j]) {
+            nums[i] = nums[j];
+            i += 1;
+        }
+    }
+    nums.truncate(i);
+}
+
 ```
 
 但是这样就违背我们的初衷了，毕竟迭代器会让代码更加简洁，那么还有其它的办法吗？
@@ -240,14 +356,28 @@ fn retain_even(nums: &mut Vec<i32>) {    let mut i = 0;    for j in 0..nums.len(
 这时就可以使用 `Cell` 新增的这两个方法：
 
 ```rust
-use std::cell::Cell;fn retain_even(nums: &mut Vec<i32>) {    let slice: &[Cell<i32>] = Cell::from_mut(&mut nums[..])        .as_slice_of_cells();    let mut i = 0;    for num in slice.iter().filter(|num| is_even(num.get())) {        slice[i].set(num.get());        i += 1;    }    nums.truncate(i);}
+use std::cell::Cell;
+
+fn retain_even(nums: &mut Vec<i32>) {
+    let slice: &[Cell<i32>] = Cell::from_mut(&mut nums[..])
+        .as_slice_of_cells();
+
+    let mut i = 0;
+    for num in slice.iter().filter(|num| is_even(num.get())) {
+        slice[i].set(num.get());
+        i += 1;
+    }
+
+    nums.truncate(i);
+}
+
 ```
 
 此时代码将不会报错，因为 `Cell` 上的 `set` 方法获取的是不可变引用 `pub fn set(&self, val: T)`。
 
 当然，以上代码的本质还是对 `Cell` 的运用，只不过这两个方法可以很方便的帮我们把 `&mut [T]` 类型转换成 `&[Cell<T>]` 类型。
 
-### [总结](https://course.rs/advance/smart-pointer/cell-refcell.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
+## [总结](https://course.rs/advance/smart-pointer/cell-refcell.html#%E6%80%BB%E7%BB%93) <a href="#zong-jie" id="zong-jie"></a>
 
 `Cell` 和 `RefCell` 都为我们带来了内部可变性这个重要特性，同时还将借用规则的检查从编译期推迟到运行期，但是这个检查并不能被绕过，该来早晚还是会来，`RefCell` 在运行期的报错会造成 `panic`。
 
