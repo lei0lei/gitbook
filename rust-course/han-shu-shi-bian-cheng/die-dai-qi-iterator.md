@@ -4,7 +4,7 @@
 
 迭代器允许我们迭代一个连续的集合，例如数组、动态数组 `Vec`、`HashMap` 等，在此过程中，只需关心集合中的元素如何处理，而无需关心如何开始、如何结束、按照什么样的索引去访问等问题。
 
-### [For 循环与迭代器](https://course.rs/advance/functional-programing/iterator.html#for-%E5%BE%AA%E7%8E%AF%E4%B8%8E%E8%BF%AD%E4%BB%A3%E5%99%A8) <a href="#for-xun-huan-yu-die-dai-qi" id="for-xun-huan-yu-die-dai-qi"></a>
+## [For 循环与迭代器](https://course.rs/advance/functional-programing/iterator.html#for-%E5%BE%AA%E7%8E%AF%E4%B8%8E%E8%BF%AD%E4%BB%A3%E5%99%A8) <a href="#for-xun-huan-yu-die-dai-qi" id="for-xun-huan-yu-die-dai-qi"></a>
 
 从用途来看，迭代器跟 `for` 循环颇为相似，都是去遍历一个集合，但是实际上它们存在不小的差别，其中最主要的差别就是：**是否通过索引来访问集合**。
 
@@ -54,7 +54,7 @@ for v in arr.into_iter() {
 
 迭代器是函数语言的核心特性，它赋予了 Rust 远超于循环的强大表达能力，我们将在本章中一一为大家进行展现。
 
-### [惰性初始化](https://course.rs/advance/functional-programing/iterator.html#%E6%83%B0%E6%80%A7%E5%88%9D%E5%A7%8B%E5%8C%96) <a href="#duo-xing-chu-shi-hua" id="duo-xing-chu-shi-hua"></a>
+## [惰性初始化](https://course.rs/advance/functional-programing/iterator.html#%E6%83%B0%E6%80%A7%E5%88%9D%E5%A7%8B%E5%8C%96) <a href="#duo-xing-chu-shi-hua" id="duo-xing-chu-shi-hua"></a>
 
 在 Rust 中，迭代器是惰性的，意味着如果你不使用它，那么它将不会发生任何事：
 
@@ -73,7 +73,7 @@ for val in v1_iter {
 
 这种惰性初始化的方式确保了创建迭代器不会有任何额外的性能损耗，其中的元素也不会被消耗，只有使用到该迭代器的时候，一切才开始。
 
-### [next 方法](https://course.rs/advance/functional-programing/iterator.html#next-%E6%96%B9%E6%B3%95) <a href="#next-fang-fa" id="next-fang-fa"></a>
+## [next 方法](https://course.rs/advance/functional-programing/iterator.html#next-%E6%96%B9%E6%B3%95) <a href="#next-fang-fa" id="next-fang-fa"></a>
 
 对于 `for` 如何遍历迭代器，还有一个问题，它如何取出迭代器中的元素？
 
@@ -116,7 +116,7 @@ fn main() {
 
 总之，`next` 方法对**迭代器的遍历是消耗性的**，每次消耗它一个元素，最终迭代器中将没有任何元素，只能返回 `None`。
 
-[**例子：模拟实现 for 循环**](https://course.rs/advance/functional-programing/iterator.html#%E4%BE%8B%E5%AD%90%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0-for-%E5%BE%AA%E7%8E%AF)
+### [**例子：模拟实现 for 循环**](https://course.rs/advance/functional-programing/iterator.html#%E4%BE%8B%E5%AD%90%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0-for-%E5%BE%AA%E7%8E%AF)
 
 因为 `for` 循环是迭代器的语法糖，因此我们完全可以通过迭代器来模拟实现它：
 
@@ -141,7 +141,7 @@ let values = vec![1, 2, 3];
 
 同时我们使用了 `loop` 循环配合 `next` 方法来遍历迭代器中的元素，当迭代器返回 `None` 时，跳出循环。
 
-### [IntoIterator 特征](https://course.rs/advance/functional-programing/iterator.html#intoiterator-%E7%89%B9%E5%BE%81) <a href="#intoiterator-te-zheng" id="intoiterator-te-zheng"></a>
+## [IntoIterator 特征](https://course.rs/advance/functional-programing/iterator.html#intoiterator-%E7%89%B9%E5%BE%81) <a href="#intoiterator-te-zheng" id="intoiterator-te-zheng"></a>
 
 其实有一个细节，由于 `Vec` 动态数组实现了 `IntoIterator` 特征，因此可以通过 `into_iter` 将其转换为迭代器，那如果本身就是一个迭代器，该怎么办？实际上，迭代器自身也实现了 `IntoIterator`，标准库早就帮我们考虑好了：
 
@@ -218,17 +218,17 @@ fn main() {
 * `.iter()` 方法实现的迭代器，调用 `next` 方法返回的类型是 `Some(&T)`
 * `.iter_mut()` 方法实现的迭代器，调用 `next` 方法返回的类型是 `Some(&mut T)`，因此在 `if let Some(v) = values_iter_mut.next()` 中，`v` 的类型是 `&mut i32`，最终我们可以通过 `*v = 0` 的方式修改其值
 
-[**Iterator 和 IntoIterator 的区别**](https://course.rs/advance/functional-programing/iterator.html#iterator-%E5%92%8C-intoiterator-%E7%9A%84%E5%8C%BA%E5%88%AB)
+### [**Iterator 和 IntoIterator 的区别**](https://course.rs/advance/functional-programing/iterator.html#iterator-%E5%92%8C-intoiterator-%E7%9A%84%E5%8C%BA%E5%88%AB)
 
 这两个其实还蛮容易搞混的，但我们只需要记住，`Iterator` 就是迭代器特征，只有实现了它才能称为迭代器，才能调用 `next`。
 
 而 `IntoIterator` 强调的是某一个类型如果实现了该特征，它可以通过 `into_iter`，`iter` 等方法变成一个迭代器。
 
-### [消费者与适配器](https://course.rs/advance/functional-programing/iterator.html#%E6%B6%88%E8%B4%B9%E8%80%85%E4%B8%8E%E9%80%82%E9%85%8D%E5%99%A8) <a href="#xiao-fei-zhe-yu-shi-pei-qi" id="xiao-fei-zhe-yu-shi-pei-qi"></a>
+## [消费者与适配器](https://course.rs/advance/functional-programing/iterator.html#%E6%B6%88%E8%B4%B9%E8%80%85%E4%B8%8E%E9%80%82%E9%85%8D%E5%99%A8) <a href="#xiao-fei-zhe-yu-shi-pei-qi" id="xiao-fei-zhe-yu-shi-pei-qi"></a>
 
 消费者是迭代器上的方法，它会消费掉迭代器中的元素，然后返回其类型的值，这些消费者都有一个共同的特点：在它们的定义中，都依赖 `next` 方法来消费元素，因此这也是为什么迭代器要实现 `Iterator` 特征，而该特征必须要实现 `next` 方法的原因。
 
-[**消费者适配器**](https://course.rs/advance/functional-programing/iterator.html#%E6%B6%88%E8%B4%B9%E8%80%85%E9%80%82%E9%85%8D%E5%99%A8)
+### [**消费者适配器**](https://course.rs/advance/functional-programing/iterator.html#%E6%B6%88%E8%B4%B9%E8%80%85%E9%80%82%E9%85%8D%E5%99%A8)
 
 只要迭代器上的某个方法 `A` 在其内部调用了 `next` 方法，那么 `A` 就被称为**消费性适配器**：因为 `next` 方法会消耗掉迭代器上的元素，所以方法 `A` 的调用也会消耗掉迭代器上的元素。
 
@@ -268,7 +268,7 @@ fn sum<S>(self) -> S
 
 从 `sum` 源码中也可以清晰看出，`self` 类型的方法参数拿走了所有权。
 
-[**迭代器适配器**](https://course.rs/advance/functional-programing/iterator.html#%E8%BF%AD%E4%BB%A3%E5%99%A8%E9%80%82%E9%85%8D%E5%99%A8)
+### [**迭代器适配器**](https://course.rs/advance/functional-programing/iterator.html#%E8%BF%AD%E4%BB%A3%E5%99%A8%E9%80%82%E9%85%8D%E5%99%A8)
 
 既然消费者适配器是消费掉迭代器，然后返回一个值。那么迭代器适配器，顾名思义，会返回一个新的迭代器，这是实现链式方法调用的关键：`v.iter().map().filter()...`。
 
@@ -330,7 +330,7 @@ fn main() {
 
 然后再通过 `collect` 将新迭代器中`(K, V)` 形式的值收集成 `HashMap<K, V>`，同样的，这里必须显式声明类型，然后 `HashMap` 内部的 `KV` 类型可以交给编译器去推导，最终编译器会推导出 `HashMap<&str, i32>`，完全正确！
 
-[**闭包作为适配器参数**](https://course.rs/advance/functional-programing/iterator.html#%E9%97%AD%E5%8C%85%E4%BD%9C%E4%B8%BA%E9%80%82%E9%85%8D%E5%99%A8%E5%8F%82%E6%95%B0)
+### [**闭包作为适配器参数**](https://course.rs/advance/functional-programing/iterator.html#%E9%97%AD%E5%8C%85%E4%BD%9C%E4%B8%BA%E9%80%82%E9%85%8D%E5%99%A8%E5%8F%82%E6%95%B0)
 
 之前的 `map` 方法中，我们使用闭包来作为迭代器适配器的参数，它最大的好处不仅在于可以就地实现迭代器中元素的处理，还在于可以捕获环境值：
 
@@ -348,7 +348,7 @@ fn shoes_in_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
 
 `filter` 是迭代器适配器，用于对迭代器中的每个值进行过滤。 它使用闭包作为参数，该闭包的参数 `s` 是来自迭代器中的值，然后使用 `s` 跟外部环境中的 `shoe_size` 进行比较，若相等，则在迭代器中保留 `s` 值，若不相等，则从迭代器中剔除 `s` 值，最终通过 `collect` 收集为 `Vec<Shoe>` 类型。
 
-### [实现 Iterator 特征](https://course.rs/advance/functional-programing/iterator.html#%E5%AE%9E%E7%8E%B0-iterator-%E7%89%B9%E5%BE%81) <a href="#shi-xian-iterator-te-zheng" id="shi-xian-iterator-te-zheng"></a>
+## [实现 Iterator 特征](https://course.rs/advance/functional-programing/iterator.html#%E5%AE%9E%E7%8E%B0-iterator-%E7%89%B9%E5%BE%81) <a href="#shi-xian-iterator-te-zheng" id="shi-xian-iterator-te-zheng"></a>
 
 之前的内容我们一直基于数组来创建迭代器，实际上，不仅仅是数组，基于其它集合类型一样可以创建迭代器，例如 `HashMap`。 你也可以创建自己的迭代器 —— 只要为自定义类型实现 `Iterator` 特征即可。
 
@@ -403,7 +403,7 @@ assert_eq!(counter.next(), None);
 
 ```
 
-[**实现 Iterator 特征的其它方法**](https://course.rs/advance/functional-programing/iterator.html#%E5%AE%9E%E7%8E%B0-iterator-%E7%89%B9%E5%BE%81%E7%9A%84%E5%85%B6%E5%AE%83%E6%96%B9%E6%B3%95)
+### [**实现 Iterator 特征的其它方法**](https://course.rs/advance/functional-programing/iterator.html#%E5%AE%9E%E7%8E%B0-iterator-%E7%89%B9%E5%BE%81%E7%9A%84%E5%85%B6%E5%AE%83%E6%96%B9%E6%B3%95)
 
 可以看出，实现自己的迭代器非常简单，但是 `Iterator` 特征中，不仅仅是只有 `next` 一个方法，那为什么我们只需要实现它呢？因为其它方法都具有[默认实现](https://course.rs/basic/trait/trait.html#%E9%BB%98%E8%AE%A4%E5%AE%9E%E7%8E%B0)，所以无需像 `next` 这样手动去实现，而且这些默认实现的方法其实都是基于 `next` 方法实现的。
 
@@ -458,7 +458,7 @@ println!("{}", val);
 
 ```
 
-### [迭代器的性能](https://course.rs/advance/functional-programing/iterator.html#%E8%BF%AD%E4%BB%A3%E5%99%A8%E7%9A%84%E6%80%A7%E8%83%BD) <a href="#die-dai-qi-de-xing-neng" id="die-dai-qi-de-xing-neng"></a>
+## [迭代器的性能](https://course.rs/advance/functional-programing/iterator.html#%E8%BF%AD%E4%BB%A3%E5%99%A8%E7%9A%84%E6%80%A7%E8%83%BD) <a href="#die-dai-qi-de-xing-neng" id="die-dai-qi-de-xing-neng"></a>
 
 前面提到，要完成集合遍历，既可以使用 `for` 循环也可以使用迭代器，那么二者之间该怎么选择呢，性能有多大差距呢？
 
