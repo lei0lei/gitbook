@@ -6,10 +6,6 @@
 
 {% embed url="https://github.com/sger/RustBooks" %}
 
-##
-
-##
-
 {% file src=".gitbook/assets/Rust in Action.pdf" %}
 
 ## 常用网站
@@ -32,13 +28,19 @@
 
 {% embed url="https://github.com/sunface/rust-course/blob/main/assets/writing-material/books.md" %}
 
-{% embed url="https://doc.rust-lang.org/reference/introduction.html" %}
-
 {% embed url="https://rusty.course.rs/" %}
 
-
+{% embed url="https://rustc-dev-guide.rust-lang.org/method-lookup.html" %}
 
 {% embed url="https://github.com/sunface/rust-by-practice" %}
+
+{% embed url="https://doc.rust-lang.org/1.6.0/style/README.html" %}
+
+{% embed url="https://nnethercote.github.io/perf-book/title-page.html" %}
+
+{% embed url="https://doc.rust-lang.org/stable/unstable-book/library-features/proc-macro-tracked-env.html" %}
+
+{% embed url="https://rust-lang.github.io/async-book/01_getting_started/01_chapter.html" %}
 
 
 

@@ -62,18 +62,9 @@
 
 * [Page 2](biao-zhun-ku/page-2.md)
 
-## 附录
-
-* [排序算法](fu-lu/page-1.md)
-* [DP算法](fu-lu/dp-suan-fa.md)
-
 ## Reference
 
 * [Page 6](reference/page-6.md)
-
-## actix
-
-* [Page 7](actix/page-7.md)
 
 ## Rust-lang
 
