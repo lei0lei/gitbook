@@ -6,7 +6,7 @@
 ## Rust Course
 
 * [资源](rust-course/zi-yuan.md)
-* [变量绑定与解构](rust-course/bian-liang-bang-ding-yu-jie-gou.md)
+* [变量绑定与解构 ✔](rust-course/bian-liang-bang-ding-yu-jie-gou.md)
 * [基本类型](rust-course/ji-ben-lei-xing/README.md)
   * [数值类型](rust-course/ji-ben-lei-xing/shu-zhi-lei-xing.md)
   * [字符、布尔、单元类型](rust-course/ji-ben-lei-xing/zi-fu-bu-er-dan-yuan-lei-xing.md)
