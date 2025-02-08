@@ -456,7 +456,7 @@ struct Ref<'a, T> {
 
 ### [一个复杂的例子](https://course.rs/advance/lifetime/advance.html#%E4%B8%80%E4%B8%AA%E5%A4%8D%E6%9D%82%E7%9A%84%E4%BE%8B%E5%AD%90) <a href="#yi-ge-fu-za-de-li-zi" id="yi-ge-fu-za-de-li-zi"></a>
 
-## 下面是一个关于生命周期声明过大的例子，会较为复杂，希望大家能细细阅读，它能帮你对生命周期的理解更加深入。
+下面是一个关于生命周期声明过大的例子，会较为复杂，希望大家能细细阅读，它能帮你对生命周期的理解更加深入。
 
 ```rust
 struct Interface<'a> {
