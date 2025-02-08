@@ -35,7 +35,7 @@
   * [深入特征 ✔](rust-course/fan-xing-yu-te-zheng/shen-ru-te-zheng.md)
 * [集合类型](rust-course/ji-he-lei-xing/README.md)
   * [动态数组 Vector ✔](rust-course/ji-he-lei-xing/dong-tai-shu-zu-vector.md)
-  * [KV 存储 HashMap](rust-course/ji-he-lei-xing/kv-cun-chu-hashmap.md)
+  * [KV 存储 HashMap✔](rust-course/ji-he-lei-xing/kv-cun-chu-hashmap.md)
 * [认识生命周期✔](rust-course/ren-shi-sheng-ming-zhou-qi.md)
 * [返回值和错误处理✔](rust-course/fan-hui-zhi-he-cuo-wu-chu-li/README.md)
   * [panic! 深入剖析✔](rust-course/fan-hui-zhi-he-cuo-wu-chu-li/panic-shen-ru-pou-xi.md)
