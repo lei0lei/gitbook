@@ -6,7 +6,7 @@
 
 点击**实例化**按钮（由链条图标表示）并选择保存的 `player.tscn`。
 
-![../../\_images/instance\_scene.webp](https://docs.godotengine.org/zh-cn/4.x/_images/instance_scene.webp)
+<figure><img src="https://docs.godotengine.org/zh-cn/4.x/_images/instance_scene.webp" alt=""><figcaption></figcaption></figure>
 
 现在，将下列节点添加为 `Main` 的子节点，并按如下所示对它们进行命名：
 
@@ -23,21 +23,21 @@
 
 此外，将 `StartTimer` 的 `One Shot` 属性设置为“启用”，并将 `StartPosition` 节点的 `Position` 设置为 `(240, 450)`。
 
-### 生成怪物[](https://docs.godotengine.org/zh-cn/4.x/getting_started/first_2d_game/05.the_main_game_scene.html#spawning-mobs)
+### 生成怪物
 
 主节点将生成新的怪物，我们希望它们出现在屏幕边缘的随机位置。点击场景面板中的 `Main` 节点，然后添加一个 [Path2D](https://docs.godotengine.org/zh-cn/4.x/classes/class_path2d.html#class-path2d) 名为 `MobPath` 的子节点。当选中 `Path2D` 节点后，你会在编辑器顶部看到一些新按钮：
 
-![../../\_images/path2d\_buttons.webp](https://docs.godotengine.org/zh-cn/4.x/_images/path2d_buttons.webp)
+<figure><img src="https://docs.godotengine.org/zh-cn/4.x/_images/path2d_buttons.webp" alt=""><figcaption></figcaption></figure>
 
 选中中间的按钮（"添加点"），然后通过ctrl+点击屏幕四角添加路径点。若要使点自动吸附到网格上，请确保同时勾选"启用网格吸附"和"启用智能吸附"选项。这两个选项位于"锁定"按钮的左侧，分别显示为磁铁图标和带有交叉线的点阵图标。
 
-![../../\_images/grid\_snap\_button.webp](https://docs.godotengine.org/zh-cn/4.x/_images/grid_snap_button.webp)
+<figure><img src="https://docs.godotengine.org/zh-cn/4.x/_images/grid_snap_button.webp" alt=""><figcaption></figcaption></figure>
 
 {% hint style="info" %}
 &#x4EE5;_&#x987A;时&#x9488;_&#x7684;顺序绘制路径，否则小怪&#x4F1A;_&#x5411;&#x5916;_&#x800C;&#x975E;_&#x5411;&#x5185;_&#x751F;成！
 {% endhint %}
 
-![../../\_images/draw\_path2d.gif](https://docs.godotengine.org/zh-cn/4.x/_images/draw_path2d.gif)
+<figure><img src="https://docs.godotengine.org/zh-cn/4.x/_images/draw_path2d.gif" alt=""><figcaption></figcaption></figure>
 
 在图像上放置点 `4` 后，点击“闭合曲线”按钮，你的曲线就完成了。
 
@@ -47,7 +47,7 @@
 
 ![../../\_images/main\_scene\_nodes.webp](https://docs.godotengine.org/zh-cn/4.x/_images/main_scene_nodes.webp)
 
-### Main 脚本[](https://docs.godotengine.org/zh-cn/4.x/getting_started/first_2d_game/05.the_main_game_scene.html#main-script)
+### Main 脚本
 
 将脚本添加到 `Main`。在脚本的顶部，我们使用 `@export var mob_scene: PackedScene` 来允许我们选择要实例化的 Mob 场景。
 
@@ -134,7 +134,7 @@ func _on_mob_timer_timeout():
 为什么要用 `PI`？在需要传入角度的函数中，Godot 使用的&#x662F;_&#x5F27;&#x5EA6;_&#x800C;不是度数。圆周率（Pi）表示转半圈的弧度，约为 `3.1415`（还提供了等于 `2 * PI` 的 `TAU`）。如果你更喜欢使用度数，则需使用 `deg_to_rad()` 和 `rad_to_deg()` 函数在这两种单位之间进行转换。
 {% endhint %}
 
-### 测试场景[](https://docs.godotengine.org/zh-cn/4.x/getting_started/first_2d_game/05.the_main_game_scene.html#testing-the-scene)
+### 测试场景
 
 让我们测试这个场景，确保一切正常。请将对 `new_game` 的调用添加至 `_ready()`：
 

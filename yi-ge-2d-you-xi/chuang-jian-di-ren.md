@@ -4,7 +4,7 @@
 
 我们将创建一个 `Mob` 的怪物场景，以便在游戏中独&#x7ACB;_&#x5B9E;例&#x5316;_&#x51FA;任意数量的怪物。
 
-### 节点设置[](https://docs.godotengine.org/zh-cn/4.x/getting_started/first_2d_game/04.creating_the_enemy.html#node-setup)
+### 节点设置
 
 点击顶部菜单的“场景 -> 新建场景”，然后添加以下节点：
 
@@ -20,13 +20,13 @@
 
 此外，在 `Mob` 节点的检查器中，找到 [CollisionObject2D](https://docs.godotengine.org/zh-cn/4.x/classes/class_collisionobject2d.html#class-collisionobject2d) 部分，展开 **Collision** 分组，并取消勾选 `Mask` 属性内的 `1` 。这样可以确保怪物之间不会相互碰撞。
 
-![../../\_images/set\_collision\_mask.webp](https://docs.godotengine.org/zh-cn/4.x/_images/set_collision_mask.webp)
+<figure><img src="https://docs.godotengine.org/zh-cn/4.x/_images/set_collision_mask.webp" alt=""><figcaption></figcaption></figure>
 
 像设置玩家一样设置 [AnimatedSprite2D](https://docs.godotengine.org/zh-cn/4.x/classes/class_animatedsprite2d.html#class-animatedsprite2d)。这一次，我们有 3 个动画：`fly`、`swim`、`walk`，每个动画在 art 文件夹中都有两张图片。
 
 必须为每个单独动画设置 `动画速度` 属性，将三个动画的对应动画速度值都调整为 `3`。
 
-![../../\_images/mob\_animations.webp](https://docs.godotengine.org/zh-cn/4.x/_images/mob_animations.webp)
+<figure><img src="https://docs.godotengine.org/zh-cn/4.x/_images/mob_animations.webp" alt=""><figcaption></figcaption></figure>
 
 你可以使用 `动画速度` 输入区域右侧的“播放动画”按钮预览动画。
 
@@ -38,7 +38,7 @@
 
 保存该场景。
 
-### 敌人的脚本[](https://docs.godotengine.org/zh-cn/4.x/getting_started/first_2d_game/04.creating_the_enemy.html#enemy-script)
+### 敌人的脚本
 
 像这样将脚本添加到 `Mob` 上：
 
