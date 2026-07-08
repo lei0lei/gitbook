@@ -22,6 +22,12 @@
 
 ## 一个2D游戏
 
-* [Page 2](yi-ge-2d-you-xi/page-2.md)
+* [设置项目](yi-ge-2d-you-xi/she-zhi-xiang-mu.md)
+* [创建玩家场景](yi-ge-2d-you-xi/chuang-jian-wan-jia-chang-jing.md)
+* [编写玩家代码](yi-ge-2d-you-xi/bian-xie-wan-jia-dai-ma.md)
+* [创建敌人](yi-ge-2d-you-xi/chuang-jian-di-ren.md)
+* [游戏主场景](yi-ge-2d-you-xi/you-xi-zhu-chang-jing.md)
+* [游戏信息显示](yi-ge-2d-you-xi/you-xi-xin-xi-xian-shi.md)
+* [结束](yi-ge-2d-you-xi/jie-shu.md)
 
 ## 一个3D游戏
