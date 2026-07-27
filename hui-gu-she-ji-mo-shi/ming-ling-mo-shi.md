@@ -36,8 +36,6 @@ Command（命令）是我最喜欢的模式之一。我写的大多数大型程�
 
 每个游戏里总有一块代码，负责读取原始用户输入——按键、键盘事件、鼠标点击，诸如此类。它接收每一次输入，并把它翻译成游戏里的一个有意义动作：
 
-<br>
-
 <figure><img src="../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 一个极其简单的实现如下：
@@ -166,7 +164,7 @@ public:
 
 现在，同一个类就能让游戏中的任何角色跳来跳去。我们只缺少连接输入处理器和命令的一环：它接收命令，并在正确的对象上执行命令。首先，修改 `handleInput()`，让它返回命令：
 
-```
+```cpp
 // Some code
 Command* InputHandler::handleInput()
 {
@@ -184,7 +182,7 @@ Command* InputHandler::handleInput()
 
 然后，我们需要一些代码，接收这个命令并让它在代表玩家的角色上运行，例如：
 
-```
+```cpp
 // Some code
 Command* command = inputHandler.handleInput();
 if (command)
@@ -219,7 +217,7 @@ if (command)
 
 我们前面已经用命令抽象了输入处理，所以玩家的每次行动本来就已封装在命令对象里。例如，移动一个单位可以这样写：
 
-```
+```c++
 // Some code
 class MoveUnitCommand : public Command
 {
@@ -247,7 +245,7 @@ private:
 
 这里的命令则更加具体。它们表示在某个特定时间点执行的一件事。这意味着每次玩家选择一次移动时，输入处理代码都要创建一个新的命令实例。例如：
 
-```
+```cpp
 // Some code
 Command* handleInput()
 {
@@ -275,7 +273,7 @@ Command* handleInput()
 
 命令是一次性对象这个事实，马上会成为我们的优势。为了让命令可撤销，我们为每个命令类定义另一个需要实现的操作：
 
-```
+```c++
 // Some code
 class Command
 {
@@ -288,7 +286,7 @@ public:
 
 `undo()` 方法会逆转对应 `execute()` 方法对游戏状态造成的改变。下面是加入撤销支持后的移动命令：
 
-```
+```cpp
 // Some code
 class MoveUnitCommand : public Command
 {
@@ -357,7 +355,7 @@ private:
 
 例如，如果我们用 JavaScript 制作游戏，可以像这样创建一个“移动单位”命令：
 
-```
+```cpp
 // Some code
 function makeMoveUnitCommand(unit, x, y) {
   // 这里返回的函数就是命令对象：
@@ -369,7 +367,7 @@ function makeMoveUnitCommand(unit, x, y) {
 
 也可以用一对闭包加入撤销支持：
 
-```
+```cpp
 // Some code
 function makeMoveUnitCommand(unit, x, y) {
   var xBefore, yBefore;
