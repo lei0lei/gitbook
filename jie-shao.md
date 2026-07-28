@@ -69,7 +69,7 @@
 
 简而言之，编程的流程大致是这样的：
 
-<figure><img src=".gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src=".gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 ### 解耦能帮上什么忙？
 

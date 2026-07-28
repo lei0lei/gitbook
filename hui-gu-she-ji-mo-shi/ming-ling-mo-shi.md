@@ -36,7 +36,7 @@ Command（命令）是我最喜欢的模式之一。我写的大多数大型程�
 
 每个游戏里总有一块代码，负责读取原始用户输入——按键、键盘事件、鼠标点击，诸如此类。它接收每一次输入，并把它翻译成游戏里的一个有意义动作：
 
-<figure><img src="../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (1) (1).png" alt=""><figcaption></figcaption></figure>
 
 一个极其简单的实现如下：
 
@@ -128,7 +128,7 @@ void InputHandler::handleInput()
 
 原先每个输入都会直接调用一个函数；现在，中间多了一层间接性：
 
-<figure><img src="../.gitbook/assets/image (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (2) (1).png" alt=""><figcaption></figcaption></figure>
 
 这就是命令模式的核心。如果你现在已经看出了它的价值，那么本章后面的内容就算额外赠送。
 
@@ -201,7 +201,7 @@ if (command)
 
 通过把控制角色的命令变成一等对象，我们消除了直接方法调用带来的紧耦合。你可以把它理解成一个命令队列或命令流：
 
-<figure><img src="../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/image (3) (1).png" alt=""><figcaption></figcaption></figure>
 
 一些代码（输入处理器或 AI）负责生成命令，并把它们放入这个流中；另一些代码（调度器或角色本身）负责消费命令并调用它们。通过把队列放在中间，我们让一端的生产者与另一端的消费者解耦了。
 
