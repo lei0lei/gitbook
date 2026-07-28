@@ -136,7 +136,7 @@
 
 首先是缓冲区本身：
 
-```
+```cpp
 // Some code
 class Framebuffer
 {
@@ -178,7 +178,7 @@ private:
 
 接下来，我们用 `Scene` 类封装这块原始缓冲区。它在这里的职责，是通过对缓冲区进行一系列 `draw()` 调用来渲染图像：
 
-```
+```cpp
 // Some code
 class Scene
 {
@@ -206,7 +206,7 @@ private:
 
 这看起来很简单，但如果保持现状，就会遇到问题。视频驱动程序可能随时对缓冲区调用 `getPixels()`，甚至可能恰好发生在这里：
 
-```
+```cpp
 // Some code
 buffer_.draw(1, 1);
 buffer_.draw(4, 1);
@@ -221,7 +221,7 @@ buffer_.draw(4, 3);
 
 我们用双缓冲来修复它：
 
-```
+```cpp
 // Some code
 class Scene
 {
@@ -281,7 +281,7 @@ private:
 
 下面是演员的基类：
 
-```
+```cpp
 // Some code
 class Actor
 {
@@ -310,7 +310,7 @@ private:
 
 演员们需要一个能够相互互动的舞台，所以我们来构建一个：
 
-```
+```cpp
 // Some code
 class Stage
 {
@@ -342,7 +342,7 @@ private:
 
 为了让表演开始，我们来定义一个具体的演员子类。这位喜剧演员的行为非常简单：他面朝一名演员。每当他被任何人扇了耳光，就会反过来扇自己面朝的那名演员。
 
-```
+```cpp
 // Some code
 class Comedian : public Actor
 {
@@ -361,7 +361,7 @@ private:
 
 现在，把几名喜剧演员放到舞台上，看看会发生什么。我们设置三名演员，让每个人都面朝下一位，最后一位则面朝第一位，从而形成一个大圆环：
 
-```
+```cpp
 // Some code
 Stage stage;
 
@@ -452,7 +452,7 @@ Stage 更新结束
 
 幸运的是，双缓冲模式可以帮忙。这一次，我们不再保存两份庞大的整体“缓冲区”对象，而是采用细得多的缓冲粒度：分别缓冲每名演员的“被扇”状态。
 
-```
+```cpp
 // Some code
 class Actor
 {
@@ -486,7 +486,7 @@ private:
 
 这还需要对 `Stage` 作出一项小改动：
 
-```
+```cpp
 // Some code
 void Stage::update()
 {
@@ -578,7 +578,7 @@ void Stage::update()
 
 其思路是将“当前”和“下一”指针的概念应用到每个对象，把它们变成相对于对象自身的偏移量：
 
-```
+```cpp
 // Some code
 class Actor
 {
