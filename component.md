@@ -332,3 +332,347 @@ private:
 };
 ```
 
+`Bjorn` 类现在基本上干两件事：持有真正定义它的那组组件，以及跨多个领域共享的状态。位置与速度仍在核心 `Bjorn` 类里，原因有二。第一，它们是“跨领域”状态——几乎每个组件都会用，若想往下推，也不清&#x695A;_&#x54EA;&#x4E2A;_&#x7EC4;件该拥有。
+
+第二、更重要的是：它给组件在不彼此耦合的情况下通信的便捷途径。看看能否加以利用。
+
+#### 机器 Bjørn
+
+迄今我们把行为推到单独组件类，但还没把行&#x4E3A;_&#x62BD;&#x8C61;_&#x51FA;来。`Bjorn` 仍知道行为定义在确切哪些具体类。改一下。
+
+把处理用户输入的组件藏在接口后。把 `InputComponent` 变成抽象基类：
+
+```
+// Some code
+class InputComponent
+{
+public:
+  virtual ~InputComponent() {}
+  virtual void update(Bjorn& bjorn) = 0;
+};
+```
+
+再把现有用户输入处理代码压进实现该接口的类：
+
+```
+// Some code
+class PlayerInputComponent : public InputComponent
+{
+public:
+  virtual void update(Bjorn& bjorn)
+  {
+    switch (Controller::getJoystickDirection())
+    {
+      case DIR_LEFT:
+        bjorn.velocity -= WALK_ACCELERATION;
+        break;
+
+      case DIR_RIGHT:
+        bjorn.velocity += WALK_ACCELERATION;
+        break;
+    }
+  }
+
+private:
+  static const int WALK_ACCELERATION = 1;
+};
+```
+
+改 `Bjorn` 持有输入组件指针，而非内联实例：
+
+```
+// Some code
+class Bjorn
+{
+public:
+  int velocity;
+  int x, y;
+
+  Bjorn(InputComponent* input)
+  : input_(input)
+  {}
+
+  void update(World& world, Graphics& graphics)
+  {
+    input_->update(*this);
+    physics_.update(*this, world);
+    graphics_.update(*this, graphics);
+  }
+
+private:
+  InputComponent* input_;
+  PhysicsComponent physics_;
+  GraphicsComponent graphics_;
+};
+```
+
+实例化 `Bjorn` 时传入要用的输入组件：
+
+```
+// Some code
+Bjorn* bjorn = new Bjorn(new PlayerInputComponent());
+```
+
+该实例可以是实现抽象 `InputComponent` 接口的任何具体类型。我们付出代价——`update()` 现在是虚调用，稍慢一点。回报是什么？
+
+> 多数主机要求游戏支持“演示模式”。玩家在主菜单坐着不动，游戏会自动开玩，由电脑代打。这防止主菜单烧屏进电视，也让店里展柜上的游戏更好看。
+
+把输入组件类藏在接口后，就能做到。已有正常玩游戏时用的具体 `PlayerInputComponent`。再做一个：
+
+```
+// Some code
+class DemoInputComponent : public InputComponent
+{
+public:
+  virtual void update(Bjorn& bjorn)
+  {
+    // 自动控制 Bjorn 的 AI……
+  }
+};
+```
+
+游戏进入演示模式时，不再像先前那样构造 Bjørn，而是接上新组件：
+
+```
+// Some code
+Bjorn* bjorn = new Bjorn(new DemoInputComponent());
+```
+
+只需换一个组件，就有完整可用的电脑代打玩家。能复用 Bjørn 的其它全部代码——物理与图形甚至不知道有差别。或许我有点怪，但这种事让我早上起床。还有咖啡。香甜滚热的咖啡。
+
+#### 完全没有 Bjørn？
+
+看现在的 `Bjorn` 类，会发现没什么真“Bjørn”的东西——它只是组件袋。实际上，它很像可用于游戏&#x4E2D;_&#x6BCF;&#x4E2A;_&#x5BF9;象的基“游戏对象”类。只需传&#x5165;_&#x5168;&#x90E8;_&#x7EC4;件，就能像科学怪人一样挑选零件构建任意对象。
+
+把剩下两个具体组件——物理与图形——也像输入一样藏在接口后：
+
+```
+// Some code
+class PhysicsComponent
+{
+public:
+  virtual ~PhysicsComponent() {}
+  virtual void update(GameObject& obj, World& world) = 0;
+};
+
+class GraphicsComponent
+{
+public:
+  virtual ~GraphicsComponent() {}
+  virtual void update(GameObject& obj, Graphics& graphics) = 0;
+};
+```
+
+再把 `Bjorn` 更名为使用这些接口的通用 `GameObject`：
+
+```
+// Some code
+class GameObject
+{
+public:
+  int velocity;
+  int x, y;
+
+  GameObject(InputComponent* input,
+             PhysicsComponent* physics,
+             GraphicsComponent* graphics)
+  : input_(input),
+    physics_(physics),
+    graphics_(graphics)
+  {}
+
+  void update(World& world, Graphics& graphics)
+  {
+    input_->update(*this);
+    physics_->update(*this, world);
+    graphics_->update(*this, graphics);
+  }
+
+private:
+  InputComponent* input_;
+  PhysicsComponent* physics_;
+  GraphicsComponent* graphics_;
+};
+```
+
+> 有些组件系统走得更远。不是 `GameObject` 包含其组件，游戏实体只是一个 ID、一个数字。然后维护单独的组件集合，每个组件知道它所附实体的 ID。\
+> 这些 [实体组件系统](http://en.wikipedia.org/wiki/Entity_component_system) 把组件解耦推到极致，可在实体甚至不知道的情况下给实体加新组件。[Data Locality](https://gameprogrammingpatterns.com/data-locality.html) 一章有更多细节。
+
+现有具体类会改名并实现那些接口：
+
+```
+// Some code
+class BjornPhysicsComponent : public PhysicsComponent
+{
+public:
+  virtual void update(GameObject& obj, World& world)
+  {
+    // 物理代码……
+  }
+};
+
+class BjornGraphicsComponent : public GraphicsComponent
+{
+public:
+  virtual void update(GameObject& obj, Graphics& graphics)
+  {
+    // 图形代码……
+  }
+};
+```
+
+现在可构建拥有 Bjørn 全部原行为的对象，而不必真为他建类：
+
+```
+// Some code
+GameObject* createBjorn()
+{
+  return new GameObject(new PlayerInputComponent(),
+                        new BjornPhysicsComponent(),
+                        new BjornGraphicsComponent());
+}
+```
+
+> 这 `createBjorn()` 当然是经典 Gang of Four [Factory Method](http://c2.com/cgi/wiki?FactoryMethod) 模式的例子。
+
+定义其它用不同组件实例化 `GameObject` 的函数，就能创建游戏需要的所有不同对象种类。
+
+### 设计决策
+
+本模式最重要的设计问题是：“我需要哪套组件？”答案取决于游戏需求与类型。引擎越大越复杂，你大概越想把组件切得更细。
+
+除此之外，还有几个更具体选项要考虑：
+
+#### 对象如何获得其组件？
+
+把单体对象拆成几个独立组件部分后，要决定谁把零件装回去。
+
+* 若对象自己创建组件：
+  * _确保对象总有所需组件。_ 不必担心有人忘了接对组件而弄坏游戏。容器对象自己照料。
+  * _更难重新配置对象。_ 本模式的强大特性之一是仅靠重组组件就能构建新种类对象。若对象总用同一套硬编码组件连接自己，就没用上那份灵活。
+* 若由外部代码提供组件：
+  * _对象更灵活。_ 给它不同组件，就能彻底改变行为。推到极致，对象变成可反复复用的通用组件容器。
+  * _对象可与具体组件类型解耦。_ 若允许外部传入组件，多半也允许传&#x5165;_&#x6D3E;&#x751F;_&#x7EC4;件类型。此时对象只知道组&#x4EF6;_&#x63A5;口_，不知具体类型。可形成封装良好的架构。
+
+#### 组件之间如何通信？
+
+完美解耦、孤立运行的组件是美好理想，实践中并不真能。这些组件属&#x4E8E;_&#x540C;&#x4E00;_&#x5BF9;象，意味着它们是更大整体的一部分，需要协调。于是就要通信。
+
+组件如何交谈？有几个选项；与本书多数设计“备选”不同，这些并不互斥——设计中很可能同时支持多于一种。
+
+* 通过修改容器对象的状态：
+  * _保持组件解耦。_ `InputComponent` 设了 Bjørn 速度、`PhysicsComponent` 之后使用它时，两个组件完全不知道对方存在。对它们来说，速度可能是黑魔法改的。
+  * _要求组件需共享的任何信息都推到容器对象上。_ 常有状态其实只被组件子集需要。例如，动画与渲染组件可能共享图形特有信息。把它推&#x5230;_&#x6BCF;&#x4E2A;_&#x7EC4;件都能取到的容器对象，会弄脏对象类。\
+    更糟的是，若同一容器类用不同组件配置，可能&#x5728;_&#x4EFB;&#x4F55;_&#x7EC4;件都不需要的状态上浪费内存。把某些渲染特有数据推进容器，任何不可见对象都会白白占内存。
+  * _让通信变得隐式，并依赖组件处理顺序。_ 示例中，原先单体 `update()` 有非常精心安排的操作顺序：用户输入改速度，物理用它改位置，渲染用它把 Bjørn 画对位置。拆成组件时，我们小心保留了那顺序。\
+    若不保留，就会引入微妙、难追踪的 bug。例如，&#x82E5;_&#x5148;_&#x66F4;新图形组件，就会错误地&#x7528;_&#x4E0A;&#x4E00;_&#x5E27;而非本帧的位置渲染 Bjørn。想象更多组件和更多代码，就能体会这种 bug 有多难避免。\
+    共享可变状态——大量代码读写同一数据——出了名地难做对。这也是学者花时间研究 Haskell 等根本没有可变状态的纯函数式语言的一个重要原因。
+* 通过彼此直接引用：\
+  想法是：需要交谈的组件直接持有对彼此的引用，完全不必经容器对象。\
+  假设想让 Bjørn 跳跃。图形代码需知道该不该用跳跃精灵画。可通过问物理引擎他是否在地面上来判定。简单做法是让图形组件直接知道物理组件：
+
+```
+// Some code
+class BjornGraphicsComponent
+{
+public:
+  BjornGraphicsComponent(BjornPhysicsComponent* physics)
+  : physics_(physics)
+  {}
+
+  void Update(GameObject& obj, Graphics& graphics)
+  {
+    Sprite* sprite;
+    if (!physics_->isOnGround())
+    {
+      sprite = &spriteJump_;
+    }
+    else
+    {
+      // 已有图形代码……
+    }
+
+    graphics.draw(*sprite, obj.x, obj.y);
+  }
+
+private:
+  BjornPhysicsComponent* physics_;
+
+  Sprite spriteStand_;
+  Sprite spriteWalkLeft_;
+  Sprite spriteWalkRight_;
+  Sprite spriteJump_;
+};
+```
+
+构造 Bjørn 的 `GraphicsComponent` 时，给它对应 `PhysicsComponent` 的引用。
+
+* _简单且快。_ 通信是对象间直接方法调用。组件可调它持有引用的组件支持的任何方法。自由混战。
+* _两个组件紧耦合。_ 自由混战的坏处。我们基本退回单体类一步。又不像原先单个类那么糟，因为至少把耦合限制在需要交互的那些组件对。
+* 通过发消息：
+  * 这是最复杂的备选。可在容器对象里建个小消息系统，让组件彼此广播信息。\
+    一种可能实现：先定义所有组件要实现的基 `Component` 接口：
+
+```
+// Some code
+class Component
+{
+public:
+  virtual ~Component() {}
+  virtual void receive(int message) = 0;
+};
+```
+
+只有一个 `receive()`，组件类实现它以监听入站消息。这里只用 `int` 标识消息；更完整实现可为消息附额外数据。\
+再给容器对象加发消息方法：
+
+```
+// Some code
+class ContainerObject
+{
+public:
+  void send(int message)
+  {
+    for (int i = 0; i < MAX_COMPONENTS; i++)
+    {
+      if (components_[i] != NULL)
+      {
+        components_[i]->receive(message);
+      }
+    }
+  }
+
+private:
+  static const int MAX_COMPONENTS = 10;
+  Component* components_[MAX_COMPONENTS];
+};
+```
+
+若组件能访问其容器，就可向容器发消息，容器再重播给所有所含组件。（包括原发送组件；小心别掉进反馈环！）这带来一些后果：
+
+> 若真想花哨，甚至可让消息系&#x7EDF;_&#x6392;&#x961F;_&#x7A0D;后投递。更多见 [Event Queue](https://gameprogrammingpatterns.com/event-queue.html)。
+
+* _兄弟组件解耦。_ 与共享状态备选一样，经父容器对象，确保组件仍彼此解耦。在这系统里，它们唯有的耦合是消息值本身。\
+  Gang of Four 称之为 [Mediator](http://c2.com/cgi-bin/wiki?MediatorPattern) 模式——两个或多个对象经中间对象间接通信。此处容器对象本身就是中介。
+* _容器对象简单。_ 不同于共享状态里容器自己拥有并知晓组件所用数据，这里它只盲目转发消息。这在让两个组件传递非常领域特有信息而不渗进容器时很有用。
+
+毫不意外，这里没有唯一最佳答案。你多半会三种都用一点。共享状态适合可默认每个对象都有的真正基础东西——位置、尺寸等。
+
+有些领域独立却仍紧密相关。想想动画与渲染、用户输入与 AI、或物理与碰撞。若这些对半各有单独组件，或许最容易让它们直接知道另一半。
+
+消息适合“次要”通信。其发后即忘的性质，很适合物理组件发“撞到东西”消息时、音频组件播声音这类事。
+
+一如既往：建议从简单开始，需要时再加额外通信路径。
+
+### 另见
+
+* [Unity](http://unity3d.com/) 框架的核心 [`GameObject`](http://docs.unity3d.com/Documentation/Manual/GameObjects.html) 类完全围绕 [组件](http://docs.unity3d.com/Manual/UsingComponents.html) 设计。
+* 开源 [Delta3D](http://www.delta3d.org/) 引擎有实现本模式的基 `GameActor` 类，配套基类恰当地叫 `ActorComponent`。
+* Microsoft [XNA](http://creators.xna.com/en-US/) 游戏框架带有核心 `Game` 类，拥有 `GameComponent` 对象集合。我们的示例在单个游戏实体层用组件；XNA 在主游戏对象层实现此模式，但目的相同。
+* 本模式与 Gang of Four 的 [Strategy](http://c2.com/cgi/wiki?StrategyPattern) 有相似之处。两者都把对象行为的一部分委托给单独的从属对象。差别是：Strategy 的单独“策略”对象通常无状态——封装算法，但不含数据。它定义对&#x8C61;_&#x5982;&#x4F55;_&#x884C;为，而&#x975E;_&#x662F;_&#x4EC0;么。\
+  组件更有自我存在感。它们常持有描述对象、帮助定义其真实身份的状态。不过界线可能模糊。可能有些组件不需要任何局部状态。那时可对多个容器对象复用同一组&#x4EF6;_&#x5B9E;例_。此时行为更接近策略。
+
+***
+
+核心一句话：把跨 AI/物理/渲染等领域的单体实体拆成可插拔组件；实体变成组件容器，领域彼此解耦，还能用组合拼出道具、装饰、区域等不同对象。
+
